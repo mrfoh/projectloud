@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Bps
+        psr4_prefix: Bps
+        src_path: app
