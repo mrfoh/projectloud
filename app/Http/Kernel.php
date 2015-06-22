@@ -15,7 +15,7 @@ class Kernel extends HttpKernel {
 		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
 		'Illuminate\Session\Middleware\StartSession',
 		'Illuminate\View\Middleware\ShareErrorsFromSession',
-		'Bps\Http\Middleware\VerifyCsrfToken',
+		//'Bps\Http\Middleware\VerifyCsrfToken',
 	];
 
 	/**
@@ -27,6 +27,8 @@ class Kernel extends HttpKernel {
 		'auth' => 'Bps\Http\Middleware\Authenticate',
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
 		'guest' => 'Bps\Http\Middleware\RedirectIfAuthenticated',
+		'admin.auth' => 'Bps\Http\Middleware\AdminAuthMiddleware',
+		'api.auth' => 'Bps\Http\Middleware\ApiAuthMiddleware'
 	];
 
 }

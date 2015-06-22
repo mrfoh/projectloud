@@ -26,7 +26,7 @@ return [
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => env('APP_URL'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -145,6 +145,9 @@ return [
 		'Bps\Providers\EventServiceProvider',
 		'Bps\Providers\RouteServiceProvider',
 		'Bps\Providers\AdminServiceProvider',
+		'Bps\Providers\ApiServiceProvider',
+		'Prettus\Repository\Providers\RepositoryServiceProvider',
+		'Collective\Html\HtmlServiceProvider',
 
 	],
 
@@ -193,6 +196,8 @@ return [
 		'URL'       => 'Illuminate\Support\Facades\URL',
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
+		'Form' 		=> 'Collective\Html\FormFacade',
+      	'Html' 		=> 'Collective\Html\HtmlFacade',
 
 	],
 

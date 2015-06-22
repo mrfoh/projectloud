@@ -1,5 +1,6 @@
 <?php namespace Bps\Http\Controllers;
 
-	class Apiontroller extends Controller {
+	class ApiController extends Controller {
 		
+		public $usemiddleware = true;	
 	}

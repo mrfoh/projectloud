@@ -1,0 +1,89 @@
+<!-- list -->
+<ul class="nav">
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    <span translate="aside.nav.HEADER" class="ng-scope">Navigation</span>
+  </li>
+  <li ui-sref-active="active">
+      <a ui-sref="app.dashboard"><i class="fa fa-home text-primary-dker"></i>
+          <span class="font-bold">Dashboard</span>
+      </a>
+  </li>
+
+    <li>
+      <a href class="auto">
+        <span class="pull-right text-muted">
+          <i class="fa fa-fw fa-angle-right text"></i>
+          <i class="fa fa-fw fa-angle-down text-active"></i>
+        </span>
+        <i class="fa fa-pencil-square-o text-info-dker"></i>
+        <span class="font-bold">Posts</span>
+      </a>
+      <ul class="nav nav-sub dk">
+        <li class="nav-sub-header">
+          <a href>
+            <span>Posts</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="posts.index">
+            <span>All Posts</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="posts.create">
+            <span>New Post</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="posts.categories">
+            <span>Catgories</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="posts.tags">
+            <span>Tags</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li ui-sref-active="active">
+      <a ui-sref="comments.index"><i class="fa fa-comment text-primary-dker"></i>
+          <span class="font-bold">Comments</span>
+      </a>
+  </li>
+
+  <li>
+      <a href class="auto">
+        <span class="pull-right text-muted">
+          <i class="fa fa-fw fa-angle-right text"></i>
+          <i class="fa fa-fw fa-angle-down text-active"></i>
+        </span>
+        <i class="fa fa-picture-o text-success-dker"></i>
+        <span class="font-bold">Media</span>
+      </a>
+      <ul class="nav nav-sub dk">
+        <li class="nav-sub-header">
+          <a href>
+            <span>Media</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="media.library">
+            <span>Library</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="media.create">
+            <span>Add new</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+</ul>

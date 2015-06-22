@@ -1,5 +1,3 @@
 <?php namespace Bps\Http\Controllers;
 
-	class AdminController extends Controller {
-		
-	}
+	class AdminController extends Controller {}

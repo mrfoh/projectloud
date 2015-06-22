@@ -3,7 +3,7 @@
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
-class AdminServiceProvider extends ServiceProvider {
+class ApiServiceProvider extends ServiceProvider {
 
 	/**
 	 * This namespace is applied to the controller routes in your routes file.

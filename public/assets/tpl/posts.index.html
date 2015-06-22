@@ -1,0 +1,68 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="PostsCtrl">
+	<!-- main -->
+	<div class="col">
+		<!-- toaster directive -->
+		<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+		<!-- / toaster directive -->
+	    <!-- main header -->
+	   	<div class="bg-light lter b-b wrapper-md">
+	    	<div class="row">
+	        	<div class="col-sm-6 col-xs-12">
+	        		<h1 class="m-n font-thin h3 text-black">Posts</h1>
+	        	</div>
+	        	<div class="col-sm-6 col-xs-12">
+	        		<div class="pull-right">
+	        			<a ui-sref="posts.create" class="btn btn-info">New Post</a>
+	        		</div>
+	        	</div>
+	        </div>
+	    </div>
+	 	<!-- / main header -->
+
+	 	<div class="wrapper-md">
+	 		<div ng-hide="noData">
+	 			<div class="panel panel-default">
+	 				<div class="row wrapper">
+	 					<div class="col-sm-5 m-b-xs">
+					        <select class="input-sm form-control w-sm inline v-middle" ng-model='action'>
+					          <option value="0">Bulk action</option>
+					          <option value="1">Delete selected</option>
+					        </select>
+					        <button class="btn btn-sm btn-default" ng-click="applyAction()">Apply</button>                
+				      	</div>
+
+				      	<div class="col-sm-4">
+				      		<select class="input-sm form-control w-sm inline v-middle">
+					          <option value="0">All Categories</option>
+					          <option value="1">Delete selected</option>
+					        </select>
+					        <button class="btn btn-sm btn-default">Filter</button>   
+				      	</div>
+
+	 					<div class="col-sm-3">
+					        <input type="text" class="input-sm form-control" placeholder="Search" ng-model="query">
+	 					</div>
+	 				</div>
+
+		 			<div class="table-responsive"></div>
+
+		 			<div class="row wrapper">
+	 					<div class="col-sm-5 m-b-xs">
+					        <select class="input-sm form-control w-sm inline v-middle">
+					          <option value="0">Bulk action</option>
+					          <option value="1">Delete selected</option>
+					        </select>
+					        <button class="btn btn-sm btn-default">Apply</button>                
+				      	</div>
+	 				</div>
+		 		</div>
+	 		</div>
+
+	 		<div class="wrapper-xl" ng-show="showStatus">
+				<div class="text-center m-b-lg">
+					<p class="h1">{{statusText}}</p>
+				</div>
+			</div>
+	 	</div>
+	</div>
+</div>

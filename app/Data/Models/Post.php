@@ -11,8 +11,23 @@
 
 		protected $dates = ['deleted_at'];
 
+		/**
+		* Slug attribute mutator
+		* @param string $value
+		* Attribute value
+		* @access public
+		* @return void
+		*/
+		public function setSlugAttribute($value) {
+			$this->attributes['slug'] = str_slug($value);
+		}
+
 		public function tags() {
 			return $this->morphToMany('\Bps\Data\Models\Tags', 'tagable');
+		}
+
+		public function category() {
+			return $this->belongsTo('\Bps\Data\Models\Category');
 		}
 
 		public function comments() {
