@@ -148,6 +148,7 @@ return [
 		'Bps\Providers\ApiServiceProvider',
 		'Prettus\Repository\Providers\RepositoryServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
+		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider'
 
 	],
 
@@ -198,6 +199,8 @@ return [
 		'View'      => 'Illuminate\Support\Facades\View',
 		'Form' 		=> 'Collective\Html\FormFacade',
       	'Html' 		=> 'Collective\Html\HtmlFacade',
+      	'JWTAuth' 	=> 'Tymon\JWTAuth\Facades\JWTAuth',
+      	'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory'
 
 	],
 

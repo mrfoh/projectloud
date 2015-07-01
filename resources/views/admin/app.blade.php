@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<base href="/admin/">
 		<title></title>
 		<!-- Stylesheets -->
 		@if(App::environment() == "local")
@@ -29,14 +30,12 @@
 			Bps.Config.apiUrl = Bps.Config.url+"/api/";
 			Bps.Config.assetUrl = Bps.Config.url+"/assets/js/admin";
 			Bps.Config.tplUrl = Bps.Config.url+"/assets/tpl/";
-
-			Bps.User = Bps.User || {};
-			Bps.User.name = "{{ $user->name }}";
 		</script>
 
 		<!-- Scripts -->
 		@if(App::environment() == "local")
 		<?= Html::script('assets/js/vendor/jquery/jquery.min.js') ?>
+		<?= Html::script('assets/js/vendor/libs/underscore.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-animate/angular-animate.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-cookies/angular-cookies.js') ?>
@@ -54,6 +53,8 @@
 		<?= Html::script("assets/js/admin/config.lazyload.js") ?>
 		<?= Html::script("assets/js/admin/config.router.js") ?>
 		<?= Html::script("assets/js/admin/main.js") ?>
+		<?= Html::script('assets/js/admin/interceptors/http.interceptor.js') ?>
+		<?= Html::script("assets/js/admin/services/auth.js"); ?>
 		<?= Html::script("assets/js/admin/services/ui-load.js") ?>
 		<?= Html::script("assets/js/admin/directives/setnganimate.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-butterbar.js") ?>
@@ -67,6 +68,7 @@
 		<?= Html::script("assets/js/admin/directives/ui-toggleclass.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-validate.js") ?>
 		@else
+		<?= Html::script('assets/js/admin/dist/dist.js') ?>
 		@endif
 	</body>
 </html>

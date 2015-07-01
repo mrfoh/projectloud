@@ -11,10 +11,10 @@ class Kernel extends HttpKernel {
 	 */
 	protected $middleware = [
 		'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode',
-		'Illuminate\Cookie\Middleware\EncryptCookies',
-		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
-		'Illuminate\Session\Middleware\StartSession',
-		'Illuminate\View\Middleware\ShareErrorsFromSession',
+		//'Illuminate\Cookie\Middleware\EncryptCookies',
+		//'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
+		//'Illuminate\Session\Middleware\StartSession',
+		//'Illuminate\View\Middleware\ShareErrorsFromSession',
 		//'Bps\Http\Middleware\VerifyCsrfToken',
 	];
 
@@ -28,7 +28,8 @@ class Kernel extends HttpKernel {
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
 		'guest' => 'Bps\Http\Middleware\RedirectIfAuthenticated',
 		'admin.auth' => 'Bps\Http\Middleware\AdminAuthMiddleware',
-		'api.auth' => 'Bps\Http\Middleware\ApiAuthMiddleware'
+		'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
+    	'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
 	];
 
 }

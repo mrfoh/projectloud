@@ -2,9 +2,8 @@
 
 var app =  
 angular.module('app')
-  .config(
-    [        '$controllerProvider', '$compileProvider', '$filterProvider', '$provide',
-    function ($controllerProvider,   $compileProvider,   $filterProvider,   $provide) {
+  .config(['$controllerProvider', '$compileProvider', '$filterProvider', '$provide', '$httpProvider',
+    function ($controllerProvider,   $compileProvider,   $filterProvider,   $provide, $httpProvider) {
         
         // lazy controller, directive and service
         app.controller = $controllerProvider.register;
@@ -14,5 +13,7 @@ angular.module('app')
         app.service    = $provide.service;
         app.constant   = $provide.constant;
         app.value      = $provide.value;
+
+        $httpProvider.interceptors.push('requestHandlerInterceptor');
     }
-  ])
+  ]);

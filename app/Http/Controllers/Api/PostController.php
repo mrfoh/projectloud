@@ -2,8 +2,8 @@
 
 	use Bps\Http\Controllers\ApiController;
 	use Prettus\Validator\Exceptions\ValidatorException;
-	use Illuminate\Database\Eloquent\ModelNotFoundException;
 	use Bps\Data\Repositories\Posts;
+	use JWTAuth;
 	use Request;
 	use Response;
 
@@ -12,6 +12,7 @@
 		protected $posts;
 
 		public function __construct(Posts $posts) {
+			$this->middleware('jwt.auth', ['only' => ['store','bulkTrash','bullDelete']]);
 			$this->posts = $posts;
 		}
 
@@ -23,7 +24,7 @@
 		**/
 		public function index($id = null) {
 			//options
-			$status = Request::input('status', 'published');
+			$status = Request::input('status');
 			$perPage = Request::input('limit', 15);
 
 			if(is_null($id))
@@ -32,14 +33,11 @@
 			}
 			else 
 			{
-				try {
+				$post = $this->posts->getByIdSlug($id);
 
-					$post = $this->posts->find($id);
-					return $post;
+				if(!$post) return response()->json(['status'=>'error', 'post not found'], 404);
 
-				} catch(ModelNotFoundException $e) {
-					return Response::json(['status'=>"error", 'message' => "Post not found"], 404);
-				}
+				return $post;
 			}
 		}
 
@@ -53,9 +51,30 @@
 			if(is_null($id))
 			{
 				try {
+
+			        if (! $user = JWTAuth::parseToken()->authenticate()) {
+			            return response()->json(['user_not_found'], 404);
+			        }
+
+			    } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+			        return response()->json(['token_expired'], $e->getStatusCode());
+
+			    } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+
+			        return response()->json(['token_invalid'], $e->getStatusCode());
+
+			    } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+
+			        return response()->json(['token_absent'], $e->getStatusCode());
+
+			    }
+
+				try {       
+
 					$input = Request::all();
 
-					$post = $this->posts->create($input);
+					$post = $this->posts->make($input, $user);
 
 					return $post;
 
@@ -74,7 +93,7 @@
 				try {
 					$input = Request::all();
 
-					$update = $this->posts->update($input, $id);
+					$update = $this->posts->updatePost($input, $id);
 
 					return $update;
 
@@ -85,15 +104,52 @@
 			}
 		}
 
-		public function trash($id) {
-
-		}
-
-		public function delete($id) {
-
-		}
-
 		public function comments($id) {
+
+		}
+
+		/**
+		* Trash posts
+		* @access public
+		**/
+		public function bulkTrash() {
+
+			$posts = Request::input('posts');
+
+			if(is_array($posts))
+			{
+				$delete = $this->posts->remove($posts);
+
+				if($delete)
+				{
+					return response()->json(['status'=>"success"], 200);
+				}
+			}
+		}
+
+		/**
+		* Delete posts
+		* @access public
+		**/
+		public function bulkDelete() {
+			$posts = Request::input('posts');
+
+			if(is_array($posts))
+			{
+				$delete = $this->posts->forceRemove($posts);
+
+				if($delete)
+				{
+					return response()->json(['status'=>"success"], 200);
+				}
+			}
+		}
+
+		public function bulkPublish() {
+
+		}
+
+		public function bulkUnpublish() {
 
 		}
 	}

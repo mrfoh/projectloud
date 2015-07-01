@@ -7,7 +7,7 @@
           <i class="glyphicon glyphicon-align-justify"></i>
         </button>
         <!-- brand -->
-        <a href="#/" class="navbar-brand text-lt">
+        <a href="/admin" class="navbar-brand text-lt">
           <!-- <i class="fa fa-btc"></i> -->
           <span class="hidden-folded m-l-xs">BPS</span>
         </a>
@@ -30,9 +30,9 @@
 
         <!-- nabar right -->
         <ul class="nav navbar-nav navbar-right">
-          <li class="visible-lg">
+          <!-- <li class="visible-lg">
             <a ui-fullscreen></a>
-          </li>
+          </li> -->
  
           <li class="dropdown">
             <a href class="dropdown-toggle clear" data-toggle="dropdown">
@@ -59,7 +59,7 @@
               </li>
               <li class="divider"></li>
               <li>
-                <a href="{{app.url}}/accounts/logout">Logout</a>
+                <a ng-click="logout()">Logout</a>
               </li>
             </ul>
             <!-- / dropdown -->

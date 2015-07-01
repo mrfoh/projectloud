@@ -36,4 +36,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->belongsToMany('\Bps\Data\Models\Role', 'user_roles');
 	}
 
+	public function posts() {
+		return $this->hasMany('\Bps\Data\Models\Post');
+	}
+
 }

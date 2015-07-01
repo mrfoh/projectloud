@@ -9,7 +9,6 @@
 
 Route::group(['prefix' => 'admin'], function() {
 	
-	Route::get('auth', 'AuthController@showlogin');
-	Route::get('test', 'AppController@test');
+	Route::post('auth', 'AuthController@index');
 	Route::get('/', 'AppController@index');
 });

@@ -20,23 +20,16 @@
 	 	<!-- / main header -->
 
 	 	<div class="wrapper-md">
-	 		<div ng-hide="noData">
+	 		<div ng-hide="nodata">
 	 			<div class="panel panel-default">
 	 				<div class="row wrapper">
 	 					<div class="col-sm-5 m-b-xs">
-					        <select class="input-sm form-control w-sm inline v-middle" ng-model='action'>
-					          <option value="0">Bulk action</option>
-					          <option value="1">Delete selected</option>
-					        </select>
+					        <select class="input-sm form-control w-sm inline v-middle" ng-model="action" ng-options='option.value as option.name for option in actions' ng-change="onActionSelect()"></select>
 					        <button class="btn btn-sm btn-default" ng-click="applyAction()">Apply</button>                
 				      	</div>
 
 				      	<div class="col-sm-4">
-				      		<select class="input-sm form-control w-sm inline v-middle">
-					          <option value="0">All Categories</option>
-					          <option value="1">Delete selected</option>
-					        </select>
-					        <button class="btn btn-sm btn-default">Filter</button>   
+					        <select class="input-sm form-control w-sm inline v-middle" ng-model="activefilter" ng-options='option.value as option.name for option in filters' ng-change="onFilterSelect()"></select>
 				      	</div>
 
 	 					<div class="col-sm-3">
@@ -44,7 +37,30 @@
 	 					</div>
 	 				</div>
 
-		 			<div class="table-responsive"></div>
+		 			<div class="table-responsive">
+		 				<table class="table table-striped b-t b-light">
+		 					<thead>
+		 						<tr>
+		 							<th><input type="checkbox" ng-model="selectAll" ng-click="checkAll()"></th>
+		 							<th ng-repeat="col in columns"><a href="">{{col.name}}</a></th>
+		 						</tr>
+		 					</thead>
+
+		 					<tbody>
+		 						<tr ng-repeat="post in posts">
+		 							<td><input type="checkbox" ng-model="post.selected"></td>
+		 							<td><a ui-sref="posts.edit({post:post.id})">{{post.title}}</a></td>
+		 							<td><a href="">{{post.author.name}}</a></td>
+		 							<td><p ng-if="post.category">{{ post.category.name }}</p><p ng-if="post.category == null">Not Set</p></td>
+		 							<td>{{ post.status }}</td>
+		 							<td>{{post.created_at.date }}</td>
+		 							<td>{{post.updated_at.date }}</td>
+		 						</tr>
+		 					</tbody>
+		 				</table>
+
+		 				<pagination total-items="total" item-per-page="15" ng-model="currentPage" ng-change="pageChanged()" class="m-t m-b m-l"></pagination>
+		 			</div>
 
 		 			<div class="row wrapper">
 	 					<div class="col-sm-5 m-b-xs">
@@ -60,7 +76,7 @@
 
 	 		<div class="wrapper-xl" ng-show="showStatus">
 				<div class="text-center m-b-lg">
-					<p class="h1">{{statusText}}</p>
+					<p class="h1" ng-bind-html="statusText"></p>
 				</div>
 			</div>
 	 	</div>

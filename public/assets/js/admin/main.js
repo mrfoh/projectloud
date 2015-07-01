@@ -3,11 +3,11 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$localStorage', '$window', 
-    function(              $scope,    $localStorage,   $window ) {
+  .controller('AppCtrl', ['$rootScope','$scope', '$localStorage', '$window', '$auth', function($rootScope, $scope, $localStorage, $window, $auth) {
       // add 'ie' classes to html
       var isIE = !!navigator.userAgent.match(/MSIE/i);
       isIE && angular.element($window.document.body).addClass('ie');
+
       isSmartDevice( $window ) && angular.element($window.document.body).addClass('smart');
 
       // config
@@ -37,7 +37,7 @@ angular.module('app')
           asideDock: false,
           container: false
         },
-        user: $window.Bps.User
+        user: null
       }
 
       // save settings to local storage
@@ -46,6 +46,12 @@ angular.module('app')
       } else {
         $localStorage.settings = $scope.app.settings;
       }
+
+      $scope.logout = function() {
+        $auth.signout()
+        window.location.hash = "#/auth/login";
+      };
+
       $scope.$watch('app.settings', function(){
         if( $scope.app.settings.asideDock  &&  $scope.app.settings.asideFixed ){
           // aside dock and fixed must set the header fixed.
@@ -55,6 +61,11 @@ angular.module('app')
         $localStorage.settings = $scope.app.settings;
       }, true);
 
+      $rootScope.$on('user:signedin', function() {
+        $scope.app.user = $auth.getClaimsFromToken();
+        console.log($scope.app.user);
+      })
+
       function isSmartDevice( $window )
       {
           // Adapted from http://www.detectmobilebrowsers.com
@@ -62,5 +73,4 @@ angular.module('app')
           // Checks for iOs, Android, Blackberry, Opera Mini, and Windows mobile devices
           return (/iPhone|iPod|iPad|Silk|Android|BlackBerry|Opera Mini|IEMobile/).test(ua);
       }
-
   }]);

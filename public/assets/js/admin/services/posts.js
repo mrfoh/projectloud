@@ -32,8 +32,8 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.delete(url+"/"+id);
 	};
 
-	self.bulkDelete = function(items) {
-        return $http.post(url+'/bulk/delete', items);
+	self.bulkAction = function(action, items) {
+        return $http.post(url+'/bulk/'+action, items);
     }
 
 	self.serialize = function(obj) {

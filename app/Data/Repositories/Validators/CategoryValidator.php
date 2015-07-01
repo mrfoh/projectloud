@@ -3,16 +3,15 @@
 	use Prettus\Validator\Contracts\ValidatorInterface;
 	use Prettus\Validator\LaravelValidator;
 
-	class PostValidator extends LaravelValidator {
+	class CategoryValidator extends LaravelValidator {
 
 		protected $rules = [
 	        ValidatorInterface::RULE_CREATE => [
-	            'title' => 'required|unique:posts,title',
-	            'body'  => 'min:3',
+	            'name' => 'required|unique:categories,name'
 	        ],
+	        /*
 	        ValidatorInterface::RULE_UPDATE => [
-	        	'title' => 'required',
-	            'body' => 'min:3'
-	        ]
+	            'title' => ''
+	        ]*/
    		];
 	}

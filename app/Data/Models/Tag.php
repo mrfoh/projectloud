@@ -4,9 +4,13 @@
 
 	class Tag extends Model {
 
-		protected $fillable = ['name','slug','tagable_id','tagable_type'];
+		protected $fillable = ['name','slug'];
 
-		public function tagable() {
-			return $this->morphTo();
-		}
+		public function posts() {
+	        return $this->morphedByMany('\Bps\Data\Models\Post', 'taggable');
+	    }
+
+	    public function categories() {
+	    	return $this->morphedByMany('\Bps\Data\Models\Category', 'taggable');
+	    }
 	}

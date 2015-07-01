@@ -31,6 +31,21 @@ gulp.task('bootstrap', function() {
 				.pipe(gulp.dest('./css'))
 })
 
+gulp.task('build:admin-dev', function() {
+	return gulp.src([
+		'js/vendor/jquery/jquery.min.js',
+		'js/vendor/angular/angular.js',
+		'js/vendor/angular/**/*.js',
+		'js/vendor/libs/*.js',
+		'js/admin/*.js',
+		'js/admin/directives/*.js',
+	    'js/admin/services/*.js'
+	])
+	.pipe(concat('dist.js'))
+	.pipe(uglify())
+	.pipe(gulp.dest('js/admin/dist'))
+})
+
 
 gulp.task('watch', function() {
 	  watch('less/admin/*.less', function() {

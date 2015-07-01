@@ -32,17 +32,6 @@ class AdminAuthMiddleware {
 	 */
 	public function handle($request, Closure $next)
 	{
-		//If user is not authenticated
-		if(!$this->auth->check()) {
-			return redirect()->guest('admin/auth');
-		}
-		else {
-			//check if user is admin
-			if(!$this->auth->user()->isAdmin()) {
-				return redirect()->guest('/');
-			}
-		}
-
 		return $next($request);
 	}
 
