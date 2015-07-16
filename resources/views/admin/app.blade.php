@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-		<base href="/admin/">
 		<title></title>
 		<!-- Stylesheets -->
 		@if(App::environment() == "local")
@@ -18,7 +17,7 @@
 		@endif
 	</head>
 
-	<body ng-controller="AppCtrl">
+	<body ng-controller="AppCtrl" ng-init="setSession()">
 		<div class="app" id="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}" ui-view></div>
 
 		<script type="text/javascript">
@@ -30,6 +29,7 @@
 			Bps.Config.apiUrl = Bps.Config.url+"/api/";
 			Bps.Config.assetUrl = Bps.Config.url+"/assets/js/admin";
 			Bps.Config.tplUrl = Bps.Config.url+"/assets/tpl/";
+			Bps.User = undefined;
 		</script>
 
 		<!-- Scripts -->
@@ -44,6 +44,8 @@
 		<?= Html::script('assets/js/vendor/angular/angular-touch/angular-touch.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-ui-router/angular-ui-router.js') ?>
 		<?= Html::script('assets/js/vendor/angular/ngstorage/ngStorage.js') ?>
+		<?= Html::script('assets/js/vendor/angular/file-upload/ng-file-upload-all.min.js') ?>
+		<?= Html::script('assets/js/vendor/angular/file-upload/ng-file-upload-shim.min.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
 		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
 
@@ -67,6 +69,7 @@
 		<?= Html::script("assets/js/admin/directives/ui-shift.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-toggleclass.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-validate.js") ?>
+		<?= Html::script("assets/js/admin/directives/ui-featuredimage.js") ?>
 		@else
 		<?= Html::script('assets/js/admin/dist/dist.js') ?>
 		@endif

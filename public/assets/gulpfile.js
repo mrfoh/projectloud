@@ -31,7 +31,7 @@ gulp.task('bootstrap', function() {
 				.pipe(gulp.dest('./css'))
 })
 
-gulp.task('build:admin-dev', function() {
+gulp.task('build:admin', function() {
 	return gulp.src([
 		'js/vendor/jquery/jquery.min.js',
 		'js/vendor/angular/angular.js',
@@ -46,10 +46,21 @@ gulp.task('build:admin-dev', function() {
 	.pipe(gulp.dest('js/admin/dist'))
 })
 
+gulp.task('less:frontend', function() {
+	return gulp.src('./less/frontend/frontend.less')
+				.pipe(less())
+				.pipe(minifyCSS())
+				.pipe(gulp.dest('./css/frontend'))
+})
 
 gulp.task('watch', function() {
 	  watch('less/admin/*.less', function() {
         gulp.start('less:admin')
         .on('error', gutil.log);
-    })  
+    })
+
+    watch('less/frontend/*.less', function() {
+        gulp.start('less:frontend')
+        .on('error', gutil.log);
+    })    
 });

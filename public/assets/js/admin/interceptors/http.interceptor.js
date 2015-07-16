@@ -17,7 +17,7 @@
 			},
 
 			'responseError': function (rejection) {
-				if(rejection.status == "400") {
+				if(rejection.status == "401") {
 					$window.location.hash = "#/auth/login";
 				}
 				

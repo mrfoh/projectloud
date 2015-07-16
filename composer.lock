@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b4b03670490ae8402ea4aa2b5f5190a9",
+    "hash": "beccc2ccc89d173325d56773e2869b95",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -625,6 +625,45 @@
             "time": "2014-09-09 13:34:57"
         },
         {
+            "name": "dropbox/dropbox-sdk",
+            "version": "v1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dropbox/dropbox-sdk-php.git",
+                "reference": "6901f8122458e0ce7e391468c0cf6cca465bd0ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dropbox/dropbox-sdk-php/zipball/6901f8122458e0ce7e391468c0cf6cca465bd0ee",
+                "reference": "6901f8122458e0ce7e391468c0cf6cca465bd0ee",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">= 5.3"
+            },
+            "require-dev": {
+                "apigen/apigen": "2.8.2",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.0.0RC3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Dropbox": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Dropbox SDK for PHP",
+            "keywords": [
+                "dropbox"
+            ],
+            "time": "2015-06-29 21:47:57"
+        },
+        {
             "name": "guzzle/guzzle",
             "version": "v3.9.3",
             "source": {
@@ -783,23 +822,23 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "01abc3232138f330d8a1eaa808fcbdf9b4292f47"
+                "reference": "2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/01abc3232138f330d8a1eaa808fcbdf9b4292f47",
-                "reference": "01abc3232138f330d8a1eaa808fcbdf9b4292f47",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7",
+                "reference": "2ee5bc7f1a92efecc90da7f6711a53a7be26b5b7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -830,31 +869,31 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2015-05-13 05:05:10"
+            "time": "2015-06-24 16:16:25"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "19e510056d8d671d9d9e25dc16937b3dd3802ae6"
+                "reference": "af0e1758de355eb113917ad79c3c0e3604bce4bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/19e510056d8d671d9d9e25dc16937b3dd3802ae6",
-                "reference": "19e510056d8d671d9d9e25dc16937b3dd3802ae6",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/af0e1758de355eb113917ad79c3c0e3604bce4bd",
+                "reference": "af0e1758de355eb113917ad79c3c0e3604bce4bd",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0",
-                "psr/http-message": "^1.0"
+                "psr/http-message": "~1.0"
             },
             "provide": {
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
@@ -888,7 +927,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2015-05-19 17:58:45"
+            "time": "2015-06-24 19:55:15"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -1205,16 +1244,16 @@
         },
         {
             "name": "laravel/socialite",
-            "version": "v2.0.6",
+            "version": "v2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/socialite.git",
-                "reference": "31685e257ad092fb1a37f9d5d0d87f343e63c568"
+                "reference": "75e6275c5aaac8ddc9ab49f445c11cf1f9468396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/socialite/zipball/31685e257ad092fb1a37f9d5d0d87f343e63c568",
-                "reference": "31685e257ad092fb1a37f9d5d0d87f343e63c568",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/75e6275c5aaac8ddc9ab49f445c11cf1f9468396",
+                "reference": "75e6275c5aaac8ddc9ab49f445c11cf1f9468396",
                 "shasum": ""
             },
             "require": {
@@ -1255,7 +1294,7 @@
                 "laravel",
                 "oauth"
             ],
-            "time": "2015-06-18 16:36:42"
+            "time": "2015-06-30 15:59:08"
         },
         {
             "name": "laravelcollective/html",
@@ -1390,6 +1429,53 @@
                 "storage"
             ],
             "time": "2015-06-07 21:27:37"
+        },
+        {
+            "name": "league/flysystem-dropbox",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-dropbox.git",
+                "reference": "96c37124590bef6277c0e68a12e2dc40e5f82baa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-dropbox/zipball/96c37124590bef6277c0e68a12e2dc40e5f82baa",
+                "reference": "96c37124590bef6277c0e68a12e2dc40e5f82baa",
+                "shasum": ""
+            },
+            "require": {
+                "dropbox/dropbox-sdk": "~1.1",
+                "league/flysystem": "~1.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\Dropbox\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Flysystem adapter for Dropbox",
+            "time": "2015-05-30 09:18:29"
         },
         {
             "name": "league/fractal",
@@ -1639,16 +1725,16 @@
         },
         {
             "name": "namshi/jose",
-            "version": "2.2.2",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/namshi/jose.git",
-                "reference": "403927c45e786dd4c851bc475b50a8a03068afa4"
+                "reference": "8c7eba486f74c014ea1d8faedafe5109a31ea95b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/namshi/jose/zipball/403927c45e786dd4c851bc475b50a8a03068afa4",
-                "reference": "403927c45e786dd4c851bc475b50a8a03068afa4",
+                "url": "https://api.github.com/repos/namshi/jose/zipball/8c7eba486f74c014ea1d8faedafe5109a31ea95b",
+                "reference": "8c7eba486f74c014ea1d8faedafe5109a31ea95b",
                 "shasum": ""
             },
             "require": {
@@ -1685,25 +1771,25 @@
                 "jwt",
                 "token"
             ],
-            "time": "2015-06-16 11:41:59"
+            "time": "2015-06-29 05:41:44"
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.19.0",
+            "version": "1.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "68868e0b02d2d803d0052a59d4e5003cccf87320"
+                "reference": "bfd3eaba109c9a2405c92174c8e17f20c2b9caf3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/68868e0b02d2d803d0052a59d4e5003cccf87320",
-                "reference": "68868e0b02d2d803d0052a59d4e5003cccf87320",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/bfd3eaba109c9a2405c92174c8e17f20c2b9caf3",
+                "reference": "bfd3eaba109c9a2405c92174c8e17f20c2b9caf3",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "symfony/translation": "~2.6"
+                "symfony/translation": "~2.6|~3.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.0"
@@ -1732,7 +1818,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2015-05-09 03:23:44"
+            "time": "2015-06-25 04:19:39"
         },
         {
             "name": "nikic/php-parser",
@@ -2949,22 +3035,22 @@
         },
         {
             "name": "tymon/jwt-auth",
-            "version": "0.5.3",
+            "version": "0.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tymondesigns/jwt-auth.git",
-                "reference": "3e2624fbc59e979c69a25f407432b86c531faced"
+                "reference": "fccf3f42742c21f8d0a132025e8d999308792ad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/3e2624fbc59e979c69a25f407432b86c531faced",
-                "reference": "3e2624fbc59e979c69a25f407432b86c531faced",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/fccf3f42742c21f8d0a132025e8d999308792ad9",
+                "reference": "fccf3f42742c21f8d0a132025e8d999308792ad9",
                 "shasum": ""
             },
             "require": {
                 "illuminate/http": "~5.0",
                 "illuminate/support": "~5.0",
-                "namshi/jose": "2.2.*",
+                "namshi/jose": "5.0.*",
                 "nesbot/carbon": "~1.0",
                 "php": ">=5.4.0"
             },
@@ -3008,7 +3094,7 @@
                 "laravel",
                 "tymon"
             ],
-            "time": "2015-04-23 19:01:43"
+            "time": "2015-06-23 22:34:08"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -3335,16 +3421,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "2.1.6",
+            "version": "2.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "631e365cf26bb2c078683e8d9bcf8bc631ac4d44"
+                "reference": "07e27765596d72c378a6103e80da5d84e802f1e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/631e365cf26bb2c078683e8d9bcf8bc631ac4d44",
-                "reference": "631e365cf26bb2c078683e8d9bcf8bc631ac4d44",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/07e27765596d72c378a6103e80da5d84e802f1e4",
+                "reference": "07e27765596d72c378a6103e80da5d84e802f1e4",
                 "shasum": ""
             },
             "require": {
@@ -3393,7 +3479,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-06-19 07:11:55"
+            "time": "2015-06-30 06:52:35"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3575,16 +3661,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.7.5",
+            "version": "4.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f6701ef3faea759acd1910a7751d8d102a7fd5bc"
+                "reference": "0ebabb4cda7d066be8391dfdbaf57fe70ac9a99b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f6701ef3faea759acd1910a7751d8d102a7fd5bc",
-                "reference": "f6701ef3faea759acd1910a7751d8d102a7fd5bc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0ebabb4cda7d066be8391dfdbaf57fe70ac9a99b",
+                "reference": "0ebabb4cda7d066be8391dfdbaf57fe70ac9a99b",
                 "shasum": ""
             },
             "require": {
@@ -3643,7 +3729,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-06-21 07:23:36"
+            "time": "2015-06-30 06:53:57"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

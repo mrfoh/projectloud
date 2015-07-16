@@ -35,10 +35,12 @@
 	 			</div>
 
 	 			<div class="col-lg-3 col-md-3">
-	 				<div class="panel panel-default">
-	 					<div class="panel-heading">Publish</div>
-	 					<div class="panel-body">
-	 						<div class="form-group">
+	 				<accordion close-others="false">
+	 					<accordion-group is-open="true">
+	 						<accordion-heading>Publish<i class="pull-right fa fa-angle-right" ng-class="{'fa-angle-down': status.open, 'fa-angle-right': !status.open}"></i>
+              				</accordion-heading>
+              				
+              				<div class="form-group">
 	 							<ui-select theme="bootstrap" reset-search-input="false" ng-model="statuses.selected">
 		                            <ui-select-match placeholder="Select post status">{{$select.selected.name}}</ui-select-match>
 		                            <ui-select-choices repeat="status in statuses" refresh-delay="0">
@@ -46,13 +48,13 @@
 		                            </ui-select-choices>
 		                        </ui-select>
 	 						</div>
-	 					</div>
-	 				</div>
+	 					</accordion-group>
 
-	 				<div class="panel panel-default">
-	 					<div class="panel-heading">Categories</div>
-	 					<div class="panel-body">
-	 						<div class="form-group">
+	 					<accordion-group>
+	 						<accordion-heading>Categories<i class="pull-right fa fa-angle-right" ng-class="{'fa-angle-down': status.open, 'fa-angle-right': !status.open}"></i>
+              				</accordion-heading>
+
+              				<div class="form-group">
 		 						<div class="radio" ng-repeat="category in categories">
 		 							<label class="i-checks i-checks-sm">
 		 								<input type="radio" ng-value="{{ category.id }}" ng-model="post.category.id" ng-checked="category.id == post.category.id"><i></i> {{ category.name }}
@@ -63,13 +65,13 @@
 		 					<div class="form-group" ng-show="categoryform.visible">
 		 						<input class="form-control" ng-model="category.name" placeholder="Enter category name" ng-enter="saveCategory()" ng-disabled="fieldDisabled">
 		 					</div>
-	 					</div>
-	 				</div>
+	 					</accordion-group>
 
-	 				<div class="panel panel-default">
-	 					<div class="panel-heading">Tags</div>
-	 					<div class="panel-body">
-	 						<ui-select multiple ng-model="selectedtags" theme="bootstrap" on-select="onTagSelect($item, $model)" on-remove="onTagRemove($item, $model)" ng-disabled="disabled">
+	 					<accordion-group>
+	 						<accordion-heading>Tags<i class="pull-right fa fa-angle-right" ng-class="{'fa-angle-down': status.open, 'fa-angle-right': !status.open}"></i>
+              				</accordion-heading>
+
+              				<ui-select multiple ng-model="selectedtags" theme="bootstrap" on-select="onTagSelect($item, $model)" on-remove="onTagRemove($item, $model)" ng-disabled="disabled">
 	 							<ui-select-match placeholder="Select tag...">{{$item.name}}</ui-select-match>
 	 							<ui-select-choices repeat="tag in tags">
 								      <div ng-bind-html="tag.name"></div>
@@ -80,16 +82,26 @@
 		 					<div class="form-group" ng-show="tagform.visible">
 		 						<input class="form-control" ng-model="tag.name" placeholder="Enter tag name" ng-enter="saveTag()" ng-disabled="fieldDisabled">
 		 					</div>
-	 					</div>
-	 				</div>
+	 					</accordion-group>
 
-	 				<div class="panel panel-default">
-	 					<div class="panel-heading">Featured Image</div>
-	 					<div class="panel-body">
-	 						<ui-image-select selected="{{ post.featured_image.id }}"></ui-image-select>
+	 					<accordion-group>
+	 						<accordion-heading>Featured Image<i class="pull-right fa fa-angle-right" ng-class="{'fa-angle-down': status.open, 'fa-angle-right': !status.open}"></i>
+              				</accordion-heading>
+
+              				<ui-feature-set selected="{{ post.featured_image.id }}"></ui-feature-set>
 	 						<input type="hidden" ng-model="post.featured_image">
-	 					</div>
-	 				</div>
+	 					</accordion-group>
+
+	 					<accordion-group>
+	 						<accordion-heading>Exercept<i class="pull-right fa fa-angle-right" ng-class="{'fa-angle-down': status.open, 'fa-angle-right': !status.open}"></i>
+              				</accordion-heading>
+
+              				<div class="form-group">
+              					<label>Excerpts are optional hand-crafted summaries of your content</label>
+              					<textarea class="form-control" rows="5" ng-model="post.excerpt"></textarea>
+              				</div>
+	 					</accordion-group>
+	 				</accordion>
 	 			</div>
 	 		</div>
 	 	</div>

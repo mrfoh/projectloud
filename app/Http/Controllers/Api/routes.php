@@ -9,8 +9,6 @@
 
 Route::group(['prefix' => 'api'], function() {
 
-	Route::get('test', 'TestController@index');
-
 	Route::group(['prefix' => 'posts'], function() {
 
 		Route::post('bulk/delete', 'PostController@bulkDelete');
@@ -19,6 +17,10 @@ Route::group(['prefix' => 'api'], function() {
 		Route::post('bulk/unpublish', 'PostController@bulkUnpublush');
 
 		Route::get('{id}/comments', 'PostController@comments');
+		Route::get('{id}/feature', 'PostController@feature');
+		Route::get('{id}/unfeature', 'PostController@unfeature');
+		Route::get('featured', 'PostController@featuredPosts');
+		Route::get('recent', 'PostController@recentPosts');
 		Route::put('{id}', 'PostController@store');
 		Route::get('{id}', 'PostController@index');
 		Route::post('/', 'PostController@store');
@@ -47,5 +49,13 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('{id}', 'TagController@index');
 		Route::post('/', 'TagController@store');
 		Route::get('/', 'TagController@index');
+	});
+
+	Route::group(['prefix' => 'media'], function() {
+
+		Route::any('upload', 'MediaController@upload');
+		Route::get('{id}', 'MediaController@index');
+		Route::delete('{id}', 'MediaController@delete');
+		Route::get('/', 'MediaController@index');
 	});
 });

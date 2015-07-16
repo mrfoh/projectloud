@@ -1,0 +1,73 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="UploaderCtrl">
+	<!-- main -->
+	<div class="col">
+		<!-- toaster directive -->
+		<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+		<!-- / toaster directive -->
+	    <!-- main header -->
+	   	<div class="bg-light lter b-b wrapper-md">
+	    	<div class="row">
+	        	<div class="col-sm-6 col-xs-12">
+	        		<h1 class="m-n font-thin h3 text-black">Upload new media</h1>
+	        	</div>
+	        </div>
+	    </div>
+	 	<!-- / main header -->
+
+        <div class="wrapper-md">
+        	<div class="row">
+        		<div class="col-lg-4">
+        			<div class="panel panel-default">
+        				<div class="panel-heading">Select Files</div>
+	        			<div class="panel-body">
+	        				<p>Allowed file types: jpg, jpeg, png, gif, bmp, pdf, doc, docx.</p>
+
+	        				<div class="wrapper-lg">
+	        					<button class="btn btn-md btn-block btn-info" ng-model="files" ngf-select="true" ngf-multiple="true" ngf-accept="'image/*,application/pdf,application/msword'" ngf-change="onQueueChange($files)">Pick Files</button>
+	        				</div>
+
+	        				<div class="wrapper-lg">
+							    <div ngf-drop ng-model="files" class="drop-box" ngf-drag-over-class="dragover" ngf-multiple="true" 
+							        ngf-accept="'image/*,application/pdf,application/msword'" ngf-change="onQueueChange($files)">Drop Images or PDFs files here</div>
+							    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+	        				</div>
+	        			</div>
+	        		</div>
+        		</div>
+
+        		<div class="col-lg-8">
+        			<div class="panel panel-default">
+        				<div class="panel-heading">Upload Queue</div>
+	        			<div class="panel-body">
+	        				<div ng-if="!queueEmpty">
+	        					<div class="wrapper-xs">
+		        					<button class="btn btn-info" ng-click="startUpload()">Upload Files</button>
+		        				</div>
+
+	        					<ul class="list-group no-radius alt">
+	        						<li class="list-group-item" ng-repeat="file in files">
+	        							<div class="media">
+	        								<div class="pull-right text-success m-t-sm">
+	        									<a ng-click="removeFile(file)" title="Remove file from queue"><i class="fa fa-times"></i></a>
+	        								</div>
+	        								<div class="media-body">
+	        									<div>{{file.name}}</div>
+	        									<small class="text-muted" ng-if="file.progress">{{ file.progress }}%</small>
+	        								</div>
+	        							</div>
+	        						</li>
+	        					</ul>
+	        				</div>
+
+	        				<div ng-if="queueEmpty">
+	        					<div class="wrapper-xl">
+	        						<div class="text-center h2">Upload queue is empty</div>
+	        					</div>
+	        				</div>
+	        			</div>
+	        		</div>
+        		</div>
+        	</div>
+        </div>
+	</div>
+</div>

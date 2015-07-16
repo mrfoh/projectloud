@@ -139,16 +139,15 @@ app.controller('PostEditorCtrl', ['$rootScope', '$scope', 'posts', 'tags', 'cate
 	};
 
 	$scope.fetchCategories = function() {
-		categories.all().success(function(res) {
-			if(res.length > 0) {
-				angular.forEach(res, function(category) { $scope.categories.push(category) });
+		categories.all().success(function (response) {
+			if(response.data.length > 0) {
+				$scope.categories = response.data;
 			}
 		});
 	};
 
 	$scope.fetchTags = function() {
-		tags.all()
-		.success(function(response) {
+		tags.all().success(function(response) {
 			if(response.data.length > 0) {
 				$scope.tags = response.data;
 			}
@@ -180,6 +179,7 @@ app.controller('PostEditorCtrl', ['$rootScope', '$scope', 'posts', 'tags', 'cate
 	}
 
 	$scope.$watch('featured_image', function(newValue, oldValue) {
+		console.log(newValue)
 		$scope.post.featured_image = newValue;
 	});
 	//Listen to events

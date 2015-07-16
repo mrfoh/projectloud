@@ -28,6 +28,14 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.put(url+"/"+id, form);
 	};
 
+	self.feature = function(id) {
+		return $http.get(url+"/"+id+"/feature");
+	}
+
+	self.unfeature = function(id) {
+		return $http.get(url+"/"+id+"/unfeature");
+	}
+
 	self.delete = function(id) {
 		return $http.delete(url+"/"+id);
 	};

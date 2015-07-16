@@ -23,6 +23,10 @@
 			return $this->belongsTo('\Bps\Data\Models\Category');
 		}
 
+		public function featured_image() {
+			return $this->morphToMany('\Bps\Data\Models\File', 'fileable');
+		}
+
 		public function comments() {
 			return $this->hasMany('\Bps\Data\Models\Comment');
 		}

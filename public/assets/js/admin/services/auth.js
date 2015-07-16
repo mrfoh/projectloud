@@ -31,6 +31,10 @@ app.factory('$auth', ['$http', '$window', '$localStorage', function ($http, $win
         return user;
     }
 
+    self.token = function() {
+        return $localStorage.token;
+    }
+
     self.signin = function(form) {
         return $http.post(self.url, form);
     }

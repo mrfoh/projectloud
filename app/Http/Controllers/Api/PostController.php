@@ -88,7 +88,7 @@
 			{
 				$post = $this->posts->find($id);
 
-				if(!$post) return Response::json(['message'=>"Post not found"], 200);
+				if(!$post) return Response::json(['message'=>"Post not found"], 404);
 
 				try {
 					$input = Request::all();
@@ -102,6 +102,42 @@
 					return Response::json($messages);
 				}
 			}
+		}
+
+		public function featuredPosts() {
+
+			$count = Request::input('count', 5);
+
+			return $this->posts->featured($count);
+		}
+
+		public function recentPosts() {
+
+			$count = Request::input('count', 10);
+
+			return $this->posts->recent($count);
+		}
+
+		public function feature($id) {
+			$post = $this->posts->skipPresenter()->find($id);
+
+			if(!$post) return Response::json(['message'=>"Post not found"], 404);
+
+			$feature = $this->posts->feature($post);
+
+			if($feature)
+				return response()->json(['status'=>"success"], 200);
+		}
+
+		public function unfeature($id) {
+			$post = $this->posts->skipPresenter()->find($id);
+
+			if(!$post) return Response::json(['message'=>"Post not found"], 404);
+
+			$unfeature = $this->posts->feature($post);
+
+			if($unfeature)
+				return response()->json(['status'=>"success"], 200);
 		}
 
 		public function comments($id) {

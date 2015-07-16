@@ -22,7 +22,7 @@ app.controller('PostsCtrl', ['$scope', 'posts', '$filter', 'toaster', '$log', '$
 		{name: "Category"},
 		{name: "Status"},
 		{name: "Created At"},
-		{name: "Updated At"}
+		{name: "Actions"}
 	];
 
 	//Bulk actions
@@ -107,6 +107,32 @@ app.controller('PostsCtrl', ['$scope', 'posts', '$filter', 'toaster', '$log', '$
 				$scope.unpublishPosts(selected)
 				break;
 		}
+	}
+
+	$scope.feature = function (post) {
+		toaster.clear();
+		toaster.pop('info','Status','Working...');
+
+		posts.feature(post.id)
+		.success(function (response) {
+			toaster.clear();
+			if(response.status == "success") {
+				post.featured = true;
+			}
+		})
+	}
+
+	$scope.unfeature = function (post) {
+		toaster.clear();
+		toaster.pop('info','Status','Working...');
+
+		posts.unfeature(post.id)
+		.success(function (response) {
+			toaster.clear();
+			if(response.status == "success") {
+				post.featured = false;
+			}
+		})
 	}
 
 	$scope.deletePosts = function ($posts) {

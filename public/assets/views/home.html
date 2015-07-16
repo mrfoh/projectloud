@@ -1,0 +1,79 @@
+<div class="page" id="home-page" ng-controller="HomeCtrl">
+	<section class="container featured-contaniner">
+		<div class="loading" ng-if="featuredloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+		<featured-posts ng-if="!featuredloading"><featured-posts>
+	</section>
+
+	<section class="container-fluid">
+		<div class="row">
+			<div class="col-lg-8 col-md-8 col-sm-8 latest">
+				<header class="section-heading">
+					<span>Latest from The Public Square</span>
+				</header>
+				<section class="feed">
+					<div class="loading" ng-if="feedloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+					<!-- 2-cols layout -->
+					<div class="row" ng-if="template == '2-cols'">
+						<div class="col-lg-8 with-images">
+							<div class="col-lg-12">
+								<article class="article">
+									<div class="image">
+										<a ui-sref="site.post({slug: pro[0].slug})">
+											<img src="/content/<% pro[0].featured_image.src %>">
+										</a>
+									</div>
+									<h3 class="title"><a ui-sref="site.post({slug: pro[0].slug})"><% pro[0].title %></a></h3>
+									<p class="excerpt"><% pro[0].excerpt %></p>
+								</article>
+							</div>
+							<div class="col-lg-6">
+								<article class="article">
+									<div class="image">
+										<a ui-sref="site.post({slug: pro[1].slug})">
+											<img src="/content/<% pro[1].featured_image.src %>">
+										</a>
+									</div>
+									<h3 class="title"><a ui-sref="site.post({slug: pro[1].slug})"><% pro[1].title %></a></h3>
+									<p class="excerpt"><% pro[1].excerpt %></p>
+								</article>
+							</div>
+							<div class="col-lg-6">
+								<article class="article">
+									<div class="image">
+										<a ui-sref="site.post({slug: pro[0].slug})">
+											<img src="/content/<% pro[2].featured_image.src %>">
+										</a>
+									</div>
+									<h3 class="title"><a ui-sref="site.post({slug: pro[2].slug})"><% pro[2].title %></a></h3>
+									<p class="excerpt"><% pro[2].excerpt %></p>
+								</article>
+							</div>
+						</div>
+
+						<div class="col-lg-4"></div>
+					</div>
+					<!-- end 2-cols layout -->
+
+					<!-- 1-col layout -->
+					<div class="row" ng-if="template == '1-col'">
+						<div class="col-lg-12 with-thumbnail">
+							<article ng-repeat="post in recent" class="article clearfix">
+								<div class="image">
+									<a ui-sref="site.post({slug: post.slug})"><img src="/content/<% post.featured_image.src %>"></a>
+								</div>
+								<div class="content">
+									<p class="category"><% post.category.name %></p>
+									<h3 class="title"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+									<p class="excerpt"><% post.excerpt %></p>
+								</div>
+							</article>
+						</div>
+					</div>
+					<!-- end 1-col layout -->
+				</section>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-4 sidebar">
+			</div>
+		</div>
+	</section>
+</div>

@@ -66,6 +66,12 @@ return [
 			'url_type'  => 'publicURL'
 		],
 
+		'dropbox' => [
+			'driver' => 'dropbox',
+			'key' => 'wnnzhim5t7lplg2',
+			'secret' => 'irll3jrk9fh3eeg',
+			'token' => 'yHweu12ENyAAAAAAAAAADtJcc_Lsb-h6ydEi8jMl23_aprkAGdoW1AmS5pyd7sq1'
+		]
 	],
 
 ];

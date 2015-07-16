@@ -59,7 +59,8 @@ angular.module('app')
         resolve: {
             deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
                 return $ocLazyLoad.load(['ui.select','toaster','textAngular']).then(function() {
-                    return $ocLazyLoad.load(['/assets/js/admin/controllers/posts/editor.js','/assets/js/admin/services/posts.js', '/assets/js/admin/services/categories.js', '/assets/js/admin/services/tags.js'])
+                    return $ocLazyLoad.load(['/assets/js/admin/controllers/posts/editor.js','/assets/js/admin/services/posts.js',
+                        '/assets/js/admin/services/categories.js', '/assets/js/admin/services/tags.js', '/assets/js/admin/services/files.js'])
                 })
             }]
         }
@@ -70,14 +71,22 @@ angular.module('app')
         resolve: {
             deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
                 return $ocLazyLoad.load(['ui.select','toaster','textAngular']).then(function() {
-                    return $ocLazyLoad.load(['/assets/js/admin/controllers/posts/editor.js','/assets/js/admin/services/posts.js', '/assets/js/admin/services/categories.js', '/assets/js/admin/services/tags.js'])
+                    return $ocLazyLoad.load(['/assets/js/admin/controllers/posts/editor.js','/assets/js/admin/services/posts.js',
+                        '/assets/js/admin/services/categories.js', '/assets/js/admin/services/tags.js', '/assets/js/admin/services/files.js'])
                 })
             }]
         }
     })
     .state('posts.categories', {
     	url: '/categories',
-    	templateUrl: '/assets/tpl/posts.categories.html'
+    	templateUrl: '/assets/tpl/posts.categories.html',
+         resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['toaster']).then(function() {
+                    return $ocLazyLoad.load(['/assets/js/admin/controllers/posts/categories.js','/assets/js/admin/services/categories.js'])
+                })
+            }]
+        }
     })
     .state('posts.tags', {
     	url: '/tags',
@@ -100,18 +109,29 @@ angular.module('app')
     .state('media', {
         abstract: true,
         url: '/media',
-        templateUrl: '/assets/tpl/media.html',
-        resolve: ['$ocLazyLoad', function($ocLazyLoad) {
-            return $ocLazyLoad.load(['ui.select','toaster']);
-        }]
+        templateUrl: '/assets/tpl/media.html'
     })
     .state('media.library', {
-        url: '/library',
-        templateUrl: '/assets/tpl/media.library.html'
+        url: '/',
+        templateUrl: '/assets/tpl/media.library.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['toaster']).then(function() {
+                    return $ocLazyLoad.load(['/assets/js/admin/controllers/media/index.js','/assets/js/admin/services/files.js'])
+                })
+            }]
+        }
     })
     .state('media.create', {
         url: '/new',
-        templateUrl: '/assets/tpl/media.uploader.html'
+        templateUrl: '/assets/tpl/media.uploader.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['toaster']).then(function() {
+                    return $ocLazyLoad.load(['/assets/js/admin/controllers/media/uploader.js'])
+                })
+            }]
+        }
     })
 }])
 .run(['$rootScope', '$state', '$stateParams', '$auth', '$location', '$window',

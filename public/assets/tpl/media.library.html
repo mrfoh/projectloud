@@ -1,0 +1,76 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="MediaCtrl">
+	<!-- main -->
+	<div class="col">
+		<!-- toaster directive -->
+		<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+		<!-- / toaster directive -->
+	    <!-- main header -->
+	   	<div class="bg-light lter b-b wrapper-md">
+	    	<div class="row">
+	        	<div class="col-sm-6 col-xs-12">
+	        		<h1 class="m-n font-thin h3 text-black">Media Library</h1>
+	        	</div>
+	        	<div class="col-sm-6 col-xs-12">
+	        		<div class="pull-right">
+	        			<a ui-sref="media.create" class="btn btn-info">Add New</a>
+	        		</div>
+	        	</div>
+	        </div>
+	    </div>
+	 	<!-- / main header -->
+
+        <div class="wrapper-md">
+        	<div class="panel panel-default">
+	            <div class="row wrapper">
+	            	<div class="col-lg-3 col-md-3 b-b">
+	            		<div class="m-b-sm">
+					        <div class="btn-group">
+				                <label class="btn btn-default" ng-model="mode" btn-radio="'grid'"><i class="fa fa-th-large"></i></label>
+				                <label class="btn btn-default" ng-model="mode" btn-radio="'list'"><i class="fa fa-list"></i></label>
+				            </div>            
+				      	</div>
+	            	</div>
+	            	<div class="col-lg-3 col-md-3 b-b">
+	            		<div class="m-b-sm">
+	            			<select class="input-md form-control w-sm inline v-middle" ng-model="filter" ng-options='option.value as option.name for option in filters' ng-change="onFilterSelect()"></select>
+	            		</div>
+	            	</div>
+
+	            	<div class="col-lg-3 col-md-4 b-b">
+	            		<div class="m-b-sm">
+	            			<select class="input-md form-control w-sm inline v-middle" ng-model="action">
+					          <option value="0">Bulk actions</option>
+					          <option value="1">Delete files</option>
+					        </select>
+					        <button class="btn btn-sm btn-default" ng-click="bulkAction()">Apply</button>   
+	            		</div>
+	            	</div>
+
+	            	<div class="col-lg-3 col-md-3 b-b">
+	            		<div class="m-b-sm">
+	         				<input type="text" class="input-md form-control" placeholder="Search" ng-model="query">
+	            		</div>
+	            	</div>
+	            </div>
+
+	            <div ng-if="mode == 'grid' && !noData" class="wrapper row">
+	            	<div class="col-lg-2 col-md-2 file-thumbnail" ng-repeat="file in files" style="height: 170px; margin-bottom: 15px;">
+	            		<div class="holder" ng-dblclick="showMediaDialog(file)">
+	            			<img ng-src="{{ file.src }}" ng-click="select($event, file)" ng-class="{'active': file.selected}">
+	            		</div>
+	            	</div>
+	            </div>
+
+	            <div data-ng-if="total" class="wrapper">
+	            	<pagination total-items="total" item-per-page="18" ng-model="currentPage" ng-change="onPageChange()" class="m-t m-b m-l"></pagination>
+	            </div>
+
+	            <div class="wrapper-xl" ng-show="statusShow">
+					<div class="text-center m-b-lg">
+						<p class="h1" ng-bind-html="statusText"></p>
+					</div>
+				</div>
+	       </div>
+        </div>
+	</div>
+</div>

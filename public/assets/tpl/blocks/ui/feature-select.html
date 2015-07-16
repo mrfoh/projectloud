@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h3 class="modal-title">Select Featured Image</h3>
+</div>
+<div class="modal-body">
+	<div class="wrapper-xl" ng-show="statusShow">
+		<div class="text-center m-b-lg">
+			<p class="h1">{{ statusText }}</p>
+		</div>
+	</div>
+	<div ng-if="!noData" class="wrapper row">
+	    <div class="col-lg-2 col-md-2 file-thumbnail" ng-repeat="file in files" style="height: 120px; margin-bottom: 15px;">
+	    	<div class="holder">
+	       		<img ng-src="{{ file.src }}" ng-click="select($event, file)" ng-class="{'active': file.selected}">
+	       	</div>
+	    </div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-info" ng-disabled="disablebtn" ng-click="setImage()">Set featured image</button>
+</div>

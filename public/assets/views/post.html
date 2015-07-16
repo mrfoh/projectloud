@@ -1,0 +1,52 @@
+<div class="page" id="single-post" ng-controller="ArticleCtrl">
+	<div class="container-fluid" style="padding: 0;">
+		<div class="header with-image" ng-style="{'background-image': 'url(/content/<% post.featured_image.src %>)','background-size': 'cover'}" ng-if="post.featured_image">
+			<div class="heading">
+				<span class="category"><% post.category.name %></span>
+				<h2><% post.title %></h2>
+				<h3 class="excerpt"><% post.excerpt %></h3>
+				<p><% post.published_at %></p>
+			</div>
+		</div>
+
+		<div class="header no-image" ng-if="!post.featured_image">
+			<div class="heading">
+				<h2><% post.title %></h2>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-8">
+				<div class="share-controls">
+					<ul>
+						<li>Share</li>
+						<li>
+							<a title="Share on facebook" class="facebook" ng-click="share(post.url, 'facebook')">
+								<i class="fa fa-2x fa-facebook"></i>
+							</a>
+						</li>
+						<li>
+							<a href="" title="Tweet" class="twitter" ng-click="share(post.url, 'twitter')">
+								<i class="fa fa-2x fa-twitter"></i>
+							</a>
+						</li>
+						<li>
+							<a href="" title="Share on Google+" class="google" ng-click="share(post.url, 'google')">
+								<i class="fa fa-2x fa-google-plus"></i>
+							</a>
+						</li>
+						<li>
+							<a href="" title="Share via email" class="email">
+								<i class="fa fa-2x fa-envelope"></i>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div ng-bind-html="post.body" class="post-body"></div>
+				<div class="comments"
+			</div>
+			<div class="col-lg-4 col-md-4"></div>
+		</div>
+	</div>
+</div>

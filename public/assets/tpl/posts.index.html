@@ -51,10 +51,21 @@
 		 							<td><input type="checkbox" ng-model="post.selected"></td>
 		 							<td><a ui-sref="posts.edit({post:post.id})">{{post.title}}</a></td>
 		 							<td><a href="">{{post.author.name}}</a></td>
-		 							<td><p ng-if="post.category">{{ post.category.name }}</p><p ng-if="post.category == null">Not Set</p></td>
+		 							<td>
+		 								<p ng-if="post.category">{{ post.category.name }}</p>
+		 								<p ng-if="post.category == null">Not Set</p>
+		 							</td>
 		 							<td>{{ post.status }}</td>
-		 							<td>{{post.created_at.date }}</td>
-		 							<td>{{post.updated_at.date }}</td>
+		 							<td>{{ post.created_at.date }}</td>
+		 							<td>
+		 								<button class="btn btn-default" title="Feature post" ng-if="!post.featured" ng-click="feature(post)">
+		 									<i class="fa fa-star"></i>
+		 								</button>
+		 								<button class="btn btn-default" title="Unfeature post" ng-if="post.featured" ng-click="unfeature(post)">
+		 									<i class="fa fa-star-o"></i>
+		 								</button>
+		 								<button class="btn btn-danger" title="Delete post"><i class="fa fa-trash"></i></button>
+		 							</td>
 		 						</tr>
 		 					</tbody>
 		 				</table>

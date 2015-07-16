@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler {
 				return redirect()->to('admin');
 			}
 			else {
-				return redirect()->to('/');
+				return redirect()->to('/#/'.$request->path());
 			}
 		}
 

@@ -51,7 +51,12 @@
 		**/
 		public function store(Categories $categories, $id = null) {
 
-			$attrs = [ 'name' => Request::input('name'), 'slug' => str_slug(Request::input('name')) ];
+			$attrs = [
+				'name' => Request::input('name'),
+				'slug' => str_slug(Request::input('name')),
+				'description' => Request::input('description'),
+				'keywords' => Request::input('keywords')
+			];
 
 			if(is_null($id)) {
 				//Create new model

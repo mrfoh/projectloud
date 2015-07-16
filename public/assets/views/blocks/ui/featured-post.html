@@ -1,0 +1,14 @@
+<carousel class="featured">
+	<slide ng-repeat="feature in featured" class="featured-item">
+		<div class="featured-image-wrapper">
+			<a ui-sref="site.post({slug: feature.slug})">
+				<img src="/content/<% feature.featured_image.src %>" ng-if='feature.featured_image.disk == "local"'>
+			</a>
+		</div>
+		<div class="featured-content">
+			<h4><% feature.category.name %></h4>
+			<h2><% feature.title %></h2>
+			<p><% feature.excerpt %></p>
+		</div>
+	</slide>
+</carousel

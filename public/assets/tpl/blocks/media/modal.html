@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h3 class="modal-title">Attachment Details</h3>
+</div>
+<div class="modal-body attachment-preview">
+    <div class="container-fluid" style="padding: 0;">
+        <div class="col-lg-8 col-md-8 file-preview">
+            <div class="at-thumbnail" ng-if='file.type == "image"'>
+                <img ng-src="{{ file.src }}">
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 file-details">
+            <p><strong>File Name:</strong> {{ file.name }}</p>
+            <p><strong>File Type:</strong> {{ file.mime }}</p>
+            <p><strong>Uploaded on:</strong> {{ file.created_at.date }}</p>
+            <p><strong>Uploaded to:</strong> {{ file.disk }}</p>
+            <p><strong>File Size:</strong> {{ file.size }} Bytes</p>
+
+            <p><a ng-click="deleteFile()">Delete Permanently</a></p>
+        </div>
+    </div>
+</div>

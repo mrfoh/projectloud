@@ -1,0 +1,81 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs hbox-auto-sm bg-light " ng-init="app.settings.asideFixed = true; app.settings.asideDock = false; app.settings.container = false; app.hideAside = false; app.hideFooter = true;" ng-controller="CategoriesCtrl">
+
+  <div class="col w-xxl lter b-r">
+    <div class="vbox">
+      <div class="wrapper-xs b-b">
+            <div class="input-group m-b-xxs">
+                <span class="input-group-addon input-sm no-border no-bg"><i class="fa fa-search text-md m-t-xxs"></i></span>
+                <input type="text" class="form-control input-sm no-border no-bg text-md" placeholder="Search Categories..." ng-model="query">
+            </div>
+        </div>
+
+        <div class="row-row">
+          <div class="cell scrollable hover">
+            <div class="cell-inner">
+                  <div class="m-t-n-xxs">
+                    <div class="list-group list-group-lg no-radius no-border no-bg m-b-none">
+                        <a ng-repeat="category in categories | filter:query" class="list-group-item m-l" ng-class="{'select m-l-none': category.selected }" ng-click="selectItem(category)" >
+                          <span class="block text-ellipsis text-md m-l-n" ng-class="{'m-l-none': category.selected }">{{ category.name }}</span>
+                        </a>
+                      </div>
+                  </div>
+                  <div class="text-center pos-abt w-full" style="top:50%;" ng-show='statusShow'>
+                    {{ statusText }}
+                  </div>
+                </div>
+          </div>
+        </div>
+        <div class="wrapper b-t text-center">
+            <a href class="btn btn-sm btn-default btn-addon" ng-click="createItem()"><i class="fa fa-plus fa-fw m-r-xs"></i> New Category</a>
+          </div>
+    </div>
+  </div>
+
+  <div class="col bg-white-only">
+    <div class="wrapper-sm b-b">
+      <!-- toaster directive -->
+      <toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+      <!-- / toaster directive -->
+      <div class="m-t-n-xxs m-b-n-xxs m-l-xs">
+              <a class="btn btn-xs btn-default pull-right" ng-hide="!item" ng-click="deleteItem(item)"><i class="fa fa-times"></i></a>
+              <a class="btn btn-xs btn-default" ng-hide="item.editing" ng-click="editItem(item)">Edit</a>
+              <a class="btn btn-xs btn-default" ng-show="item.editing" ng-click="doneEditing(item)">Done</a>
+          </div>
+    </div>
+
+    <div class="row-row">
+        <div class="cell">
+          <div class="cell-inner">
+            <div class="wrapper-lg">
+              <div class="form-horizontal">
+                <div class="form-group m-b-sm" ng-hide="!item.name && !item.editing">
+                    <label class="col-sm-3 control-label">Name</label>
+                    <div class="col-sm-9">
+                      <p class="form-control-static" ng-hide="item.editing">{{item.name}}</p>
+                        <input type="text" class="form-control" ng-show="item.editing" ng-model="item.name" >
+                    </div>
+                </div>
+
+                <div class="form-group m-b-sm" ng-hide="!item.name && !item.editing">
+                    <label class="col-sm-3 control-label">Description</label>
+                    <div class="col-sm-9">
+                      <p class="form-control-static" ng-hide="item.editing">{{item.description}}</p>
+                      <textarea rows="5" class="form-control" ng-show="item.editing" ng-model="item.description"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group m-b-sm" ng-hide="!item.name && !item.editing">
+                    <label class="col-sm-3 control-label">Keywords</label>
+                    <div class="col-sm-9">
+                      <p class="form-control-static" ng-hide="item.editing">{{item.keywords}}</p>
+                      <textarea rows="5" class="form-control" ng-show="item.editing" ng-model="item.keywords"></textarea>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>

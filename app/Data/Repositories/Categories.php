@@ -24,6 +24,16 @@
 	        return "Bps\\Data\\Repositories\\Validators\\CategoryValidator";
 	    }
 
+	    /**
+	     * Specify Presenter class name
+	     *
+	     * @return string
+	     */
+	    public function presenter()
+	    {
+	        return "Bps\\Data\\Repositories\\Presenters\\CategoryPresenter";
+	    }
+
 	    public function findIdSlug($idSlug) {
 	    	
 	    	$category = $this->model->where('id', '=', $idSlug)->orWhere('slug', '=', $idSlug)->first();

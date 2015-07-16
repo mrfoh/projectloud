@@ -11,4 +11,8 @@
 		public function tags() {
 			return $this->morphToMany('\Bps\Data\Models\Tag', 'taggable');
 		}
+
+		public function posts() {
+			return $this->hasMany('\Bps\Data\Models\Post');
+		}
 	}

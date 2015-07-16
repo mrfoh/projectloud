@@ -146,6 +146,7 @@ return [
 		'Bps\Providers\RouteServiceProvider',
 		'Bps\Providers\AdminServiceProvider',
 		'Bps\Providers\ApiServiceProvider',
+		'Bps\Providers\DropboxFilesystemServiceProvider',
 		'Prettus\Repository\Providers\RepositoryServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
 		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider'
