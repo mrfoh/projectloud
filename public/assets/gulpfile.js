@@ -60,7 +60,6 @@ gulp.task('build:frontend', function() {
 		'js/frontend/directives/*.js'
 	])
 	.pipe(concat('dist.js'))
-	.pipe(uglify())
 	.pipe(gulp.dest('js/frontend/dist'))
 });
 
