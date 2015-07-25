@@ -92,7 +92,7 @@
 			//user 
 			$user = $this->user();
 			//disk
-			$disk = $this->disk();
+			$disk = 'local';
 			//file extension
 			$ext = $file->getClientOriginalExtension();
 			//file path
