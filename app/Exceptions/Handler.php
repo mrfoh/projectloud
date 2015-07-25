@@ -47,6 +47,7 @@ class Handler extends ExceptionHandler {
 			}
 		}
 
+		
 		//JWT Exception handling
 		if ($e instanceof Tymon\JWTAuth\Exceptions\TokenExpiredException) {
 

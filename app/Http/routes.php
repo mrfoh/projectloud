@@ -6,10 +6,9 @@ use Bps\Data\Repositories\Categories;
 | Frontend Routes
 |--------------------------------------------------------------------------
 */
-
-
-Route::post('accounts/login', 'AuthController@login');
-Route::get('accounts/logout', 'AuthController@logout');
+Route::post('auth/fb', 'AuthController@authFb');
+Route::post('auth/login', 'AuthController@login');
+Route::post('auth/refresh', 'AuthController@refresh');
 
 Route::get('/', function(Categories $categories) {
 	$categories->skipPresenter();

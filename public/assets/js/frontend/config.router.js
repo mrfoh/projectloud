@@ -34,7 +34,7 @@ angular.module('app')
         templateUrl: '/assets/views/section.html',
         resolve: {
             deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
-                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/section.js'])
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/section.js', '/assets/js/frontend/services/posts.js'])
             }]
         }
     })
@@ -43,7 +43,8 @@ angular.module('app')
         templateUrl: '/assets/views/post.html',
         resolve: {
             deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
-                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/post.js', '/assets/js/frontend/services/posts.js'])
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/post.js', '/assets/js/frontend/services/posts.js',
+                    '/assets/js/frontend/services/comments.js'])
             }]
         }
     })

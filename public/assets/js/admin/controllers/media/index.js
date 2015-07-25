@@ -49,7 +49,7 @@ app.controller('MediaCtrl', ['$rootScope', '$scope',  '$filter','files', 'toaste
         $scope.showMediaDialog = function(item) {
             var modalInstance = $modal.open({
                 animation: true,
-                controller: 'MediaModalCtrl',
+                controller: 'AuthModalCtrl',
                 templateUrl: '/assets/tpl/blocks/media/modal.html',
                 size: 'lg',
                 resolve: {

@@ -80,8 +80,16 @@
 	    * @param integer $count
 	    * no per page
 	    **/
-	    public function featured($count) {
-	    	$posts = $this->model->published()->where('featured','yes')->orderBy('created_at','desc')->paginate($count);
+	    public function featured($count, $category) {
+	    	if(is_null($category)) {
+	    		$posts = $this->model->published()->where('featured','yes')->orderBy('created_at','desc')->paginate($count);
+	    	}
+	    	else {
+	    		$posts = $this->model->published()->where('featured','yes')
+	    										 ->where('category_id','=', $category)
+	    									     ->orderBy('created_at','desc')
+	    									     ->paginate(3);
+	    	}
 
 	    	$this->resetModel();
 	    	return $this->parserResult($posts);
@@ -92,8 +100,16 @@
 	    * @param integer $count
 	    * no per page
 	    **/
-	    public function recent($count) {
-	    	$posts = $this->model->published()->where('featured','no')->orderBy('created_at','desc')->paginate($count);
+	    public function recent($count, $category) {
+	    	if(is_null($category)) {
+	    		$posts = $this->model->published()->where('featured','no')->orderBy('created_at','desc')->paginate($count);
+	    	}
+	    	else {
+	    		$posts = $this->model->published()->where('featured','no')
+	    										 ->where('category_id','=', $category)
+	    									     ->orderBy('created_at','desc')
+	    									     ->paginate($count);
+	    	}
 
 	    	$this->resetModel();
 	    	return $this->parserResult($posts);

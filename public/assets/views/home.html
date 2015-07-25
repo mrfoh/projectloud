@@ -4,7 +4,7 @@
 		<featured-posts ng-if="!featuredloading"><featured-posts>
 	</section>
 
-	<section class="container-fluid">
+	<section class="container">
 		<div class="row">
 			<div class="col-lg-8 col-md-8 col-sm-8 latest">
 				<header class="section-heading">
@@ -19,7 +19,7 @@
 								<article class="article">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[0].slug})">
-											<img src="/content/<% pro[0].featured_image.src %>">
+											<img ng-src="/content/<% pro[0].featured_image.src %>">
 										</a>
 									</div>
 									<h3 class="title"><a ui-sref="site.post({slug: pro[0].slug})"><% pro[0].title %></a></h3>
@@ -30,7 +30,7 @@
 								<article class="article">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[1].slug})">
-											<img src="/content/<% pro[1].featured_image.src %>">
+											<img ng-src="/content/<% pro[1].featured_image.src %>">
 										</a>
 									</div>
 									<h3 class="title"><a ui-sref="site.post({slug: pro[1].slug})"><% pro[1].title %></a></h3>
@@ -41,7 +41,7 @@
 								<article class="article">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[0].slug})">
-											<img src="/content/<% pro[2].featured_image.src %>">
+											<img ng-src="/content/<% pro[2].featured_image.src %>">
 										</a>
 									</div>
 									<h3 class="title"><a ui-sref="site.post({slug: pro[2].slug})"><% pro[2].title %></a></h3>
@@ -59,7 +59,7 @@
 						<div class="col-lg-12 with-thumbnail">
 							<article ng-repeat="post in recent" class="article clearfix">
 								<div class="image">
-									<a ui-sref="site.post({slug: post.slug})"><img src="/content/<% post.featured_image.src %>"></a>
+									<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>"></a>
 								</div>
 								<div class="content">
 									<p class="category"><% post.category.name %></p>
@@ -73,6 +73,9 @@
 				</section>
 			</div>
 			<div class="col-lg-4 col-md-4 col-sm-4 sidebar">
+				<section class="newsletter-container">
+					<newsletter-form color="red"></newsletter-form>
+				</section>
 			</div>
 		</div>
 	</section>

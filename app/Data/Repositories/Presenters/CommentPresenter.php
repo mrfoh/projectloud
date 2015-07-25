@@ -3,7 +3,7 @@
 use Prettus\Repository\Presenter\FractalPresenter;
 use Bps\Data\Transformers\CommentTransformer; 
 
-class PostPresenter extends FractalPresenter {
+class CommentPresenter extends FractalPresenter {
 
     /**
      * Prepare data to present

@@ -24,8 +24,20 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.get(url+"/featured");
 	}
 
+	self.featuredInCategory = function(category) {
+		return $http.get(url+"/featured?category_id="+category);
+	}
+
 	self.recent = function() {
 		return $http.get(url+"/recent");
+	}
+
+	self.recentInCategory = function(category) {
+		return $http.get(url+"/recent?category_id="+category);
+	}
+
+	self.comments = function(id) {
+		return $http.get(url+"/"+id+"/comments");
 	}
 
 	self.serialize = function(obj) {

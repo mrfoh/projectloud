@@ -1,1 +1,75 @@
-<div class="page" id="category-page" ng-controller="SectionCtrl"></div>
+<div class="page" id="category-page" ng-controller="SectionCtrl">
+	<section class="container section-featured">
+		<div class="loading" ng-if="featuredloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+		<div class="row" ng-if="!noFeatured">
+			<div class="col-lg-12 col-md-12 one-col" ng-if="featuredPro">
+				<article class="pro-feature">
+					<div class="image" ng-style="{'background-image': 'url(/content/'+featuredPro.featured_image.src+')','background-size': 'cover'}">
+						<div class="overlay"></div>
+						<div class="category"><% featuredPro.category.name %></div>
+					</div>
+					<div class="detail">
+						<h3><a ui-sref="site.post({slug: featuredPro.slug})"><% featuredPro.title %></a></h3>
+						<p><% featuredPro.excerpt %></p>
+					</div>
+				</article>
+			</div>
+
+			<div class="col-lg-12 col-md-12" ng-if="featuredPosts[1]">
+				<div class="row two-cols">
+					<div class="col-lg-6 col-md-6 col-sm-6" style="border-right: 1px solid #e6dfd5;">
+						<article class="sec-featured">
+							<h3 class="title"><a ui-sref="site.post({slug: featuredPosts[1].slug})"><% featuredPosts[1].title %></a></h3>
+							<p><% featuredPosts[1].excerpt %></p>
+						</article>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6">
+						<article class="sec-featured" style="border-right: none;">
+							<h3 class="title"><a ui-sref="site.post({slug: featuredPosts[2].slug})"><% featuredPosts[2].title %></a></h3>
+							<p><% featuredPosts[2].excerpt %></p>
+						</article>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-8 latest">
+				<header class="section-heading">
+					<span>Latest from The Public Square</span>
+				</header>
+				<section class="feed">
+					<div class="loading" ng-if="feedloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+					<div class="row">
+						<div class="col-lg-12 with-thumbnail" ng-if="!noPosts">
+							<article ng-repeat="post in recent" class="article clearfix">
+								<div class="image">
+									<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>"></a>
+								</div>
+								<div class="content">
+									<p class="category"><% post.category.name %></p>
+									<h3 class="title"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+									<p class="excerpt"><% post.excerpt %></p>
+									</div>
+							</article>
+						</div>
+
+						<div class="col-lg-12" ng-if="noPosts">
+							<div class="empty">
+								<h3>No posts at the moment.</h3>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<div class="col-lg-4 col-md-4 sidebar">
+				<section class="newsletter-container">
+					<newsletter-form color="red"></newsletter-form>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>

@@ -32,7 +32,15 @@
 				<div class="container clearfix">
 					<nav class="pull-right">
 						<ul class="actions">
-							<li><a href="">Sign Up / Sign In</a></li>
+							<li ng-if="app.user == null"><a ng-click="openAuthModal(false)">Sign Up / Sign In</a></li>
+							<li ng-if="app.user" class="dropdown" dropdown>
+								<a href="" dropdown-toggle>My Account <span class="caret"></span></a>
+								<ul class="dropdown-menu account-dropdown">
+									<li ng-if="app.user.isadmin"><a href="/admin" target="_blank">Admin Panel</a></li>
+									<li><a href="">Profile</a></li>
+							        <li><a ng-click="logout()">Logout</a></li>
+							    </ul>
+							</li>
 						</ul>
 					</nav>
 				</div>
@@ -40,7 +48,7 @@
 			<div class="main">
 				<div class="container clearfix">
 					<div class="pull-left logo">
-						<a href="/"><img src="/assets/img/bpslogo2.png"></a>
+						<a href="/"><img src="/assets/img/bpslogo3.png"></a>
 					</div>
 					<div class="pull-left menu">
 						<ul class="links clearfix">
@@ -57,19 +65,35 @@
 		<!-- .mb-header -->
 		<header class="mb-header visible-xs visible-sm">
 			<div class="container-fluid clearfix">
-				<span class="mobile-nav-toggle"><i class="fa fa-2x fa-bars"></i></span>
+				<span class="mobile-nav-toggle" ng-click="toggleMobileMenu()"><i class="fa fa-2x fa-bars"></i></span>
 				<div class="logo"><a href="/"><img src="/assets/img/bpslogo2.png"></a><div>
 			</div>
 		</header>
 		<!-- end .mb-header -->
 
+		<!-- mb-menu -->
+		<div class="mb-menu visible-xs" ng-class="{'open': mobileMenuVisible}">
+			<nav class="menu">
+				<ul class="sections">
+					<li><a href="/">Home</a></li>
+					<li ng-repeat="category in categories" ui-sref-active="active">
+						<a ui-sref="site.section({category: category.slug})"><% category.name %></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="menu">
+				<ul class="links">
+					<li><a ng-click="openAuthModal(true)">Sign Up/Sign In</a></li>
+				</ul>
+			</nav>
+		</div>
+		<!-- end .mb-menu -->
+ 
 		<!-- .viewport -->
 		<div ui-view class="content"></div>
-		<!-- end .viewport
+		<!-- end .viewport -->
 
-		<!-- .pg-footer -->
-		<footer class="pg-footer"></footer>
-		<!-- end .pg-footer -->
+		<div data-ng-include="'/assets/views/blocks/footer.html'"></div>
 
 		<!-- bootstrap data -->
 		<script type="text/javascript">
@@ -81,6 +105,7 @@
 		@if(App::environment() == "local")
 		<?= Html::script('assets/js/vendor/jquery/jquery.min.js') ?>
 		<?= Html::script('assets/js/vendor/libs/underscore.js') ?>
+		<?= Html::script('assets/js/vendor/libs/oauth.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-animate/angular-animate.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-cookies/angular-cookies.js') ?>
@@ -91,6 +116,7 @@
 		<?= Html::script('assets/js/vendor/angular/ngstorage/ngStorage.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
 		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
+		<?= Html::script('assets/js/frontend/interceptor.js') ?>
 
 		<!-- App -->
 		<?= Html::script("assets/js/frontend/app.js") ?>
@@ -99,9 +125,12 @@
 		<?= Html::script("assets/js/frontend/config.router.js") ?>
 		<?= Html::script("assets/js/frontend/main.js") ?>
 		<?= Html::script("assets/js/admin/services/ui-load.js") ?>
+		<?= Html::script("assets/js/frontend/services/auth.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-jq.js") ?>
 		<?= Html::script("assets/js/frontend/directives/featured-posts.js"); ?>
-		@else
+		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
+		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
+ 		@else
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif
 	</body>

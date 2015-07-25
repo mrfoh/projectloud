@@ -149,7 +149,8 @@ return [
 		'Bps\Providers\DropboxFilesystemServiceProvider',
 		'Prettus\Repository\Providers\RepositoryServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
-		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider'
+		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
+		'NZTim\Mailchimp\MailchimpServiceProvider',
 
 	],
 
@@ -201,8 +202,8 @@ return [
 		'Form' 		=> 'Collective\Html\FormFacade',
       	'Html' 		=> 'Collective\Html\HtmlFacade',
       	'JWTAuth' 	=> 'Tymon\JWTAuth\Facades\JWTAuth',
-      	'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory'
-
+      	'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
+      	'Mailchimp' => 'NZTim\Mailchimp\MailchimpFacade'
 	],
 
 ];

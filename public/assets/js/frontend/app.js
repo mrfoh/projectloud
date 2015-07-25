@@ -9,6 +9,7 @@ angular.module('app', [
     'ngStorage',
     'ui.router',
     'ui.bootstrap',
+    'requestHandler',
     'ui.load',
     'ui.jq',
     'oc.lazyLoad'

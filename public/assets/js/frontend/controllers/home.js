@@ -32,8 +32,10 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 
 				if($scope.recent.length >= 10) {
 					$scope.template = "2-cols";
-					$scope.pro = $scope.recent.slice(0,2);
-					$scope.less = $scope.recent.slice(3, 10);
+					$scope.pro = $scope.recent.splice(0,3);
+					$scope.less = $scope.recent.splice(4, 11);
+
+					console.log($scope)
 				}
 				else {
 					$scope.template = "1-col";

@@ -3,6 +3,7 @@
 	use Bps\Http\Controllers\ApiController;
 	use Prettus\Validator\Exceptions\ValidatorException;
 	use Bps\Data\Repositories\Posts;
+	use Bps\Data\Repositories\Comments;
 	use JWTAuth;
 	use Request;
 	use Response;
@@ -11,9 +12,10 @@
 
 		protected $posts;
 
-		public function __construct(Posts $posts) {
+		public function __construct(Posts $posts, Comments $comments) {
 			$this->middleware('jwt.auth', ['only' => ['store','bulkTrash','bullDelete']]);
 			$this->posts = $posts;
+			$this->comments = $comments;
 		}
 
 		/**
@@ -50,25 +52,7 @@
 		public function store($id = null) {
 			if(is_null($id))
 			{
-				try {
-
-			        if (! $user = JWTAuth::parseToken()->authenticate()) {
-			            return response()->json(['user_not_found'], 404);
-			        }
-
-			    } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-			        return response()->json(['token_expired'], $e->getStatusCode());
-
-			    } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-			        return response()->json(['token_invalid'], $e->getStatusCode());
-
-			    } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-			        return response()->json(['token_absent'], $e->getStatusCode());
-
-			    }
+				$user = $this->user();
 
 				try {       
 
@@ -107,15 +91,17 @@
 		public function featuredPosts() {
 
 			$count = Request::input('count', 5);
+			$category = Request::input('category_id', null);
 
-			return $this->posts->featured($count);
+			return $this->posts->featured($count, $category);
 		}
 
 		public function recentPosts() {
 
 			$count = Request::input('count', 10);
+			$category = Request::input('category_id', null);
 
-			return $this->posts->recent($count);
+			return $this->posts->recent($count, $category);
 		}
 
 		public function feature($id) {
@@ -134,14 +120,20 @@
 
 			if(!$post) return Response::json(['message'=>"Post not found"], 404);
 
-			$unfeature = $this->posts->feature($post);
+			$unfeature = $this->posts->unfeature($post);
 
 			if($unfeature)
 				return response()->json(['status'=>"success"], 200);
 		}
 
 		public function comments($id) {
+			$post = $this->posts->skipPresenter()->find($id);
 
+			if(!$post) return Response::json(['message'=>"Post not found"], 404);
+
+			$comments = $this->comments->post($id);
+
+			return $comments;
 		}
 
 		/**

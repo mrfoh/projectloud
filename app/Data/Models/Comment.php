@@ -9,4 +9,12 @@
 		public function post() {
 			return $this->belongsTo('\Bps\Data\Models\Post');
 		}
+
+		public function replies() {
+			return $this->hasMany('\Bps\Data\Models\Comment', 'parent_id');
+		}
+
+		public function user() {
+			return $this->belongsTo('\Bps\Data\Models\User');
+		}
 	}

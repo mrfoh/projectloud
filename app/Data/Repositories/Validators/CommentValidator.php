@@ -8,6 +8,7 @@
 		protected $rules = [
 	        ValidatorInterface::RULE_CREATE => [
 	            'body'  => 'required',
+	            'post_id' => 'required'
 	        ],
 	        /*
 	        ValidatorInterface::RULE_UPDATE => [

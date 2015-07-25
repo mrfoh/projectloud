@@ -1,0 +1,77 @@
+<div class="comments-container">
+	<div class="loading" ng-if="loading">
+		<h3>
+			<i class="fa fa-lg fa-spin fa-spinner"></i>
+			<span>Loading Comments</span>
+		</h3>
+	</div>
+
+	<div class="comment-form" ng-show="sessionExist">
+		<h3>Leave a comment</h3>
+		<form name="commentform">
+			<div class="row">
+				<div class="col-lg-12 col-md-12">
+					<div class="form-group">
+						<label>Your Comment: </label>
+						<textarea name="body" class="form-control" rows="5" ng-model="body" ng-required="true"></textarea>
+					</div>
+
+					<div class="form-group">
+						<button class="btn btn-lg" ng-click="submitComment()" ng-disabled="disableSubmitBtn" ng-bind-html="submitBtnText"></button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="message" ng-show="!sessionExist">
+		<h3>Leave a Comment</h3>
+		<p>﻿In order to comment, you must be logged in. <a ng-click="$parent.openAuthModal(false)">Click here to login or sign up for an account</a></p>
+	</div>
+
+	<div class="comments">
+		<div class="comment" ng-repeat="comment in comments | orderBy: '-created_at.date'">
+			<div class="name">
+				<h4 ng-if="comment.name"><% comment.name %> <span>says: </span></h4>
+				<h4 ng-if="comment.user.name"><% comment.user.name %></h4>
+			</div>
+			<p class="timestamp"><% comment.timestamp %></p>
+			<div class="body">
+				<p><% comment.body %></p>
+				<button class="btn btn-sm btn-default" ng-click="showReplyForm(comment)"><i class="fa fa-reply"></i> Reply</button>
+				<button class="btn btn-sm btn-default" ng-click="loadReplies(comment)"><% comment.reply_count %> Replies</button>
+				<div class="replies">
+					<div class="reply-form" ng-show="comment.showreplyform">
+						<form novalidate>
+							<div class="form-group">
+								<textarea name="body" class="form-control" rows="3" ng-model="comment.reply" ng-required="true"></textarea>
+							</div>
+							<div class="form-group">
+								<button class="btn btn-sm" ng-click="submitReply($event, comment)">Submit</button>
+							</div>
+						</form>
+					</div>
+
+					<div class="loading" ng-show="comment.replyloading">
+						<h3>
+							<i class="fa fa-spin fa-spinner"></i>
+							<span>Loading replies..</span>
+						</h3>
+					</div>
+					<div class="comment-replies comments" ng-show="comment.showreplies">
+						<div class="comment" ng-repeat="comment in comment.replies | orderBy: '-created_at.date'">
+							<div class="name">
+								<h4 ng-if="comment.name"><% comment.name %> <span>says: </span></h4>
+								<h4 ng-if="comment.user.name"><% comment.user.name %></h4>
+							</div>
+							<p class="timestamp"><% comment.timestamp %></p>
+							<div class="body">
+								<p><% comment.body %></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

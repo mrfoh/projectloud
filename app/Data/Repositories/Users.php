@@ -30,4 +30,15 @@
 	    	$this->resetModel();
 	    	return $this->parserResult($user);
 	    }
+
+	    public function findByProviderCredentials($creds) {
+
+	    	$user = $this->model->where('provider_id','=',$creds['provider_id'])
+	    						->orWhere('access_token','=', $creds['access_token'])
+	    						->orWhere('email','=', $creds['email'])
+	    						->first();
+
+	    	$this->resetModel();
+	    	return $this->parserResult($user);
+	    }
 	}

@@ -2,7 +2,7 @@
 	<slide ng-repeat="feature in featured" class="featured-item">
 		<div class="featured-image-wrapper">
 			<a ui-sref="site.post({slug: feature.slug})">
-				<img src="/content/<% feature.featured_image.src %>" ng-if='feature.featured_image.disk == "local"'>
+				<img ng-src="/content/<% feature.featured_image.src %>" ng-if='feature.featured_image.disk == "local"'>
 			</a>
 		</div>
 		<div class="featured-content">

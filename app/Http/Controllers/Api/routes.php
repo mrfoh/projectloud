@@ -58,4 +58,9 @@ Route::group(['prefix' => 'api'], function() {
 		Route::delete('{id}', 'MediaController@delete');
 		Route::get('/', 'MediaController@index');
 	});
+
+	Route::group(['prefix' => 'newsletter'], function() {
+
+		Route::post('subscribe', 'NewsletterController@subscribe');
+	});
 });

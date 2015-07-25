@@ -17,6 +17,8 @@ angular.module('app')
         $interpolateProvider.startSymbol('<%');
         $interpolateProvider.endSymbol('%>');
 
-        //$httpProvider.interceptors.push('requestHandlerInterceptor');
+        OAuth.initialize('VMKOEZFOZAMWpFuyZ8TGJS0u3mA');
+
+        $httpProvider.interceptors.push('requestInterceptor');
     }
 ]);

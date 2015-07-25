@@ -10,7 +10,7 @@
 	class AuthController extends AdminController {
 
 		public function index(Request $request, Users $users) {
-			 // grab credentials from the request
+			// grab credentials from the request
 	        $credentials = $request->only('email', 'password');
 	        //find user
 	        $user = $users->findByLogin($request->input('email'));

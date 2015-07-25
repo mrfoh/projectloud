@@ -6,7 +6,7 @@
 	use League\Flysystem\Filesystem;
 	use League\Flysystem\Adapter\Local as Adapter;
 	use JWTAuth;
-	use Validation;
+	use Validator;
 
 	class MediaController extends ApiController {
 
@@ -96,9 +96,11 @@
 			//file extension
 			$ext = $file->getClientOriginalExtension();
 			//file path
-			$src = $this->subFolder().$file->getClientOriginalName();
+			$src = $this->subFolder().strtolower($file->getClientOriginalName());
 			//filename
-			$filename = $file->getClientOriginalName();
+			$src = str_replace(" ", "-", $src);
+			$filename = strtolower($file->getClientOriginalName());
+			$filename = str_replace(" ", "-", $filename);
 			//file mime
 			$mime = $file->getClientMimeType();
 			//Open file stream
