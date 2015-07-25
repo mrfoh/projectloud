@@ -103,6 +103,41 @@
 			}
 		}
 
+		public function signup(Request $request, Users $users) {
+			//user input
+			$input = $request->all();
+			//rules
+			$rules = ['email' => "required|email|unique:users,email", 'password' => "required"];
+			//validator
+			$validator = Validator::make($input, $rules);
+
+			if($validator->fails()) {
+				$messages = $validator->messages();
+				return response()->json(['status'=>"error",'messages'=>$messages], 403);
+			}
+
+			//get role
+			$role = Role::whereName('Regular')->first();
+			$attrs = $request->only('name','email','access_token','provider_id');
+			//create
+			$user = $users->create($attrs);
+			//assign role
+			$user->roles()->attach($role->id);
+
+			try 
+			{
+				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray()];
+				// attempt to verify the credentials and create a token for the user
+				$token = JWTAuth::fromUser($user, $customClaims);
+				// all good so return the token
+			} catch (JWTException $e) {
+				// something went wrong whilst attempting to encode the token
+			    return response()->json(['status' => 'error', 'message' => 'could_not_create_token'], 500);
+			}
+
+			return response()->json(['token'=>$token], 200);
+		}
+
 		public function refresh(Request $request, Users $users) {
 			$token = JWTAuth::parseToken()->refresh();
 

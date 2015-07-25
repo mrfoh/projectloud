@@ -17,6 +17,34 @@ angular.module('app')
       $scope.signupForm = true;
     }
 
+    $scope.signup = function(valid) {
+      $scope.valid = valid
+      var form = { name: $scope.name, email: $scope.email, password: $scope.password};
+      if(valid)
+      {
+        $scope.progress = true;
+        $scope.status = "Please wait...";
+        //signup user
+        $auth.signup(form).
+        success(function (response) {
+          if(response.token) {
+            $scope.status = "Registration successfull! You have been logged in";
+            $auth.saveToken(response.token)
+
+            $rootScope.$broadcast('user:authed');
+
+            $timeout(function() {
+              $modalInstance.close();
+              window.location.reload(true);
+            }, 3000);
+          }
+        })
+        .error(function (response, status, headers, config) {
+          console.log(arguments);
+        })
+      }
+    }
+
     $scope.login = function(valid) {
       $scope.valid = valid;
       var form = { email: $scope.email, password: $scope.password };
@@ -35,7 +63,7 @@ angular.module('app')
 
             $timeout(function() {
               $modalInstance.close();
-            }, 2500);
+            }, 3000);
           }
         })
         .error(function (response) {

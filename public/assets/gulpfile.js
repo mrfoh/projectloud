@@ -67,11 +67,8 @@ gulp.task('less:frontend', function() {
 	return gulp.src('./less/frontend/frontend.less')
 				.pipe(less())
 				.pipe(minifyCSS())
+				.pipe(uglify())
 				.pipe(gulp.dest('./css/frontend'))
-})
-
-gulp.task('build:prod', function() {
-
 })
 
 gulp.task('watch', function() {
@@ -83,5 +80,5 @@ gulp.task('watch', function() {
     watch('less/frontend/*.less', function() {
         gulp.start('less:frontend')
         .on('error', gutil.log);
-    })    
+    })
 });
