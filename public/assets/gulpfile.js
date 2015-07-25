@@ -48,15 +48,9 @@ gulp.task('build:admin', function() {
 
 gulp.task('build:frontend', function() {
 	return gulp.src([
-		'js/vendor/angular/angular-animate/angular-animate.js',
-		'js/vendor/angular/angular-cookies/angular-cookies.js',
-		'js/vendor/angular/angular-resource/angular-resource.js',
-		'js/vendor/angular/angular-sanitize/angular-sanitize.js',
-		'js/vendor/angular/angular-touch/angular-touch.js',
-		'js/vendor/angular/angular-ui-router/angular-ui-router.js',
-		'js/vendor/angular/ngstorage/ngStorage.js',
-		'js/vendor/angular/ngstorage/ngStorage.js',
-		'js/vendor/angular/oclazyload/ocLazyLoad.js',
+		'js/vendor/jquery/jquery.min.js',
+		'js/vendor/angular/angular.js',
+		'js/vendor/angular/**/*.js',
 		'js/vendor/libs/*.js',
 		'js/frontend/interceptor.js',
 		'js/frontend/*.js',
