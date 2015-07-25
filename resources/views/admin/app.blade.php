@@ -5,16 +5,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 		<title></title>
 		<!-- Stylesheets -->
-		@if(App::environment() == "local")
 		<?= Html::style('assets/css/bootstrap.css') ?>
 		<?= Html::style('assets/css/admin/animate.css') ?>
 		<?= Html::style('assets/css/font-awesome.css') ?>
 		<?= Html::style('assets/css/admin/simple-line-icons.css') ?>
 		<?= Html::style('assets/css/admin/font.css') ?>
 		<?= Html::style('assets/css/admin/app.css') ?>
-		@else
-		<?= Html::style('assets/css/admin/app.css') ?>
-		@endif
 	</head>
 
 	<body ng-controller="AppCtrl" ng-init="setSession()">
