@@ -133,7 +133,7 @@
 		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
  		@else
  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
- 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+ 		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif
 	</body>
