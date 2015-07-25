@@ -22,8 +22,7 @@
 		 */
 		public function index() {
 
-			$this->categories->skipPresenter();
-			$categories = $this->categories->all()->toArray();
+			$categories = $this->categories->all();
 
 			$data['categories'] = $categories;
 

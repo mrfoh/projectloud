@@ -103,7 +103,7 @@ angular.module('app')
     }
 
     $scope.boot = function() {
-      var $categories = $.parseJSON(window.Data.categories);
+      var $categories = JSON.parse(window.Data.categories);
       angular.forEach($categories, function(category) { $scope.categories.push(category) });
 
       if($auth.check()) {
