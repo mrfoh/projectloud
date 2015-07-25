@@ -46,11 +46,33 @@ gulp.task('build:admin', function() {
 	.pipe(gulp.dest('js/admin/dist'))
 })
 
+gulp.task('build:frontend', function() {
+	return gulp.src([
+		'js/vendor/jquery/jquery.min.js',
+		'js/vendor/angular/angular.js',
+		'js/vendor/angular/**/*.js',
+		'js/vendor/libs/*.js',
+		'js/frontend/interceptor.js',
+		'js/frontend/*.js',
+		'js/admin/services/ui-load.js',
+		'js/admin/directives/ui-jq.js',
+		'js/frontend/services/*.js',
+		'js/frontend/directives/*.js'
+	])
+	.pipe(concat('dist.js'))
+	.pipe(uglify())
+	.pipe(gulp.dest('js/frontend/dist'))
+});
+
 gulp.task('less:frontend', function() {
 	return gulp.src('./less/frontend/frontend.less')
 				.pipe(less())
 				.pipe(minifyCSS())
 				.pipe(gulp.dest('./css/frontend'))
+})
+
+gulp.task('build:prod', function() {
+
 })
 
 gulp.task('watch', function() {
