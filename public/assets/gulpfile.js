@@ -48,8 +48,6 @@ gulp.task('build:admin', function() {
 
 gulp.task('build:frontend', function() {
 	return gulp.src([
-		'js/vendor/jquery/jquery.min.js',
-		'js/vendor/angular/angular.js',
 		'js/vendor/angular/**/*.js',
 		'js/vendor/libs/*.js',
 		'js/frontend/interceptor.js',
