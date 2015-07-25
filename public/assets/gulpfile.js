@@ -38,6 +38,7 @@ gulp.task('build:admin', function() {
 		'js/vendor/angular/**/*.js',
 		'js/vendor/libs/*.js',
 		'js/admin/*.js',
+		'js/admin/interceptors/*.js',
 		'js/admin/directives/*.js',
 	    'js/admin/services/*.js'
 	])
