@@ -17415,8 +17415,8 @@ angular.module('app')
     }
 
     $scope.boot = function() {
-      var $categories = JSON.parse(window.Data.categories);
-      angular.forEach($categories, function(category) { $scope.categories.push(category) });
+      //var $categories = JSON.parse(window.Data.categories);
+      //angular.forEach($categories, function(category) { $scope.categories.push(category) });
 
       if($auth.check()) {
          $scope.app.user = $auth.getClaimsFromToken();
