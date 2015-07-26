@@ -8,12 +8,10 @@ app.controller('SectionCtrl', ['$scope', '$log', '$document', '$page', '$statePa
 
 		//set page title
 		$page.setPageTitle($category[0].name+" - The Bayelsa Public Square")
-		//set page meta
+		//set page meta tags
 		$page.addMetaTag('description', $category[0].description);
 		$page.addMetaTag('url', 'http://www.bayelsapublicsquare.com/section/'+$category[0].slug);
 		$page.addMetaTag('title', $category[0].name+" - The Bayelsa Public Square");
-
-		//add fb meta tags
 		$page.addMetaTag('og:title', $category[0].name+" - The Bayelsa Public Square");
 		$page.addMetaTag('og:description', $category[0].description);
 		$page.addMetaTag('og:url', 'http://www.bayelsapublicsquare.com/section/'+$category[0].slug);
