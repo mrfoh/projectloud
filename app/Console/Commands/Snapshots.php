@@ -70,7 +70,7 @@ class Snapshots extends Command {
 			if($obj['loc'] == "/")
 				$tofile = './public/snapshots'.$page.'.html';
 			else
-				$tofile = './public/snapshots/'.$page.'.html';
+				$tofile = './public/snapshots'.$page.'.html';
 
 			$this->info('Processing >>'.$fromUrl.' to '.$tofile);
 

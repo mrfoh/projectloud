@@ -72,6 +72,17 @@ gulp.task('less:frontend', function() {
 				.pipe(gulp.dest('./css/frontend'))
 })
 
+gulp.task('css:frontend', function() {
+	return gulp.src([
+			'./css/bootstrap.css',
+			'./css/frontend/frontend.css'
+		])
+		.pipe(concat('dist.css'))
+		.pipe(minifyCSS())
+		.pipe(uglify())
+		.pipe(gulp.dest('./css/frontend'))
+});
+
 gulp.task('watch', function() {
 	  watch('less/admin/*.less', function() {
         gulp.start('less:admin')

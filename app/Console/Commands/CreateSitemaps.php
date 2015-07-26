@@ -64,12 +64,12 @@ class CreateSitemaps extends Command {
 
 	    foreach ($categories as $category)
 	    {
-	        $sitemap->add("section/".$category->slug, $category->created_at, "1.0", 'daily');
+	        $sitemap->add("/section/".$category->slug, $category->created_at, "1.0", 'daily');
 	    }
 
 	    foreach ($posts as $post)
 	    {
-	        $sitemap->add("article/".$post->slug, $post->created_at, "1.0", 'daily');
+	        $sitemap->add("/article/".$post->slug, $post->created_at, "1.0", 'daily');
 	    }
 
 	    // generate your sitemap (format, filename)
@@ -93,7 +93,7 @@ class CreateSitemaps extends Command {
 
 	    foreach($categories as $category) {
 	    	$sitemap[$category->slug] = [
-	    		'loc' => "section/".$category->slug,
+	    		'loc' => "/section/".$category->slug,
 	    		'changefreq' => 'daily',
 	    		'priority' => '1.0'
 	    	];
@@ -101,7 +101,7 @@ class CreateSitemaps extends Command {
 
 	    foreach($posts as $post) {
 	    	$sitemap[$post->slug] = [
-	    		'loc' => "article/".$post->slug,
+	    		'loc' => "/article/".$post->slug,
 	    		'changefreq' => 'daily',
 	    		'priority' => '1.0'
 	    	];
