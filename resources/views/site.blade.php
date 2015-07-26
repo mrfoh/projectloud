@@ -8,7 +8,6 @@
 		<meta property="og:site_name" content="Bayelsa Public Square"/>
 		<meta property="og:type" content="blog"/>
 		<meta name="google-site-verification" content="ab4svSl5hOOFAslsOqHikimA3E8PqBepWRwpIkvdJkc" />
-		<base href="/">
 		<title>The Bayelsa Public Square</title>
 
 		<!-- External fonts -->
