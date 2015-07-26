@@ -42,6 +42,7 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 					$page.addMetaTag('description', $scope.post.excerpt);
 					$page.addMetaTag('title', $scope.post.title);
 					$page.addMetaTag('url', $scope.post.url);
+					
 					$page.addMetaTag('og:title', $scope.post.title);
 					$page.addMetaTag('og:url', $scope.post.url);
 					$page.addMetaTag('og:description', $scope.post.excerpt);

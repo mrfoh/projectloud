@@ -5,6 +5,7 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 		//set meta tags
 		$page.addMetaTag('description',"A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");
 		$page.addMetaTag('keywords', "bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes");
+		
 		$page.addMetaTag('og:title', "The Bayelsa Public Square");
 		$page.addMetaTag('og:keywords', "bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes");
 		$page.addMetaTag('og:description', "A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");

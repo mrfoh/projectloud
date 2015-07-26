@@ -55,8 +55,8 @@
 					</div>
 					<div class="pull-left menu">
 						<ul class="links clearfix">
-							<li ng-repeat="category in categories" ui-sref-active="active" ng-show="categories">
-								<a ui-sref="site.section({category: category.slug})"><% category.name %></a>
+							<li ng-repeat="category in categories" ui-sref-active="active">
+								<a ui-sref="site.section({category: category.slug})" ng-cloak><% category.name %></a>
 							</li>
 						</ul>
 					</div>
