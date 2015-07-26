@@ -39,13 +39,15 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 					$scope.postLoaded = true;
 					//set page title
 					$page.setPageTitle($scope.post.title+ " - Bayelsa Public Square");
-					$page.setMetaDescription($scope.post.excerpt);
-					$page.addFbMetaTag('og:title', $scope.post.title);
-					$page.addFbMetaTag('og:url', $scope.post.url);
-					$page.addFbMetaTag('og:description', $scope.post.excerpt);
+					$page.addMetaTag('description', $scope.post.excerpt);
+					$page.addMetaTag('title', $scope.post.title);
+					$page.addMetaTag('url', $scope.post.url);
+					$page.addMetaTag('og:title', $scope.post.title);
+					$page.addMetaTag('og:url', $scope.post.url);
+					$page.addMetaTag('og:description', $scope.post.excerpt);
 
 					if($scope.post.featured_image && $scope.post.featured_image.disk == "local") {
-						$page.addFbMetaTag('og:image', "/content/"+$scope.post.featured_image.src)
+						$page.addMetaTag('og:image', "/content/"+$scope.post.featured_image.src)
 					}
 
 					$rootScope.$broadcast('post:loaded', { post: $scope.post});

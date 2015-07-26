@@ -75,7 +75,7 @@
 		<!-- end .mb-header -->
 
 		<!-- mb-menu -->
-		<div class="mb-menu visible-xs" ng-class="{'open': mobileMenuVisible}">
+		<div class="mb-menu visible-xs visible-sm" ng-class="{'open': mobileMenuVisible}">
 			<nav class="menu">
 				<ul class="sections">
 					<li><a href="/">Home</a></li>

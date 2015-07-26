@@ -9,11 +9,13 @@ app.controller('SectionCtrl', ['$scope', '$log', '$document', '$page', '$statePa
 		//set page title
 		$page.setPageTitle($category[0].name+" - The Bayelsa Public Square")
 		//set page description
-		$page.setMetaDescription($category[0].description);
+		$page.addMetaTag('description', $category[0].description);
+		$page.addMetaTag('url', 'http://www.bayelsapublicsquare.com/section/'+$category[0].slug);
+		$page.addMetaTag('title', $category[0].name+" - The Bayelsa Public Square");
 		//add fb meta tags
-		$page.addFbMetaTag('og:title', $category[0].name+" - The Bayelsa Public Square");
-		$page.addFbMetaTag('og:description', $category[0].description);
-		$page.addFbMetaTag('og:url', 'http://www.bayelsapublicsquare.com/section/'+$category[0].slug);
+		$page.addMetaTag('og:title', $category[0].name+" - The Bayelsa Public Square");
+		$page.addMetaTag('og:description', $category[0].description);
+		$page.addMetaTag('og:url', 'http://www.bayelsapublicsquare.com/section/'+$category[0].slug);
 
 		//Recent post in section
 		$scope.recent = [];

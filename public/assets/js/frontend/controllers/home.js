@@ -3,10 +3,11 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 		//set page title
 		$page.setPageTitle('The Bayelsa Public Square');
 		//set meta tags
-		$page.setMetaDescription("A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");
-		$page.setMetaKeywords("bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes");
-		$page.addFbMetaTag('og:title', "The Bayelsa Public Square");
-		$page.addFbMetaTag('og:description', "A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");
+		$page.addMetaTag('description',"A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");
+		$page.addMetaTag('keywords', "bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes");
+		$page.addMetaTag('og:title', "The Bayelsa Public Square");
+		$page.addMetaTag('og:keywords', "bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes");
+		$page.addMetaTag('og:description', "A public forum for news, reports and opinions on Bayelsa goverment policies, projects and programmes");
 
 		$scope.featured = []
 		$scope.recent = [];
