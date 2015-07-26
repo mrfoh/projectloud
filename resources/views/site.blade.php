@@ -28,7 +28,7 @@
 		@endif
 	</head>
 
-	<body ng-controller="MainCtrl" ng-init="boot()">
+	<body ng-controller="MainCtrl" ng-init="boot()" ng-cloak data-app-loading="<% appLoading %>">
 		<!-- .lg-header -->
 		<header class="lg-header visible-md visible-lg">
 			<div class="top-bar">
@@ -55,7 +55,7 @@
 					</div>
 					<div class="pull-left menu">
 						<ul class="links clearfix">
-							<li ng-repeat="category in categories" ui-sref-active="active">
+							<li ng-repeat="category in categories" ui-sref-active="active" ng-show="categories">
 								<a ui-sref="site.section({category: category.slug})"><% category.name %></a>
 							</li>
 						</ul>
@@ -80,7 +80,7 @@
 				<ul class="sections">
 					<li><a href="/">Home</a></li>
 					<li ng-repeat="category in categories" ui-sref-active="active">
-						<a ui-sref="site.section({category: category.slug})"><% category.name %></a>
+						<a ui-sref="site.section({category: category.slug})" ng-cloak><% category.name %></a>
 					</li>
 				</ul>
 			</nav>

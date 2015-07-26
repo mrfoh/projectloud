@@ -34,12 +34,12 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 					$scope.template = "2-cols";
 					$scope.pro = $scope.recent.splice(0,3);
 					$scope.less = $scope.recent.splice(4, 11);
-
-					console.log($scope)
 				}
 				else {
 					$scope.template = "1-col";
 				}
+
+				
 			})
 		}
 

@@ -12,6 +12,8 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		'Bps\Console\Commands\Inspire',
+		'Bps\Console\Commands\CreateSitemaps',
+		'Bps\Console\Commands\Snapshots',
 	];
 
 	/**

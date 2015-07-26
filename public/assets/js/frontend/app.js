@@ -12,5 +12,5 @@ angular.module('app', [
     'requestHandler',
     'ui.load',
     'ui.jq',
-    'oc.lazyLoad'
+    'oc.lazyLoad',
 ]);

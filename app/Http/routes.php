@@ -1,6 +1,7 @@
 <?php
 
 use Bps\Data\Repositories\Categories;
+
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes

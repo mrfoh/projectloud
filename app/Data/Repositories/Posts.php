@@ -39,6 +39,14 @@
 	        return "Bps\\Data\\Repositories\\Presenters\\PostPresenter";
 	    }
 
+	    public function allPublished() {
+
+	    	$posts = $this->model->published()->orderBy('created_at','desc')->get();
+
+	    	$this->resetModel();
+	    	return $this->parserResult($posts);
+	    }
+
 	    /**
 	    * Fetch all posts 
 	    * @param integer $perPage

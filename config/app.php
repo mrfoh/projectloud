@@ -151,7 +151,7 @@ return [
 		'Collective\Html\HtmlServiceProvider',
 		'Tymon\JWTAuth\Providers\JWTAuthServiceProvider',
 		'NZTim\Mailchimp\MailchimpServiceProvider',
-
+		'Roumen\Sitemap\SitemapServiceProvider',
 	],
 
 	/*

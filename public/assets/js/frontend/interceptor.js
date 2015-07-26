@@ -1,7 +1,10 @@
 angular.module('requestHandler', []).
-factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$window',
-	function ($q, $injector, $log, $localStorage, $window) {
+factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$window', '$injector',
+	function ($q, $injector, $log, $localStorage, $window, $injector) {
 		var inFlightAuthRequest = null;
+		var $http;
+		var notificationChannel;
+		
 		var interceptor = {
 			'request': function (config) {
 				config.headers = config.headers || {};
@@ -13,10 +16,29 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 			},
 
 			'response': function (response) {
+				// get $http via $injector because of circular dependency problem
+                $http = $http || $injector.get('$http');
+                // don't send notification until all requests are complete
+               	if ($http.pendingRequests.length < 1) {
+                    // get requestNotificationChannel via $injector because of circular dependency problem
+                    notificationChannel = notificationChannel || $injector.get('requestNotificationChannel');
+                    // send a notification requests are complete
+                    notificationChannel.requestEnded();
+                }
 				return response;
 			},
 
 			'responseError': function (response) {
+				// get $http via $injector because of circular dependency problem
+                $http = $http || $injector.get('$http');
+                // don't send notification until all requests are complete
+                if ($http.pendingRequests.length < 1) {
+                    // get requestNotificationChannel via $injector because of circular dependency problem
+                    notificationChannel = notificationChannel || $injector.get('requestNotificationChannel');
+                    // send a notification requests are complete
+                    notificationChannel.requestEnded();
+                }
+
 				switch (response.status) {
 	                case 401:
 	                    var deferred = $q.defer();
@@ -38,15 +60,12 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 	                    }, function(response) {
 	                        inflightAuthRequest = null;
 	                        deferred.reject();
-	                       // authService.clear();
-	                       // $injector.get("$state").go('guest.login');
 	                        return;
 	                    });
 	                    return deferred.promise;
 	                    break;
+
 	                default:
-	                    //authService.clear();
-	                    //$injector.get("$state").go('guest.login');
 	                    break;
 	            }
 	            return response || $q.when(response);
@@ -55,3 +74,39 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 
 		return interceptor;
 }])
+.factory('requestNotificationChannel', ['$rootScope', function($rootScope){
+        // private notification messages
+        var _START_REQUEST_ = '_START_REQUEST_';
+        var _END_REQUEST_ = '_END_REQUEST_';
+ 
+        // publish start request notification
+        var requestStarted = function() {
+            $rootScope.$broadcast(_START_REQUEST_);
+            $rootScope.appLoading = true;
+        };
+        // publish end request notification
+        var requestEnded = function() {
+            $rootScope.$broadcast(_END_REQUEST_);
+            $rootScope.appLoading = false;
+
+        };
+        // subscribe to start request notification
+        var onRequestStarted = function($scope, handler){
+            $scope.$on(_START_REQUEST_, function(event){
+                handler();
+            });
+        };
+        // subscribe to end request notification
+        var onRequestEnded = function($scope, handler){
+            $scope.$on(_END_REQUEST_, function(event){
+                handler();
+            });
+        };
+ 
+        return {
+            requestStarted:  requestStarted,
+            requestEnded: requestEnded,
+            onRequestStarted: onRequestStarted,
+            onRequestEnded: onRequestEnded
+        };
+    }])
