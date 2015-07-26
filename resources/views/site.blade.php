@@ -2,6 +2,7 @@
 <html lang="en-gb" ng-app="app">
 	<head>
 		<meta charset="utf-8" />
+		<meta name="fragment" content="!" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 		<meta name="description" content="" id="mt-description">
 		<meta name="keywords" content="" id="mt-keywords">
