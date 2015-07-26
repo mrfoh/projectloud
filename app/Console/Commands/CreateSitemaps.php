@@ -59,17 +59,17 @@ class CreateSitemaps extends Command {
 		$categories = $this->categories->skipPresenter()->all();
     	// get all posts
 	    $posts = $this->posts->skipPresenter()->allPublished();
-
-	    $sitemap->add("/", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $url = \Config::get('app.url');
+	    $sitemap->add($url."/", date("Y-m-d h:i", time()), "1.0", 'daily');
 
 	    foreach ($categories as $category)
 	    {
-	        $sitemap->add("/section/".$category->slug, $category->created_at, "1.0", 'daily');
+	        $sitemap->add($url."/#!/section/".$category->slug, $category->created_at, "1.0", 'daily');
 	    }
 
 	    foreach ($posts as $post)
 	    {
-	        $sitemap->add("/article/".$post->slug, $post->created_at, "1.0", 'daily');
+	        $sitemap->add($url."/#!/article/".$post->slug, $post->created_at, "1.0", 'daily');
 	    }
 
 	    // generate your sitemap (format, filename)

@@ -63,9 +63,9 @@ class Snapshots extends Command {
 			}
 
 			if($obj['loc'] == "/")
-				$fromUrl = \Config::get('app.url').'/#'.$obj['loc'];
+				$fromUrl = \Config::get('app.url').'/#!'.$obj['loc'];
 			else
-				$fromUrl = \Config::get('app.url').'/#/'.$obj['loc'];
+				$fromUrl = \Config::get('app.url').'/#!'.$obj['loc'];
 
 			if($obj['loc'] == "/")
 				$tofile = './public/snapshots'.$page.'.html';

@@ -38,6 +38,7 @@ class Handler extends ExceptionHandler {
 	public function render($request, Exception $e)
 	{
 		//Catch All 
+		/*
 		if($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
 			if($request->is('admin/*')) {
 				return redirect()->to('admin');
@@ -45,7 +46,7 @@ class Handler extends ExceptionHandler {
 			else {
 				return redirect()->to('/#/'.$request->path());
 			}
-		}
+		}*/
 
 		
 		//JWT Exception handling

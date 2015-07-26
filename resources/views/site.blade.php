@@ -2,7 +2,6 @@
 <html lang="en-gb" ng-app="app">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="fragment" content="!" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 		<meta name="description" content="" id="mt-description">
 		<meta name="keywords" content="" id="mt-keywords">
@@ -50,7 +49,7 @@
 			<div class="main">
 				<div class="container clearfix">
 					<div class="pull-left logo">
-						<a href="/"><img src="/assets/img/bpslogo3.png"></a>
+						<a ui-sref="site.home"><img src="/assets/img/bpslogo3.png"></a>
 					</div>
 					<div class="pull-left menu">
 						<ul class="links clearfix">
