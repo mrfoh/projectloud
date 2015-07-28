@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<meta name="fragment" content="!">
 		<meta name="description" content="" id="mt-description">
 		<meta name="keywords" content="" id="mt-keywords">
 		<meta property="og:site_name" content="Bayelsa Public Square"/>
@@ -18,6 +19,7 @@
 		@if(App::environment() == "local")
 		<?= Html::style('assets/css/bootstrap.css') ?>
 		<?= Html::style('assets/css/font-awesome.css') ?>
+		<?= Html::style('assets/css/admin/animate.css') ?>
 		<?= Html::style('assets/css/frontend/frontend.css') ?>
 		@else
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
