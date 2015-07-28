@@ -6,6 +6,14 @@
 	</div>
 
 	<div class="container-fluid" style="padding: 0;" ng-show="postLoaded">
+		<div itemscope itemtype="http://schema.org/NewsArticle">
+		  <h2 itemprop="headline"><% post.title %></h2>
+		  <h3 itemprop="alternativeHeadline"><% post.title %></h3>
+		  <span itemprop="description"><% post.excerpt %></span>
+		  <span itemprop="articleBody"><% post.body %></span>
+		  <meta itemprop="datePublished" content="<% post.created_at.date %>"/>
+		</div>
+
 		<div class="header with-image" ng-style="{'background-image': 'url(/content/<% post.featured_image.src %>)','background-size': 'cover', 'background-attachment':'fixed'}" ng-if="post.featured_image">
 			<div class="heading">
 				<span class="category"><% post.category.name %></span>
