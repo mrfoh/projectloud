@@ -7,12 +7,12 @@ Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
     </IfModule>
 
     RewriteEngine On
-    
+
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?([a-z0-9]+)(.*)
-    RewriteRule ^(.*)$ /snapshots/%1%2.html? [NC,L,R=301]
+    RewriteRule ^(.*)$ /snapshots/%1%2.html? [NC,L,R=302]
 
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?
-    RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=301]
+    RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=302]
 
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]
