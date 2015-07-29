@@ -4,6 +4,32 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 		var inFlightAuthRequest = null;
 		var $http;
 		var notificationChannel;
+
+		var refreshToken = function() {
+			var deferred = $q.defer();
+	        if(!inFlightAuthRequest) {
+	            inflightAuthRequest = $injector.get("$http").post('/auth/refresh');
+	       	}
+	        inflightAuthRequest.then(function(r) {
+		           	inflightAuthRequest = null;
+		            if (r.data.token ) {
+		               	$localStorage.token = r.data.token;
+		                $injector.get("$http")(response.config).then(function(resp) {
+		                   deferred.resolve(resp);
+		                },function(resp) {
+		                    deferred.reject();
+		                });
+		            } else {
+		                deferred.reject();
+		            }
+	            }, function(response) {
+	                inflightAuthRequest = null;
+	                deferred.reject();
+	                return;
+	        });
+
+	        return deferred.promise;
+		}
 		
 		var interceptor = {
 			'request': function (config) {
@@ -29,6 +55,7 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 			},
 
 			'responseError': function (response) {
+				var $rootScope = $injector.get('$rootScope');
 				// get $http via $injector because of circular dependency problem
                 $http = $http || $injector.get('$http');
                 // don't send notification until all requests are complete
@@ -41,33 +68,23 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 
 				switch (response.status) {
 	                case 401:
-	                    var deferred = $q.defer();
-	                    if(!inFlightAuthRequest) {
-	                    	inflightAuthRequest = $injector.get("$http").post('/auth/refresh');
+	                    if($localStorage.token) { 
+	                    	refreshToken();
 	                    }
-	                    inflightAuthRequest.then(function(r) {
-	                        inflightAuthRequest = null;
-	                        if (r.data.token ) {
-	                           $localStorage.token = r.data.token;
-	                            $injector.get("$http")(response.config).then(function(resp) {
-	                                deferred.resolve(resp);
-	                            },function(resp) {
-	                                deferred.reject();
-	                            });
-	                        } else {
-	                            deferred.reject();
-	                        }
-	                    }, function(response) {
-	                        inflightAuthRequest = null;
-	                        deferred.reject();
-	                        return;
-	                    });
-	                    return deferred.promise;
-	                    break;
 
-	                default:
-	                    break;
+	                    if(response.config.url == "/auth/login") {
+	                		$rootScope.$broadcast('auth:error', { message: "Email address or password incorrect!"});
+	                	}
+	                break;
+
+	                case 404:
+	                	if(response.config.url == "/auth/login") {
+	                		console.log(response)
+	                		$rootScope.$broadcast('auth:error', { message: "Email address or password incorrect!"});
+	                	}
+	                break
 	            }
+
 	            return response || $q.when(response);
 			}
 		};

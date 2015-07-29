@@ -26,7 +26,7 @@
 		    }
 		}
 
-		public function authFb(Request $request, Users $users) {
+		public function authOauth(Request $request, Users $users) {
 			$credentials = [
 				'provider_id' => $request->input('provider_id'),
 				'access_token' => $request->input('access_token'),
@@ -44,7 +44,7 @@
 			else {
 				//get role
 				$role = Role::whereName('Regular')->first();
-				$attrs = $request->only('name','email','access_token','provider_id');
+				$attrs = $request->only('name','email','access_token','provider_id','username');
 				//create
 				$user = $users->create($attrs);
 				//assign role
@@ -99,7 +99,7 @@
 			    return response()->json(compact('token'));
 			}
 	        else {
-			    return response()->json(['status' => 'error', 'message' => 'access denied'], 401);
+			    return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
 			}
 		}
 
@@ -118,7 +118,7 @@
 
 			//get role
 			$role = Role::whereName('Regular')->first();
-			$attrs = $request->only('name','email','access_token','provider_id');
+			$attrs = $request->only('name','email','access_token','provider_id', 'username');
 			//create
 			$user = $users->create($attrs);
 			//assign role

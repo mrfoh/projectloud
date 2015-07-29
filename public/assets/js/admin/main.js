@@ -72,7 +72,6 @@ angular.module('app')
       $rootScope.$on('user:signedin', function() {
         $window.Bps.User = $auth.getClaimsFromToken();
         $rootScope.user = $window.Bps.User;
-        console.log($window.Bps.User);
       })
 
       function isSmartDevice( $window )

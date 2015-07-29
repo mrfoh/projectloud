@@ -1,0 +1,33 @@
+<div class="page" id="signin-page" ng-controller="SigninCtrl">
+	<div class="container-fluid">
+		<div class="form-box">
+			<form name="form" novalidate ng-submit="login(form.$valid)">
+				<h2>Sign In</h2>
+
+				<hr>
+
+				<button class="btn btn-info btn-block social-login-btn google-login" ng-click="googleLogin()" type="button">
+                    <i class="fa fa-google"></i> Sign in with Google
+                </button>
+
+                <h3 style="text-align: center; font-size: 1.2em; font-weight: bold; padding: 20px 0px;">OR</h3>  
+
+                <alert type="info" ng-show="progress"><% status %></alert>
+
+                <alert type="danger" ng-show="error"><% status %></alert>
+
+				<div class="form-group">
+					<input type="email" name="email" class="form-control" placeholder="Email Address" ng-required="true" ng-model="email">
+				</div>
+
+				<div class="form-group">
+					<input type="password" name="password" class="form-control" placeholder="Password" ng-required="true" ng-model="password">
+				</div>
+
+				<div class="form-group">
+					<button class="btn btn-info btn-block btn-lg">Sign In</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

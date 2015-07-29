@@ -29,6 +29,16 @@ angular.module('app')
         }
     })
 
+    .state('site.about' , {
+        url: '/about',
+        templateUrl: '/assets/views/about.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/about.js'])
+            }]
+        }
+    })
+
     .state('site.section', {
         url: '/section/{category}',
         templateUrl: '/assets/views/section.html',
@@ -48,5 +58,28 @@ angular.module('app')
             }]
         }
     })
-   
+    .state('site.signin', {
+        url: '/signin',
+        templateUrl: '/assets/views/signin.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/frontend/controllers/signin.js'])
+            }]
+        }
+    })
+    .state('site.signup', {
+        url: '/signup',
+        templateUrl: '/assets/views/signup.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/frontend/controllers/signup.js'])
+            }]
+        }
+    })
 }])
+.run(function ($rootScope, $state) {
+  $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+    $state.previous = fromState;
+    $state.previous.params = fromParams;
+  });
+})

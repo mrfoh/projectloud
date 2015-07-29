@@ -1,0 +1,53 @@
+<div class="page" id="signup-page" ng-controller="SignupCtrl">
+	<div class="container-fluid">
+		<div class="form-box">
+			<form name="form" novalidate ng-submit="signup(form.$valid)">
+				<h2>Sign Up</h2>
+
+				<p>Sign up for a BPS account, to comment and contribute to the public square.</p>
+
+				<hr>
+
+				<button class="btn btn-info btn-block social-login-btn google-login" ng-click="oauthSignup()" type="button">
+                    <i class="fa fa-google"></i> Sign up with Google
+                </button>
+
+                <h3 style="text-align: center; font-size: 1.2em; font-weight: bold; padding: 10px 0px;">OR</h3>  
+
+                <alert type="info" ng-show="progress"><% status %></alert>
+
+                <alert type="danger" ng-show="error"><% status %></alert>
+
+                <div ng-show="!valid">
+                	<alert type="danger">
+                		<p class="error" ng-if="form.email.$error.required">Please enter your email address</p>
+                		<p class="error" ng-if="form.email.$error.email">Please enter a valid email address</p>
+                		<p class="error" ng-if="form.password.$error.required">Please enter a password</p>
+                		<p class="error" ng-if="form.password.$error.maxlength">Password cannot exceed 9 characters</p>
+                		<p class="error" ng-if="form.password.$error.minlength">Password must have at least 5 characters</p>
+                	</alert>
+                </div>
+
+                <div class="form-group">
+					<input type="text" name="name" class="form-control" placeholder="Name (Optional)" ng-required="false" ng-model="name">
+				</div>
+
+				<div class="form-group">
+					<input type="text" name="username" class="form-control" placeholder="Username (Optional)" ng-required="false" ng-model="username">
+				</div>
+
+				<div class="form-group">
+					<input type="email" name="email" class="form-control" placeholder="Email Address" ng-required="true" ng-model="email">
+				</div>
+
+				<div class="form-group">
+					<input type="password" name="password" class="form-control" placeholder="Password" ng-required="true" ng-model="password" ng-minlength="5" ng-maxlength="9">
+				</div>
+
+				<div class="form-group">
+					<button class="btn btn-info btn-block btn-lg">Sign Up</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

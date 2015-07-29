@@ -3,115 +3,8 @@
 /* Main Controllers */
 
 angular.module('app')
-.controller('AuthModalCtrl', ['$rootScope','$scope','$auth', '$timeout', '$modalInstance', 
-  function ($rootScope, $scope, $auth, $timeout, $modalInstance) {
-
-    $scope.signinForm = true;
-    $scope.signupForm = false;
-    $scope.valid = true;
-    $scope.progress = false;
-    $scope.stat;
-
-    $scope.switchToSignup = function() {
-      $scope.signinForm = false;
-      $scope.signupForm = true;
-    }
-
-    $scope.signup = function(valid) {
-      $scope.valid = valid
-      var form = { name: $scope.name, email: $scope.email, password: $scope.password};
-      if(valid)
-      {
-        $scope.progress = true;
-        $scope.status = "Please wait...";
-        //signup user
-        $auth.signup(form).
-        success(function (response) {
-          if(response.token) {
-            $scope.status = "Registration successfull! You have been logged in";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-              $modalInstance.close();
-              window.location.reload(true);
-            }, 3000);
-          }
-        })
-        .error(function (response, status, headers, config) {
-          console.log(arguments);
-        })
-      }
-    }
-
-    $scope.login = function(valid) {
-      $scope.valid = valid;
-      var form = { email: $scope.email, password: $scope.password };
-      if(valid)
-      {
-        $scope.progress = true;
-        $scope.status = "Authenticating..."
-         //login user
-        $auth.login(form).
-        success(function (response) {
-          if(response.token) {
-            $scope.status = "Authenticated!";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-              $modalInstance.close();
-            }, 3000);
-          }
-        })
-        .error(function (response) {
-
-        })
-      }
-    }
-
-    $scope.googleLogin = function() {
-      OAuth.popup('google')
-      .done($scope.googleLoginSuccess)
-      .fail(function (err) {
-        console.log(err)
-      })
-    }
-
-    $scope.googleLoginSuccess = function(result) {
-      console.log(result);
-      //save access token
-      $auth.saveOauthToken(result.access_token);
-      //call google api
-      result.me()
-      .done($scope.googleMeSuccess)
-      .fail(function (err) {
-        console.log(err)
-      })
-    }
-
-    $scope.googleMeSuccess = function (response) {
-      var token = $auth.OauthToken();
-      var form = { provider_id: response.id, name: response.name, email: response.email, access_token: token };
-      $auth.oauthlogin(form)
-      .success(function (response) {
-          if(response.token) {
-            $scope.status = "Authenticated!";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-               $modalInstance.close();
-            }, 2500);
-          }
-      });
-    }
-}])
-.controller('MainCtrl', ['$rootScope','$scope', '$localStorage', '$window', '$modal', '$auth',
-  function($rootScope, $scope, $localStorage, $window, $modal, $auth) {
+.controller('MainCtrl', ['$rootScope','$scope', '$localStorage', '$window', '$modal', '$auth', '$state',
+  function($rootScope, $scope, $localStorage, $window, $modal, $auth, $state) {
     // add 'ie' classes to html
     var isIE = !!navigator.userAgent.match(/MSIE/i);
     isIE && angular.element($window.document.body).addClass('ie');
@@ -151,6 +44,7 @@ angular.module('app')
     $scope.logout = function() {
       $auth.logout();
       $rootScope.$broadcast('user:loggedout');
+      $state.go('site.siginin');
     }
 
     $scope.toggleMobileMenu = function() {

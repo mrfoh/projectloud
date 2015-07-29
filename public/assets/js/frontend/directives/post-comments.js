@@ -12,7 +12,6 @@ angular.module('app')
 
 	$scope.submitComment = function() {
 		var $form = { body: $scope.body, post_id: $scope.post_id }
-		console.log($form)
 		$scope.disableSubmitBtn = true;
 		$scope.submitBtnText = '<i class="fa fa-spin fa-spinner"></i> Posting...'
 
@@ -76,7 +75,10 @@ angular.module('app')
 	}
 
 	$scope.showReplyForm = function($comment) {
-		$comment.showreplyform = true;
+		if($scope.sessionExist)
+			$comment.showreplyform = true;
+		else
+			$comment.showreplyform = false;
 	}
 
 	$scope.loadReplies = function($comment) {

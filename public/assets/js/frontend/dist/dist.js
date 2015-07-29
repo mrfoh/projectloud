@@ -34612,1049 +34612,6 @@ makeSwipeDirective('ngSwipeRight', 1, 'swiperight');
 
 })(window, window.angular);
 
-/*!
- * angular-translate - v2.2.0 - 2014-06-03
- * http://github.com/PascalPrecht/angular-translate
- * Copyright (c) 2014 ; Licensed MIT
- */
-angular.module('pascalprecht.translate', ['ng']).run([
-  '$translate',
-  function ($translate) {
-    var key = $translate.storageKey(), storage = $translate.storage();
-    if (storage) {
-      if (!storage.get(key)) {
-        if (angular.isString($translate.preferredLanguage())) {
-          $translate.use($translate.preferredLanguage());
-        } else {
-          storage.set(key, $translate.use());
-        }
-      } else {
-        $translate.use(storage.get(key));
-      }
-    } else if (angular.isString($translate.preferredLanguage())) {
-      $translate.use($translate.preferredLanguage());
-    }
-  }
-]);
-angular.module('pascalprecht.translate').provider('$translate', [
-  '$STORAGE_KEY',
-  function ($STORAGE_KEY) {
-    var $translationTable = {}, $preferredLanguage, $availableLanguageKeys = [], $languageKeyAliases, $fallbackLanguage, $fallbackWasString, $uses, $nextLang, $storageFactory, $storageKey = $STORAGE_KEY, $storagePrefix, $missingTranslationHandlerFactory, $interpolationFactory, $interpolatorFactories = [], $interpolationSanitizationStrategy = false, $loaderFactory, $cloakClassName = 'translate-cloak', $loaderOptions, $notFoundIndicatorLeft, $notFoundIndicatorRight, $postCompilingEnabled = false, NESTED_OBJECT_DELIMITER = '.';
-    var getLocale = function () {
-      var nav = window.navigator;
-      return (nav.language || nav.browserLanguage || nav.systemLanguage || nav.userLanguage || '').split('-').join('_');
-    };
-    var negotiateLocale = function (preferred) {
-      var avail = [], locale = angular.lowercase(preferred), i = 0, n = $availableLanguageKeys.length;
-      for (; i < n; i++) {
-        avail.push(angular.lowercase($availableLanguageKeys[i]));
-      }
-      if (avail.indexOf(locale) > -1) {
-        return preferred;
-      }
-      if ($languageKeyAliases) {
-        var alias;
-        for (var langKeyAlias in $languageKeyAliases) {
-          var hasWildcardKey = false;
-          var hasExactKey = $languageKeyAliases.hasOwnProperty(langKeyAlias) && angular.lowercase(langKeyAlias) === angular.lowercase(preferred);
-          if (langKeyAlias.slice(-1) === '*') {
-            hasWildcardKey = langKeyAlias.slice(0, -1) === preferred.slice(0, langKeyAlias.length - 1);
-          }
-          if (hasExactKey || hasWildcardKey) {
-            alias = $languageKeyAliases[langKeyAlias];
-            if (avail.indexOf(angular.lowercase(alias)) > -1) {
-              return alias;
-            }
-          }
-        }
-      }
-      var parts = preferred.split('_');
-      if (parts.length > 1 && avail.indexOf(angular.lowercase(parts[0])) > -1) {
-        return parts[0];
-      }
-      return preferred;
-    };
-    var translations = function (langKey, translationTable) {
-      if (!langKey && !translationTable) {
-        return $translationTable;
-      }
-      if (langKey && !translationTable) {
-        if (angular.isString(langKey)) {
-          return $translationTable[langKey];
-        }
-      } else {
-        if (!angular.isObject($translationTable[langKey])) {
-          $translationTable[langKey] = {};
-        }
-        angular.extend($translationTable[langKey], flatObject(translationTable));
-      }
-      return this;
-    };
-    this.translations = translations;
-    this.cloakClassName = function (name) {
-      if (!name) {
-        return $cloakClassName;
-      }
-      $cloakClassName = name;
-      return this;
-    };
-    var flatObject = function (data, path, result, prevKey) {
-      var key, keyWithPath, keyWithShortPath, val;
-      if (!path) {
-        path = [];
-      }
-      if (!result) {
-        result = {};
-      }
-      for (key in data) {
-        if (!data.hasOwnProperty(key)) {
-          continue;
-        }
-        val = data[key];
-        if (angular.isObject(val)) {
-          flatObject(val, path.concat(key), result, key);
-        } else {
-          keyWithPath = path.length ? '' + path.join(NESTED_OBJECT_DELIMITER) + NESTED_OBJECT_DELIMITER + key : key;
-          if (path.length && key === prevKey) {
-            keyWithShortPath = '' + path.join(NESTED_OBJECT_DELIMITER);
-            result[keyWithShortPath] = '@:' + keyWithPath;
-          }
-          result[keyWithPath] = val;
-        }
-      }
-      return result;
-    };
-    this.addInterpolation = function (factory) {
-      $interpolatorFactories.push(factory);
-      return this;
-    };
-    this.useMessageFormatInterpolation = function () {
-      return this.useInterpolation('$translateMessageFormatInterpolation');
-    };
-    this.useInterpolation = function (factory) {
-      $interpolationFactory = factory;
-      return this;
-    };
-    this.useSanitizeValueStrategy = function (value) {
-      $interpolationSanitizationStrategy = value;
-      return this;
-    };
-    this.preferredLanguage = function (langKey) {
-      if (langKey) {
-        $preferredLanguage = langKey;
-        return this;
-      }
-      return $preferredLanguage;
-    };
-    this.translationNotFoundIndicator = function (indicator) {
-      this.translationNotFoundIndicatorLeft(indicator);
-      this.translationNotFoundIndicatorRight(indicator);
-      return this;
-    };
-    this.translationNotFoundIndicatorLeft = function (indicator) {
-      if (!indicator) {
-        return $notFoundIndicatorLeft;
-      }
-      $notFoundIndicatorLeft = indicator;
-      return this;
-    };
-    this.translationNotFoundIndicatorRight = function (indicator) {
-      if (!indicator) {
-        return $notFoundIndicatorRight;
-      }
-      $notFoundIndicatorRight = indicator;
-      return this;
-    };
-    this.fallbackLanguage = function (langKey) {
-      fallbackStack(langKey);
-      return this;
-    };
-    var fallbackStack = function (langKey) {
-      if (langKey) {
-        if (angular.isString(langKey)) {
-          $fallbackWasString = true;
-          $fallbackLanguage = [langKey];
-        } else if (angular.isArray(langKey)) {
-          $fallbackWasString = false;
-          $fallbackLanguage = langKey;
-        }
-        if (angular.isString($preferredLanguage)) {
-          $fallbackLanguage.push($preferredLanguage);
-        }
-        return this;
-      } else {
-        if ($fallbackWasString) {
-          return $fallbackLanguage[0];
-        } else {
-          return $fallbackLanguage;
-        }
-      }
-    };
-    this.use = function (langKey) {
-      if (langKey) {
-        if (!$translationTable[langKey] && !$loaderFactory) {
-          throw new Error('$translateProvider couldn\'t find translationTable for langKey: \'' + langKey + '\'');
-        }
-        $uses = langKey;
-        return this;
-      }
-      return $uses;
-    };
-    var storageKey = function (key) {
-      if (!key) {
-        if ($storagePrefix) {
-          return $storagePrefix + $storageKey;
-        }
-        return $storageKey;
-      }
-      $storageKey = key;
-    };
-    this.storageKey = storageKey;
-    this.useUrlLoader = function (url) {
-      return this.useLoader('$translateUrlLoader', { url: url });
-    };
-    this.useStaticFilesLoader = function (options) {
-      return this.useLoader('$translateStaticFilesLoader', options);
-    };
-    this.useLoader = function (loaderFactory, options) {
-      $loaderFactory = loaderFactory;
-      $loaderOptions = options || {};
-      return this;
-    };
-    this.useLocalStorage = function () {
-      return this.useStorage('$translateLocalStorage');
-    };
-    this.useCookieStorage = function () {
-      return this.useStorage('$translateCookieStorage');
-    };
-    this.useStorage = function (storageFactory) {
-      $storageFactory = storageFactory;
-      return this;
-    };
-    this.storagePrefix = function (prefix) {
-      if (!prefix) {
-        return prefix;
-      }
-      $storagePrefix = prefix;
-      return this;
-    };
-    this.useMissingTranslationHandlerLog = function () {
-      return this.useMissingTranslationHandler('$translateMissingTranslationHandlerLog');
-    };
-    this.useMissingTranslationHandler = function (factory) {
-      $missingTranslationHandlerFactory = factory;
-      return this;
-    };
-    this.usePostCompiling = function (value) {
-      $postCompilingEnabled = !!value;
-      return this;
-    };
-    this.determinePreferredLanguage = function (fn) {
-      var locale = fn && angular.isFunction(fn) ? fn() : getLocale();
-      if (!$availableLanguageKeys.length) {
-        $preferredLanguage = locale;
-      } else {
-        $preferredLanguage = negotiateLocale(locale);
-      }
-      return this;
-    };
-    this.registerAvailableLanguageKeys = function (languageKeys, aliases) {
-      if (languageKeys) {
-        $availableLanguageKeys = languageKeys;
-        if (aliases) {
-          $languageKeyAliases = aliases;
-        }
-        return this;
-      }
-      return $availableLanguageKeys;
-    };
-    this.$get = [
-      '$log',
-      '$injector',
-      '$rootScope',
-      '$q',
-      function ($log, $injector, $rootScope, $q) {
-        var Storage, defaultInterpolator = $injector.get($interpolationFactory || '$translateDefaultInterpolation'), pendingLoader = false, interpolatorHashMap = {}, langPromises = {}, fallbackIndex, startFallbackIteration;
-        var $translate = function (translationId, interpolateParams, interpolationId) {
-          if (angular.isArray(translationId)) {
-            var translateAll = function (translationIds) {
-              var results = {};
-              var promises = [];
-              var translate = function (translationId) {
-                var deferred = $q.defer();
-                var regardless = function (value) {
-                  results[translationId] = value;
-                  deferred.resolve([
-                    translationId,
-                    value
-                  ]);
-                };
-                $translate(translationId, interpolateParams, interpolationId).then(regardless, regardless);
-                return deferred.promise;
-              };
-              for (var i = 0, c = translationIds.length; i < c; i++) {
-                promises.push(translate(translationIds[i]));
-              }
-              return $q.all(promises).then(function () {
-                return results;
-              });
-            };
-            return translateAll(translationId);
-          }
-          var deferred = $q.defer();
-          if (translationId) {
-            translationId = translationId.trim();
-          }
-          var promiseToWaitFor = function () {
-              var promise = $preferredLanguage ? langPromises[$preferredLanguage] : langPromises[$uses];
-              fallbackIndex = 0;
-              if ($storageFactory && !promise) {
-                var langKey = Storage.get($storageKey);
-                promise = langPromises[langKey];
-                if ($fallbackLanguage && $fallbackLanguage.length) {
-                  var index = indexOf($fallbackLanguage, langKey);
-                  fallbackIndex = index > -1 ? index += 1 : 0;
-                  $fallbackLanguage.push($preferredLanguage);
-                }
-              }
-              return promise;
-            }();
-          if (!promiseToWaitFor) {
-            determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
-          } else {
-            promiseToWaitFor.then(function () {
-              determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
-            }, deferred.reject);
-          }
-          return deferred.promise;
-        };
-        var indexOf = function (array, searchElement) {
-          for (var i = 0, len = array.length; i < len; i++) {
-            if (array[i] === searchElement) {
-              return i;
-            }
-          }
-          return -1;
-        };
-        var applyNotFoundIndicators = function (translationId) {
-          if ($notFoundIndicatorLeft) {
-            translationId = [
-              $notFoundIndicatorLeft,
-              translationId
-            ].join(' ');
-          }
-          if ($notFoundIndicatorRight) {
-            translationId = [
-              translationId,
-              $notFoundIndicatorRight
-            ].join(' ');
-          }
-          return translationId;
-        };
-        var useLanguage = function (key) {
-          $uses = key;
-          $rootScope.$emit('$translateChangeSuccess');
-          if ($storageFactory) {
-            Storage.set($translate.storageKey(), $uses);
-          }
-          defaultInterpolator.setLocale($uses);
-          angular.forEach(interpolatorHashMap, function (interpolator, id) {
-            interpolatorHashMap[id].setLocale($uses);
-          });
-          $rootScope.$emit('$translateChangeEnd');
-        };
-        var loadAsync = function (key) {
-          if (!key) {
-            throw 'No language key specified for loading.';
-          }
-          var deferred = $q.defer();
-          $rootScope.$emit('$translateLoadingStart');
-          pendingLoader = true;
-          $injector.get($loaderFactory)(angular.extend($loaderOptions, { key: key })).then(function (data) {
-            var translationTable = {};
-            $rootScope.$emit('$translateLoadingSuccess');
-            if (angular.isArray(data)) {
-              angular.forEach(data, function (table) {
-                angular.extend(translationTable, flatObject(table));
-              });
-            } else {
-              angular.extend(translationTable, flatObject(data));
-            }
-            pendingLoader = false;
-            deferred.resolve({
-              key: key,
-              table: translationTable
-            });
-            $rootScope.$emit('$translateLoadingEnd');
-          }, function (key) {
-            $rootScope.$emit('$translateLoadingError');
-            deferred.reject(key);
-            $rootScope.$emit('$translateLoadingEnd');
-          });
-          return deferred.promise;
-        };
-        if ($storageFactory) {
-          Storage = $injector.get($storageFactory);
-          if (!Storage.get || !Storage.set) {
-            throw new Error('Couldn\'t use storage \'' + $storageFactory + '\', missing get() or set() method!');
-          }
-        }
-        if (angular.isFunction(defaultInterpolator.useSanitizeValueStrategy)) {
-          defaultInterpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
-        }
-        if ($interpolatorFactories.length) {
-          angular.forEach($interpolatorFactories, function (interpolatorFactory) {
-            var interpolator = $injector.get(interpolatorFactory);
-            interpolator.setLocale($preferredLanguage || $uses);
-            if (angular.isFunction(interpolator.useSanitizeValueStrategy)) {
-              interpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
-            }
-            interpolatorHashMap[interpolator.getInterpolationIdentifier()] = interpolator;
-          });
-        }
-        var getTranslationTable = function (langKey) {
-          var deferred = $q.defer();
-          if ($translationTable.hasOwnProperty(langKey)) {
-            deferred.resolve($translationTable[langKey]);
-            return deferred.promise;
-          } else {
-            langPromises[langKey].then(function (data) {
-              translations(data.key, data.table);
-              deferred.resolve(data.table);
-            }, deferred.reject);
-          }
-          return deferred.promise;
-        };
-        var getFallbackTranslation = function (langKey, translationId, interpolateParams, Interpolator) {
-          var deferred = $q.defer();
-          getTranslationTable(langKey).then(function (translationTable) {
-            if (translationTable.hasOwnProperty(translationId)) {
-              Interpolator.setLocale(langKey);
-              deferred.resolve(Interpolator.interpolate(translationTable[translationId], interpolateParams));
-              Interpolator.setLocale($uses);
-            } else {
-              deferred.reject();
-            }
-          }, deferred.reject);
-          return deferred.promise;
-        };
-        var getFallbackTranslationInstant = function (langKey, translationId, interpolateParams, Interpolator) {
-          var result, translationTable = $translationTable[langKey];
-          if (translationTable.hasOwnProperty(translationId)) {
-            Interpolator.setLocale(langKey);
-            result = Interpolator.interpolate(translationTable[translationId], interpolateParams);
-            Interpolator.setLocale($uses);
-          }
-          return result;
-        };
-        var resolveForFallbackLanguage = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
-          var deferred = $q.defer();
-          if (fallbackLanguageIndex < $fallbackLanguage.length) {
-            var langKey = $fallbackLanguage[fallbackLanguageIndex];
-            getFallbackTranslation(langKey, translationId, interpolateParams, Interpolator).then(function (translation) {
-              deferred.resolve(translation);
-            }, function () {
-              var nextFallbackLanguagePromise = resolveForFallbackLanguage(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
-              deferred.resolve(nextFallbackLanguagePromise);
-            });
-          } else {
-            if ($missingTranslationHandlerFactory) {
-              var resultString = $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
-              if (resultString !== undefined) {
-                deferred.resolve(resultString);
-              } else {
-                deferred.resolve(translationId);
-              }
-            } else {
-              deferred.resolve(translationId);
-            }
-          }
-          return deferred.promise;
-        };
-        var resolveForFallbackLanguageInstant = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
-          var result;
-          if (fallbackLanguageIndex < $fallbackLanguage.length) {
-            var langKey = $fallbackLanguage[fallbackLanguageIndex];
-            result = getFallbackTranslationInstant(langKey, translationId, interpolateParams, Interpolator);
-            if (!result) {
-              result = resolveForFallbackLanguageInstant(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
-            }
-          }
-          return result;
-        };
-        var fallbackTranslation = function (translationId, interpolateParams, Interpolator) {
-          return resolveForFallbackLanguage(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
-        };
-        var fallbackTranslationInstant = function (translationId, interpolateParams, Interpolator) {
-          return resolveForFallbackLanguageInstant(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
-        };
-        var determineTranslation = function (translationId, interpolateParams, interpolationId) {
-          var deferred = $q.defer();
-          var table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
-          if (table && table.hasOwnProperty(translationId)) {
-            var translation = table[translationId];
-            if (translation.substr(0, 2) === '@:') {
-              $translate(translation.substr(2), interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
-            } else {
-              deferred.resolve(Interpolator.interpolate(translation, interpolateParams));
-            }
-          } else {
-            if ($missingTranslationHandlerFactory && !pendingLoader) {
-              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
-            }
-            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
-              fallbackTranslation(translationId, interpolateParams, Interpolator).then(function (translation) {
-                deferred.resolve(translation);
-              }, function (_translationId) {
-                deferred.reject(applyNotFoundIndicators(_translationId));
-              });
-            } else {
-              deferred.reject(applyNotFoundIndicators(translationId));
-            }
-          }
-          return deferred.promise;
-        };
-        var determineTranslationInstant = function (translationId, interpolateParams, interpolationId) {
-          var result, table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
-          if (table && table.hasOwnProperty(translationId)) {
-            var translation = table[translationId];
-            if (translation.substr(0, 2) === '@:') {
-              result = determineTranslationInstant(translation.substr(2), interpolateParams, interpolationId);
-            } else {
-              result = Interpolator.interpolate(translation, interpolateParams);
-            }
-          } else {
-            if ($missingTranslationHandlerFactory && !pendingLoader) {
-              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
-            }
-            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
-              fallbackIndex = 0;
-              result = fallbackTranslationInstant(translationId, interpolateParams, Interpolator);
-            } else {
-              result = applyNotFoundIndicators(translationId);
-            }
-          }
-          return result;
-        };
-        $translate.preferredLanguage = function () {
-          return $preferredLanguage;
-        };
-        $translate.cloakClassName = function () {
-          return $cloakClassName;
-        };
-        $translate.fallbackLanguage = function (langKey) {
-          if (langKey !== undefined && langKey !== null) {
-            fallbackStack(langKey);
-            if ($loaderFactory) {
-              if ($fallbackLanguage && $fallbackLanguage.length) {
-                for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
-                  if (!langPromises[$fallbackLanguage[i]]) {
-                    langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
-                  }
-                }
-              }
-            }
-            $translate.use($translate.use());
-          }
-          if ($fallbackWasString) {
-            return $fallbackLanguage[0];
-          } else {
-            return $fallbackLanguage;
-          }
-        };
-        $translate.useFallbackLanguage = function (langKey) {
-          if (langKey !== undefined && langKey !== null) {
-            if (!langKey) {
-              startFallbackIteration = 0;
-            } else {
-              var langKeyPosition = indexOf($fallbackLanguage, langKey);
-              if (langKeyPosition > -1) {
-                startFallbackIteration = langKeyPosition;
-              }
-            }
-          }
-        };
-        $translate.proposedLanguage = function () {
-          return $nextLang;
-        };
-        $translate.storage = function () {
-          return Storage;
-        };
-        $translate.use = function (key) {
-          if (!key) {
-            return $uses;
-          }
-          var deferred = $q.defer();
-          $rootScope.$emit('$translateChangeStart');
-          var aliasedKey = negotiateLocale(key);
-          if (aliasedKey) {
-            key = aliasedKey;
-          }
-          if (!$translationTable[key] && $loaderFactory) {
-            $nextLang = key;
-            langPromises[key] = loadAsync(key).then(function (translation) {
-              translations(translation.key, translation.table);
-              deferred.resolve(translation.key);
-              if ($nextLang === key) {
-                useLanguage(translation.key);
-                $nextLang = undefined;
-              }
-            }, function (key) {
-              $nextLang = undefined;
-              $rootScope.$emit('$translateChangeError');
-              deferred.reject(key);
-              $rootScope.$emit('$translateChangeEnd');
-            });
-          } else {
-            deferred.resolve(key);
-            useLanguage(key);
-          }
-          return deferred.promise;
-        };
-        $translate.storageKey = function () {
-          return storageKey();
-        };
-        $translate.isPostCompilingEnabled = function () {
-          return $postCompilingEnabled;
-        };
-        $translate.refresh = function (langKey) {
-          if (!$loaderFactory) {
-            throw new Error('Couldn\'t refresh translation table, no loader registered!');
-          }
-          var deferred = $q.defer();
-          function resolve() {
-            deferred.resolve();
-            $rootScope.$emit('$translateRefreshEnd');
-          }
-          function reject() {
-            deferred.reject();
-            $rootScope.$emit('$translateRefreshEnd');
-          }
-          $rootScope.$emit('$translateRefreshStart');
-          if (!langKey) {
-            var tables = [];
-            if ($fallbackLanguage && $fallbackLanguage.length) {
-              for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
-                tables.push(loadAsync($fallbackLanguage[i]));
-              }
-            }
-            if ($uses) {
-              tables.push(loadAsync($uses));
-            }
-            $q.all(tables).then(function (tableData) {
-              angular.forEach(tableData, function (data) {
-                if ($translationTable[data.key]) {
-                  delete $translationTable[data.key];
-                }
-                translations(data.key, data.table);
-              });
-              if ($uses) {
-                useLanguage($uses);
-              }
-              resolve();
-            });
-          } else if ($translationTable[langKey]) {
-            loadAsync(langKey).then(function (data) {
-              translations(data.key, data.table);
-              if (langKey === $uses) {
-                useLanguage($uses);
-              }
-              resolve();
-            }, reject);
-          } else {
-            reject();
-          }
-          return deferred.promise;
-        };
-        $translate.instant = function (translationId, interpolateParams, interpolationId) {
-          if (translationId === null || angular.isUndefined(translationId)) {
-            return translationId;
-          }
-          if (angular.isArray(translationId)) {
-            var results = {};
-            for (var i = 0, c = translationId.length; i < c; i++) {
-              results[translationId[i]] = $translate.instant(translationId[i], interpolateParams, interpolationId);
-            }
-            return results;
-          }
-          if (angular.isString(translationId) && translationId.length < 1) {
-            return translationId;
-          }
-          if (translationId) {
-            translationId = translationId.trim();
-          }
-          var result, possibleLangKeys = [];
-          if ($preferredLanguage) {
-            possibleLangKeys.push($preferredLanguage);
-          }
-          if ($uses) {
-            possibleLangKeys.push($uses);
-          }
-          if ($fallbackLanguage && $fallbackLanguage.length) {
-            possibleLangKeys = possibleLangKeys.concat($fallbackLanguage);
-          }
-          for (var j = 0, d = possibleLangKeys.length; j < d; j++) {
-            var possibleLangKey = possibleLangKeys[j];
-            if ($translationTable[possibleLangKey]) {
-              if (typeof $translationTable[possibleLangKey][translationId] !== 'undefined') {
-                result = determineTranslationInstant(translationId, interpolateParams, interpolationId);
-              }
-            }
-            if (typeof result !== 'undefined') {
-              break;
-            }
-          }
-          if (!result && result !== '') {
-            result = translationId;
-            if ($missingTranslationHandlerFactory && !pendingLoader) {
-              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
-            }
-          }
-          return result;
-        };
-        if ($loaderFactory) {
-          if (angular.equals($translationTable, {})) {
-            $translate.use($translate.use());
-          }
-          if ($fallbackLanguage && $fallbackLanguage.length) {
-            for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
-              langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
-            }
-          }
-        }
-        return $translate;
-      }
-    ];
-  }
-]);
-angular.module('pascalprecht.translate').factory('$translateDefaultInterpolation', [
-  '$interpolate',
-  function ($interpolate) {
-    var $translateInterpolator = {}, $locale, $identifier = 'default', $sanitizeValueStrategy = null, sanitizeValueStrategies = {
-        escaped: function (params) {
-          var result = {};
-          for (var key in params) {
-            if (params.hasOwnProperty(key)) {
-              result[key] = angular.element('<div></div>').text(params[key]).html();
-            }
-          }
-          return result;
-        }
-      };
-    var sanitizeParams = function (params) {
-      var result;
-      if (angular.isFunction(sanitizeValueStrategies[$sanitizeValueStrategy])) {
-        result = sanitizeValueStrategies[$sanitizeValueStrategy](params);
-      } else {
-        result = params;
-      }
-      return result;
-    };
-    $translateInterpolator.setLocale = function (locale) {
-      $locale = locale;
-    };
-    $translateInterpolator.getInterpolationIdentifier = function () {
-      return $identifier;
-    };
-    $translateInterpolator.useSanitizeValueStrategy = function (value) {
-      $sanitizeValueStrategy = value;
-      return this;
-    };
-    $translateInterpolator.interpolate = function (string, interpolateParams) {
-      if ($sanitizeValueStrategy) {
-        interpolateParams = sanitizeParams(interpolateParams);
-      }
-      return $interpolate(string)(interpolateParams || {});
-    };
-    return $translateInterpolator;
-  }
-]);
-angular.module('pascalprecht.translate').constant('$STORAGE_KEY', 'NG_TRANSLATE_LANG_KEY');
-angular.module('pascalprecht.translate').directive('translate', [
-  '$translate',
-  '$q',
-  '$interpolate',
-  '$compile',
-  '$parse',
-  '$rootScope',
-  function ($translate, $q, $interpolate, $compile, $parse, $rootScope) {
-    return {
-      restrict: 'AE',
-      scope: true,
-      compile: function (tElement, tAttr) {
-        var translateValuesExist = tAttr.translateValues ? tAttr.translateValues : undefined;
-        var translateInterpolation = tAttr.translateInterpolation ? tAttr.translateInterpolation : undefined;
-        var translateValueExist = tElement[0].outerHTML.match(/translate-value-+/i);
-        return function linkFn(scope, iElement, iAttr) {
-          scope.interpolateParams = {};
-          iAttr.$observe('translate', function (translationId) {
-            if (angular.equals(translationId, '') || !angular.isDefined(translationId)) {
-              scope.translationId = $interpolate(iElement.text().replace(/^\s+|\s+$/g, ''))(scope.$parent);
-            } else {
-              scope.translationId = translationId;
-            }
-          });
-          iAttr.$observe('translateDefault', function (value) {
-            scope.defaultText = value;
-          });
-          if (translateValuesExist) {
-            iAttr.$observe('translateValues', function (interpolateParams) {
-              if (interpolateParams) {
-                scope.$parent.$watch(function () {
-                  angular.extend(scope.interpolateParams, $parse(interpolateParams)(scope.$parent));
-                });
-              }
-            });
-          }
-          if (translateValueExist) {
-            var fn = function (attrName) {
-              iAttr.$observe(attrName, function (value) {
-                scope.interpolateParams[angular.lowercase(attrName.substr(14, 1)) + attrName.substr(15)] = value;
-              });
-            };
-            for (var attr in iAttr) {
-              if (iAttr.hasOwnProperty(attr) && attr.substr(0, 14) === 'translateValue' && attr !== 'translateValues') {
-                fn(attr);
-              }
-            }
-          }
-          var applyElementContent = function (value, scope, successful) {
-            if (!successful && typeof scope.defaultText !== 'undefined') {
-              value = scope.defaultText;
-            }
-            iElement.html(value);
-            var globallyEnabled = $translate.isPostCompilingEnabled();
-            var locallyDefined = typeof tAttr.translateCompile !== 'undefined';
-            var locallyEnabled = locallyDefined && tAttr.translateCompile !== 'false';
-            if (globallyEnabled && !locallyDefined || locallyEnabled) {
-              $compile(iElement.contents())(scope);
-            }
-          };
-          var updateTranslationFn = function () {
-              if (!translateValuesExist && !translateValueExist) {
-                return function () {
-                  var unwatch = scope.$watch('translationId', function (value) {
-                      if (scope.translationId && value) {
-                        $translate(value, {}, translateInterpolation).then(function (translation) {
-                          applyElementContent(translation, scope, true);
-                          unwatch();
-                        }, function (translationId) {
-                          applyElementContent(translationId, scope, false);
-                          unwatch();
-                        });
-                      }
-                    }, true);
-                };
-              } else {
-                return function () {
-                  var updateTranslations = function () {
-                    if (scope.translationId && scope.interpolateParams) {
-                      $translate(scope.translationId, scope.interpolateParams, translateInterpolation).then(function (translation) {
-                        applyElementContent(translation, scope, true);
-                      }, function (translationId) {
-                        applyElementContent(translationId, scope, false);
-                      });
-                    }
-                  };
-                  scope.$watch('interpolateParams', updateTranslations, true);
-                  scope.$watch('translationId', updateTranslations);
-                };
-              }
-            }();
-          var unbind = $rootScope.$on('$translateChangeSuccess', updateTranslationFn);
-          updateTranslationFn();
-          scope.$on('$destroy', unbind);
-        };
-      }
-    };
-  }
-]);
-angular.module('pascalprecht.translate').directive('translateCloak', [
-  '$rootScope',
-  '$translate',
-  function ($rootScope, $translate) {
-    return {
-      compile: function (tElement) {
-        $rootScope.$on('$translateLoadingSuccess', function () {
-          tElement.removeClass($translate.cloakClassName());
-        });
-        tElement.addClass($translate.cloakClassName());
-      }
-    };
-  }
-]);
-angular.module('pascalprecht.translate').filter('translate', [
-  '$parse',
-  '$translate',
-  function ($parse, $translate) {
-    return function (translationId, interpolateParams, interpolation) {
-      if (!angular.isObject(interpolateParams)) {
-        interpolateParams = $parse(interpolateParams)(this);
-      }
-      return $translate.instant(translationId, interpolateParams, interpolation);
-    };
-  }
-]);
-angular.module('pascalprecht.translate')
-/**
- * @ngdoc object
- * @name pascalprecht.translate.$translateStaticFilesLoader
- * @requires $q
- * @requires $http
- *
- * @description
- * Creates a loading function for a typical static file url pattern:
- * "lang-en_US.json", "lang-de_DE.json", etc. Using this builder,
- * the response of these urls must be an object of key-value pairs.
- *
- * @param {object} options Options object, which gets prefix, suffix and key.
- */
-.factory('$translateStaticFilesLoader', ['$q', '$http', function ($q, $http) {
-
-  return function (options) {
-
-    if (!options || (!angular.isString(options.prefix) || !angular.isString(options.suffix))) {
-      throw new Error('Couldn\'t load static files, no prefix or suffix specified!');
-    }
-
-    var deferred = $q.defer();
-
-    $http({
-      url: [
-        options.prefix,
-        options.key,
-        options.suffix
-      ].join(''),
-      method: 'GET',
-      params: ''
-    }).success(function (data) {
-      deferred.resolve(data);
-    }).error(function (data) {
-      deferred.reject(options.key);
-    });
-
-    return deferred.promise;
-  };
-}]);
-
-angular.module('pascalprecht.translate')
-
-/**
- * @ngdoc object
- * @name pascalprecht.translate.$translateCookieStorage
- * @requires $cookieStore
- *
- * @description
- * Abstraction layer for cookieStore. This service is used when telling angular-translate
- * to use cookieStore as storage.
- *
- */
-.factory('$translateCookieStorage', ['$cookieStore', function ($cookieStore) {
-
-  var $translateCookieStorage = {
-
-    /**
-     * @ngdoc function
-     * @name pascalprecht.translate.$translateCookieStorage#get
-     * @methodOf pascalprecht.translate.$translateCookieStorage
-     *
-     * @description
-     * Returns an item from cookieStorage by given name.
-     *
-     * @param {string} name Item name
-     * @return {string} Value of item name
-     */
-    get: function (name) {
-      return $cookieStore.get(name);
-    },
-
-    /**
-     * @ngdoc function
-     * @name pascalprecht.translate.$translateCookieStorage#set
-     * @methodOf pascalprecht.translate.$translateCookieStorage
-     *
-     * @description
-     * Sets an item in cookieStorage by given name.
-     *
-     * @param {string} name Item name
-     * @param {string} value Item value
-     */
-    set: function (name, value) {
-      $cookieStore.put(name, value);
-    }
-  };
-
-  return $translateCookieStorage;
-}]);
-
-angular.module('pascalprecht.translate')
-
-/**
- * @ngdoc object
- * @name pascalprecht.translate.$translateLocalStorage
- * @requires $window
- *
- * @description
- * Abstraction layer for localStorage. This service is used when telling angular-translate
- * to use localStorage as storage.
- *
- */
-.factory('$translateLocalStorage', ['$window', '$translateCookieStorage', function ($window, $translateCookieStorage) {
-
-  // Setup adapter
-  var localStorageAdapter = (function(){
-    var langKey;
-    return {
-      /**
-       * @ngdoc function
-       * @name pascalprecht.translate.$translateLocalStorage#get
-       * @methodOf pascalprecht.translate.$translateLocalStorage
-       *
-       * @description
-       * Returns an item from localStorage by given name.
-       *
-       * @param {string} name Item name
-       * @return {string} Value of item name
-       */
-      get: function (name) {
-        if(!langKey) {
-          langKey = $window.localStorage.getItem(name);
-        }
-
-        return langKey;
-      },
-      /**
-       * @ngdoc function
-       * @name pascalprecht.translate.$translateLocalStorage#set
-       * @methodOf pascalprecht.translate.$translateLocalStorage
-       *
-       * @description
-       * Sets an item in localStorage by given name.
-       *
-       * @param {string} name Item name
-       * @param {string} value Item value
-       */
-      set: function (name, value) {
-        langKey=value;
-        $window.localStorage.setItem(name, value);
-      }
-    };
-  }());
-
-  var hasLocalStorageSupport = 'localStorage' in $window && $window.localStorage !== null;
-  if (hasLocalStorageSupport) {
-    var testKey = 'pascalprecht.translate.storageTest';
-    try {
-      $window.localStorage.setItem(testKey, 'foo');
-      $window.localStorage.removeItem(testKey);
-    } catch (e){
-      hasLocalStorageSupport = false;
-    }
-  }
-  var $translateLocalStorage = hasLocalStorageSupport ? localStorageAdapter : $translateCookieStorage;
-  return $translateLocalStorage;
-}]);
-
 /**
  * State-based routing for AngularJS
  * @version v0.2.15
@@ -42080,6 +41037,2060 @@ angular.module('ui.utils',  [
   'ui.unique',
   'ui.validate'
 ]);
+
+'use strict';
+
+(function() {
+
+    /**
+     * @ngdoc overview
+     * @name ngStorage
+     */
+
+    angular.module('ngStorage', []).
+
+    /**
+     * @ngdoc object
+     * @name ngStorage.$localStorage
+     * @requires $rootScope
+     * @requires $window
+     */
+
+    factory('$localStorage', _storageFactory('localStorage')).
+
+    /**
+     * @ngdoc object
+     * @name ngStorage.$sessionStorage
+     * @requires $rootScope
+     * @requires $window
+     */
+
+    factory('$sessionStorage', _storageFactory('sessionStorage'));
+
+    function _storageFactory(storageType) {
+        return [
+            '$rootScope',
+            '$window',
+
+            function(
+                $rootScope,
+                $window
+            ){
+                // #9: Assign a placeholder object if Web Storage is unavailable to prevent breaking the entire AngularJS app
+                var webStorage = $window[storageType] || (console.warn('This browser does not support Web Storage!'), {}),
+                    $storage = {
+                        $default: function(items) {
+                            for (var k in items) {
+                                angular.isDefined($storage[k]) || ($storage[k] = items[k]);
+                            }
+
+                            return $storage;
+                        },
+                        $reset: function(items) {
+                            for (var k in $storage) {
+                                '$' === k[0] || delete $storage[k];
+                            }
+
+                            return $storage.$default(items);
+                        }
+                    },
+                    _last$storage,
+                    _debounce;
+
+                for (var i = 0, k; i < webStorage.length; i++) {
+                    // #8, #10: `webStorage.key(i)` may be an empty string (or throw an exception in IE9 if `webStorage` is empty)
+                    (k = webStorage.key(i)) && 'ngStorage-' === k.slice(0, 10) && ($storage[k.slice(10)] = angular.fromJson(webStorage.getItem(k)));
+                }
+
+                _last$storage = angular.copy($storage);
+
+                $rootScope.$watch(function() {
+                    _debounce || (_debounce = setTimeout(function() {
+                        _debounce = null;
+
+                        if (!angular.equals($storage, _last$storage)) {
+                            angular.forEach($storage, function(v, k) {
+                                angular.isDefined(v) && '$' !== k[0] && webStorage.setItem('ngStorage-' + k, angular.toJson(v));
+
+                                delete _last$storage[k];
+                            });
+
+                            for (var k in _last$storage) {
+                                webStorage.removeItem('ngStorage-' + k);
+                            }
+
+                            _last$storage = angular.copy($storage);
+                        }
+                    }, 100));
+                });
+
+                // #6: Use `$window.addEventListener` instead of `angular.element` to avoid the jQuery-specific `event.originalEvent`
+                'localStorage' === storageType && $window.addEventListener && $window.addEventListener('storage', function(event) {
+                    if ('ngStorage-' === event.key.slice(0, 10)) {
+                        event.newValue ? $storage[event.key.slice(10)] = angular.fromJson(event.newValue) : delete $storage[event.key.slice(10)];
+
+                        _last$storage = angular.copy($storage);
+
+                        $rootScope.$apply();
+                    }
+                });
+
+                return $storage;
+            }
+        ];
+    }
+
+})();
+
+/**
+ * oclazyload - Load modules on demand (lazy load) with angularJS
+ * @version v0.3.7
+ * @link https://github.com/ocombe/ocLazyLoad
+ * @license MIT
+ * @author Olivier Combe <olivier.combe@gmail.com>
+ */
+(function() {
+	'use strict';
+	var regModules = ['ng'],
+		regInvokes = [],
+		regConfigs = [],
+		justLoaded = [],
+		ocLazyLoad = angular.module('oc.lazyLoad', ['ng']),
+		broadcast = angular.noop;
+
+	ocLazyLoad.provider('$ocLazyLoad', ['$controllerProvider', '$provide', '$compileProvider', '$filterProvider', '$injector', '$animateProvider',
+		function($controllerProvider, $provide, $compileProvider, $filterProvider, $injector, $animateProvider) {
+			var modules = {},
+				providers = {
+					$controllerProvider: $controllerProvider,
+					$compileProvider: $compileProvider,
+					$filterProvider: $filterProvider,
+					$provide: $provide, // other things
+					$injector: $injector,
+					$animateProvider: $animateProvider
+				},
+				anchor = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0],
+				jsLoader, cssLoader, templatesLoader,
+				debug = false,
+				events = false;
+
+			// Let's get the list of loaded modules & components
+			init(angular.element(window.document));
+
+			this.$get = ['$timeout', '$log', '$q', '$templateCache', '$http', '$rootElement', '$rootScope', '$cacheFactory', function($timeout, $log, $q, $templateCache, $http, $rootElement, $rootScope, $cacheFactory) {
+				var instanceInjector,
+					filesCache = $cacheFactory('ocLazyLoad');
+
+				if(!debug) {
+					$log = {};
+					$log['error'] = angular.noop;
+					$log['warn'] = angular.noop;
+					$log['info'] = angular.noop;
+				}
+
+				// Make this lazy because at the moment that $get() is called the instance injector hasn't been assigned to the rootElement yet
+				providers.getInstanceInjector = function() {
+					return (instanceInjector) ? instanceInjector : (instanceInjector = $rootElement.data('$injector'));
+				};
+
+				broadcast = function broadcast(eventName, params) {
+					if(events) {
+						$rootScope.$broadcast(eventName, params);
+					}
+					if(debug) {
+						$log.info(eventName, params);
+					}
+				}
+
+				/**
+				 * Load a js/css file
+				 * @param type
+				 * @param path
+				 * @returns promise
+				 */
+				var buildElement = function buildElement(type, path, params) {
+					var deferred = $q.defer(),
+						el, loaded,
+						cacheBuster = function cacheBuster(url) {
+							var dc = new Date().getTime();
+							if(url.indexOf('?') >= 0) {
+								if(url.substring(0, url.length - 1) === '&') {
+									return url + '_dc=' + dc;
+								}
+								return url + '&_dc=' + dc;
+							} else {
+								return url + '?_dc=' + dc;
+							}
+						};
+
+                    // Store the promise early so the file load can be detected by other parallel lazy loads
+                    // (ie: multiple routes on one page) a 'true' value isn't sufficient
+                    // as it causes false positive load results.
+                    if(angular.isUndefined(filesCache.get(path))) {
+                        filesCache.put(path, deferred.promise);
+                    }
+
+					// Switch in case more content types are added later
+					switch(type) {
+						case 'css':
+							el = document.createElement('link');
+							el.type = 'text/css';
+							el.rel = 'stylesheet';
+							el.href = params.cache === false ? cacheBuster(path) : path;
+							break;
+						case 'js':
+							el = document.createElement('script');
+							el.src = params.cache === false ? cacheBuster(path) : path;
+							break;
+						default:
+							deferred.reject(new Error('Requested type "' + type + '" is not known. Could not inject "' + path + '"'));
+							break;
+					}
+					el.onload = el['onreadystatechange'] = function(e) {
+						if((el['readyState'] && !(/^c|loade/.test(el['readyState']))) || loaded) return;
+						el.onload = el['onreadystatechange'] = null
+						loaded = 1;
+						broadcast('ocLazyLoad.fileLoaded', path);
+						deferred.resolve();
+					}
+					el.onerror = function(e) {
+						deferred.reject(new Error('Unable to load '+path));
+					}
+					el.async = 1;
+					anchor.insertBefore(el, anchor.lastChild);
+
+					return deferred.promise;
+				}
+
+				if(angular.isUndefined(jsLoader)) {
+					/**
+					 * jsLoader function
+					 * @type Function
+					 * @param paths array list of js files to load
+					 * @param callback to call when everything is loaded. We use a callback and not a promise
+					 * @param params object config parameters
+					 * because the user can overwrite jsLoader and it will probably not use promises :(
+					 */
+					jsLoader = function(paths, callback, params) {
+						var promises = [];
+						angular.forEach(paths, function loading(path) {
+							promises.push(buildElement('js', path, params));
+						});
+						$q.all(promises).then(function success() {
+							callback();
+						}, function error(err) {
+							callback(err);
+						});
+					}
+					jsLoader.ocLazyLoadLoader = true;
+				}
+
+				if(angular.isUndefined(cssLoader)) {
+					/**
+					 * cssLoader function
+					 * @type Function
+					 * @param paths array list of css files to load
+					 * @param callback to call when everything is loaded. We use a callback and not a promise
+					 * @param params object config parameters
+					 * because the user can overwrite cssLoader and it will probably not use promises :(
+					 */
+					cssLoader = function(paths, callback, params) {
+						var promises = [];
+						angular.forEach(paths, function loading(path) {
+							promises.push(buildElement('css', path, params));
+						});
+						$q.all(promises).then(function success() {
+							callback();
+						}, function error(err) {
+							callback(err);
+						});
+					}
+					cssLoader.ocLazyLoadLoader = true;
+				}
+
+				if(angular.isUndefined(templatesLoader)) {
+					/**
+					 * templatesLoader function
+					 * @type Function
+					 * @param paths array list of css files to load
+					 * @param callback to call when everything is loaded. We use a callback and not a promise
+					 * @param params object config parameters for $http
+					 * because the user can overwrite templatesLoader and it will probably not use promises :(
+					 */
+					templatesLoader = function(paths, callback, params) {
+						if(angular.isString(paths)) {
+							paths = [paths];
+						}
+						var promises = [];
+						angular.forEach(paths, function(url) {
+							var deferred = $q.defer();
+							promises.push(deferred.promise);
+							$http.get(url, params).success(function(data) {
+								angular.forEach(angular.element(data), function(node) {
+									if(node.nodeName === 'SCRIPT' && node.type === 'text/ng-template') {
+										$templateCache.put(node.id, node.innerHTML);
+									}
+								});
+								if(angular.isUndefined(filesCache.get(url))) {
+									filesCache.put(url, true);
+								}
+								deferred.resolve();
+							}).error(function(data) {
+								var err = 'Error load template "' + url + '": ' + data;
+								$log.error(err);
+								deferred.reject(new Error(err));
+							});
+						});
+						return $q.all(promises).then(function success() {
+							callback();
+						}, function error(err) {
+							callback(err);
+						});
+					}
+					templatesLoader.ocLazyLoadLoader = true;
+				}
+
+				var filesLoader = function(config, params) {
+					var cssFiles = [],
+						templatesFiles = [],
+						jsFiles = [],
+						promises = [],
+                        cachePromise = null;
+
+					angular.extend(params || {}, config);
+
+					angular.forEach(params.files, function(path) {
+                        cachePromise = filesCache.get(path);
+						if(angular.isUndefined(cachePromise) || params.cache === false) {
+							if(/\.css[^\.]*$/.test(path) && cssFiles.indexOf(path) === -1) {
+								cssFiles.push(path);
+							} else if(/\.(htm|html)[^\.]*$/.test(path) && templatesFiles.indexOf(path) === -1) {
+								templatesFiles.push(path);
+							} else if (jsFiles.indexOf(path) === -1) {
+								jsFiles.push(path);
+							}
+						} else if (cachePromise) {
+                            promises.push(cachePromise);
+                        }
+					});
+
+					if(cssFiles.length > 0) {
+						var cssDeferred = $q.defer();
+						cssLoader(cssFiles, function(err) {
+							if(angular.isDefined(err) && cssLoader.hasOwnProperty('ocLazyLoadLoader')) {
+								$log.error(err);
+								cssDeferred.reject(err);
+							} else {
+								cssDeferred.resolve();
+							}
+						}, params);
+						promises.push(cssDeferred.promise);
+					}
+
+					if(templatesFiles.length > 0) {
+						var templatesDeferred = $q.defer();
+						templatesLoader(templatesFiles, function(err) {
+							if(angular.isDefined(err) && templatesLoader.hasOwnProperty('ocLazyLoadLoader')) {
+								$log.error(err);
+								templatesDeferred.reject(err);
+							} else {
+								templatesDeferred.resolve();
+							}
+						}, params);
+						promises.push(templatesDeferred.promise);
+					}
+
+					if(jsFiles.length > 0) {
+						var jsDeferred = $q.defer();
+						jsLoader(jsFiles, function(err) {
+							if(angular.isDefined(err) && jsLoader.hasOwnProperty('ocLazyLoadLoader')) {
+								$log.error(err);
+								jsDeferred.reject(err);
+							} else {
+								jsDeferred.resolve();
+							}
+						}, params);
+						promises.push(jsDeferred.promise);
+					}
+
+					return $q.all(promises);
+				}
+
+				return {
+					getModuleConfig: function(name) {
+						if(!modules[name]) {
+							return null;
+						}
+						return modules[name];
+					},
+
+					setModuleConfig: function(module) {
+						modules[module.name] = module;
+						return module;
+					},
+
+					getModules: function() {
+						return regModules;
+					},
+
+					// deprecated
+					loadTemplateFile: function(paths, params) {
+						return filesLoader({files: paths}, params);
+					},
+
+					load: function(module, params) {
+						var self = this,
+							config = null,
+							moduleCache = [],
+							deferredList = [],
+							deferred = $q.defer(),
+							moduleName,
+							errText;
+
+						if(angular.isUndefined(params)) {
+							params = {};
+						}
+
+						// If module is an array, break it down
+						if(angular.isArray(module)) {
+							// Resubmit each entry as a single module
+							angular.forEach(module, function(m) {
+                                if (m) {
+                                    deferredList.push(self.load(m, params));
+                                }
+							});
+
+							// Resolve the promise once everything has loaded
+							$q.all(deferredList).then(function() {
+								deferred.resolve(module);
+							});
+
+							return deferred.promise;
+						}
+
+						moduleName = getModuleName(module);
+
+						// Get or Set a configuration depending on what was passed in
+						if(typeof module === 'string') {
+							config = self.getModuleConfig(module);
+							if(!config) {
+								config = {
+									files: [module]
+								};
+								moduleName = null;
+							}
+						} else if(typeof module === 'object') {
+							config = self.setModuleConfig(module);
+						}
+
+						if(config === null) {
+							errText = 'Module "' + moduleName + '" is not configured, cannot load.';
+							$log.error(errText);
+							deferred.reject(new Error(errText));
+						} else {
+							// deprecated
+							if(angular.isDefined(config.template)) {
+								if(angular.isUndefined(config.files)) {
+									config.files = [];
+								}
+								if(angular.isString(config.template)) {
+									config.files.push(config.template);
+								} else if(angular.isArray(config.template)) {
+									config.files.concat(config.template);
+								}
+							}
+						}
+
+						moduleCache.push = function(value) {
+							if(this.indexOf(value) === -1) {
+								Array.prototype.push.apply(this, arguments);
+							}
+						};
+
+						// If this module has been loaded before, re-use it.
+						if(angular.isDefined(moduleName) && moduleExists(moduleName) && regModules.indexOf(moduleName) !== -1) {
+							moduleCache.push(moduleName);
+
+							// if we don't want to load new files, resolve here
+							if(angular.isUndefined(config.files)) {
+								deferred.resolve();
+								return deferred.promise;
+							}
+						}
+
+						var loadDependencies = function loadDependencies(module) {
+							var moduleName,
+								loadedModule,
+								requires,
+                                diff,
+								promisesList = [];
+
+							moduleName = getModuleName(module);
+							if(moduleName === null) {
+								return $q.when();
+							} else {
+								try {
+									loadedModule = getModule(moduleName);
+								} catch(e) {
+									var deferred = $q.defer();
+									$log.error(e.message);
+									deferred.reject(e);
+									return deferred.promise;
+								}
+								requires = getRequires(loadedModule);
+							}
+
+							angular.forEach(requires, function(requireEntry) {
+								// If no configuration is provided, try and find one from a previous load.
+								// If there isn't one, bail and let the normal flow run
+								if(typeof requireEntry === 'string') {
+									var config = self.getModuleConfig(requireEntry);
+									if(config === null) {
+										moduleCache.push(requireEntry); // We don't know about this module, but something else might, so push it anyway.
+										return;
+									}
+									requireEntry = config;
+								}
+
+								// Check if this dependency has been loaded previously
+								if(moduleExists(requireEntry.name)) {
+									if(typeof module !== 'string') {
+                                        // compare against the already loaded module to see if the new definition adds any new files
+                                        diff = requireEntry.files.filter(function (n) {
+                                            return self.getModuleConfig(requireEntry.name).files.indexOf(n) < 0;
+                                        });
+
+                                        // If the module was redefined, advise via the console
+                                        if (diff.length !== 0) {
+                                            $log.warn('Module "', moduleName, '" attempted to redefine configuration for dependency. "', requireEntry.name, '"\n Additional Files Loaded:', diff);
+                                        }
+
+                                        // Push everything to the file loader, it will weed out the duplicates.
+                                        promisesList.push(filesLoader(requireEntry.files, params).then(function () {
+                                            return loadDependencies(requireEntry);
+                                        }));
+                                    }
+									return;
+								} else if(typeof requireEntry === 'object') {
+									if(requireEntry.hasOwnProperty('name') && requireEntry['name']) {
+										// The dependency doesn't exist in the module cache and is a new configuration, so store and push it.
+										self.setModuleConfig(requireEntry);
+										moduleCache.push(requireEntry['name']);
+									}
+
+									// CSS Loading Handler
+									if(requireEntry.hasOwnProperty('css') && requireEntry['css'].length !== 0) {
+										// Locate the document insertion point
+										angular.forEach(requireEntry['css'], function(path) {
+											buildElement('css', path, params);
+										});
+									}
+									// CSS End.
+								}
+
+								// Check if the dependency has any files that need to be loaded. If there are, push a new promise to the promise list.
+								if(requireEntry.hasOwnProperty('files') && requireEntry.files.length !== 0) {
+									if(requireEntry.files) {
+										promisesList.push(filesLoader(requireEntry, params).then(function() {
+											return loadDependencies(requireEntry);
+										}));
+									}
+								}
+							});
+
+							// Create a wrapper promise to watch the promise list and resolve it once everything is done.
+							return $q.all(promisesList);
+						}
+
+						filesLoader(config, params).then(function success() {
+							if(moduleName === null) {
+								deferred.resolve(module);
+							} else {
+								moduleCache.push(moduleName);
+								loadDependencies(moduleName).then(function success() {
+									try {
+										justLoaded = [];
+										register(providers, moduleCache, params);
+									} catch(e) {
+										$log.error(e.message);
+										deferred.reject(e);
+										return;
+									}
+									$timeout(function() {
+										deferred.resolve(module);
+									});
+								}, function error(err) {
+									$timeout(function() {
+										deferred.reject(err);
+									});
+								});
+							}
+						}, function error(err) {
+							deferred.reject(err);
+						});
+
+						return deferred.promise;
+					}
+				};
+			}];
+
+			this.config = function(config) {
+				if(angular.isDefined(config.jsLoader) || angular.isDefined(config.asyncLoader)) {
+					jsLoader = config.jsLoader || config.asyncLoader;
+					if(!angular.isFunction(jsLoader)) {
+						throw('The js loader needs to be a function');
+					}
+				}
+
+				if(angular.isDefined(config.cssLoader)) {
+					cssLoader = config.cssLoader;
+					if(!angular.isFunction(cssLoader)) {
+						throw('The css loader needs to be a function');
+					}
+				}
+
+				if(angular.isDefined(config.templatesLoader)) {
+					templatesLoader = config.templatesLoader;
+					if(!angular.isFunction(templatesLoader)) {
+						throw('The template loader needs to be a function');
+					}
+				}
+
+				// for bootstrap apps, we need to define the main module name
+				if(angular.isDefined(config.loadedModules)) {
+					var addRegModule = function(loadedModule) {
+						if(regModules.indexOf(loadedModule) < 0) {
+							regModules.push(loadedModule);
+							angular.forEach(angular.module(loadedModule).requires, addRegModule);
+						}
+					};
+					angular.forEach(config.loadedModules, addRegModule);
+				}
+
+				// If we want to define modules configs
+				if(angular.isDefined(config.modules)) {
+					if(angular.isArray(config.modules)) {
+						angular.forEach(config.modules, function(moduleConfig) {
+							modules[moduleConfig.name] = moduleConfig;
+						});
+					} else {
+						modules[config.modules.name] = config.modules;
+					}
+				}
+
+				if(angular.isDefined(config.debug)) {
+					debug = config.debug;
+				}
+
+				if(angular.isDefined(config.events)) {
+					events = config.events;
+				}
+			};
+		}]);
+
+	ocLazyLoad.directive('ocLazyLoad', ['$http', '$log', '$ocLazyLoad', '$compile', '$timeout', '$templateCache', '$animate',
+		function($http, $log, $ocLazyLoad, $compile, $timeout, $templateCache, $animate) {
+			return {
+				restrict: 'A',
+				terminal: true,
+				priority: 401, // 1 more than ngInclude
+				transclude: 'element',
+				controller: angular.noop,
+				compile: function(element, attrs) {
+					return function($scope, $element, $attr, ctrl, $transclude) {
+						var childScope,
+							evaluated = $scope.$eval($attr.ocLazyLoad),
+							onloadExp = evaluated && evaluated.onload ? evaluated.onload : '';
+
+						/**
+						 * Destroy the current scope of this element and empty the html
+						 */
+						function clearContent() {
+							if(childScope) {
+								childScope.$destroy();
+								childScope = null;
+							}
+							$element.html('');
+						}
+
+						/**
+						 * Load a template from cache or url
+						 * @param url
+						 * @param callback
+						 */
+						function loadTemplate(url, callback) {
+							var view;
+
+							if(typeof(view = $templateCache.get(url)) !== 'undefined') {
+								callback(view);
+							} else {
+								$http.get(url)
+									.success(function(data) {
+										$templateCache.put('view:' + url, data);
+										callback(data);
+									})
+									.error(function(data) {
+										$log.error('Error load template "' + url + '": ' + data);
+									});
+							}
+						}
+
+						$scope.$watch($attr.ocLazyLoad, function(moduleName) {
+							if(angular.isDefined(moduleName)) {
+								$ocLazyLoad.load(moduleName).then(function(moduleConfig) {
+									$transclude($scope, function cloneConnectFn(clone) {
+										$animate.enter(clone, null, $element);
+									});
+								});
+							} else {
+								clearContent();
+							}
+						}, true);
+					};
+				}
+				/*link: function($scope, $element, $attr) {
+
+				 }*/
+			};
+		}]);
+
+	/**
+	 * Get the list of required modules/services/... for this module
+	 * @param module
+	 * @returns {Array}
+	 */
+	function getRequires(module) {
+		var requires = [];
+		angular.forEach(module.requires, function(requireModule) {
+			if(regModules.indexOf(requireModule) === -1) {
+				requires.push(requireModule);
+			}
+		});
+		return requires;
+	}
+
+	/**
+	 * Check if a module exists and returns it if it does
+	 * @param moduleName
+	 * @returns {boolean}
+	 */
+	function moduleExists(moduleName) {
+		try {
+			return angular.module(moduleName);
+		} catch(e) {
+			if(/No module/.test(e) || (e.message.indexOf('$injector:nomod') > -1)) {
+				return false;
+			}
+		}
+	}
+
+	function getModule(moduleName) {
+		try {
+			return angular.module(moduleName);
+		} catch(e) {
+			// this error message really suxx
+			if(/No module/.test(e) || (e .message.indexOf('$injector:nomod') > -1)) {
+				e.message = 'The module "'+moduleName+'" that you are trying to load does not exist. ' + e.message
+			}
+			throw e;
+		}
+	}
+
+	function invokeQueue(providers, queue, moduleName, reconfig) {
+		if(!queue) {
+			return;
+		}
+
+		var i, len, args, provider;
+		for(i = 0, len = queue.length; i < len; i++) {
+			args = queue[i];
+			if(angular.isArray(args)) {
+				if(providers !== null) {
+					if(providers.hasOwnProperty(args[0])) {
+						provider = providers[args[0]];
+					} else {
+						throw new Error('unsupported provider ' + args[0]);
+					}
+				}
+				var isNew = registerInvokeList(args[2][0]);
+				if(args[1] !== 'invoke') {
+					if(isNew && angular.isDefined(provider)) {
+						provider[args[1]].apply(provider, args[2]);
+					}
+				} else { // config block
+					var callInvoke = function(fct) {
+						var invoked = regConfigs.indexOf(moduleName+'-'+fct);
+						if(invoked === -1 || reconfig) {
+							if(invoked === -1) {
+								regConfigs.push(moduleName+'-'+fct);
+							}
+							if(angular.isDefined(provider)) {
+								provider[args[1]].apply(provider, args[2]);
+							}
+						}
+					}
+					if(angular.isFunction(args[2][0])) {
+						callInvoke(args[2][0]);
+					} else if(angular.isArray(args[2][0])) {
+						for(var j = 0, jlen = args[2][0].length; j < jlen; j++) {
+							if(angular.isFunction(args[2][0][j])) {
+								callInvoke(args[2][0][j]);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Register a new module and load it
+	 * @param providers
+	 * @param registerModules
+	 * @returns {*}
+	 */
+	function register(providers, registerModules, params) {
+		if(registerModules) {
+			var k, moduleName, moduleFn, runBlocks = [];
+			for(k = registerModules.length - 1; k >= 0; k--) {
+				moduleName = registerModules[k];
+				if(typeof moduleName !== 'string') {
+					moduleName = getModuleName(moduleName);
+				}
+				if(!moduleName || justLoaded.indexOf(moduleName) !== -1) {
+					continue;
+				}
+				var newModule = regModules.indexOf(moduleName) === -1;
+				moduleFn = angular.module(moduleName);
+				if(newModule) { // new module
+					regModules.push(moduleName);
+					register(providers, moduleFn.requires, params);
+					runBlocks = runBlocks.concat(moduleFn._runBlocks);
+				}
+				invokeQueue(providers, moduleFn._invokeQueue, moduleName, params.reconfig);
+				invokeQueue(providers, moduleFn._configBlocks, moduleName, params.reconfig); // angular 1.3+
+				broadcast(newModule ? 'ocLazyLoad.moduleLoaded' : 'ocLazyLoad.moduleReloaded', moduleName);
+				registerModules.pop();
+				justLoaded.push(moduleName);
+			}
+			var instanceInjector = providers.getInstanceInjector();
+			angular.forEach(runBlocks, function(fn) {
+				instanceInjector.invoke(fn);
+			});
+		}
+	}
+
+	/**
+	 * Register an invoke
+	 * @param invokeList
+	 * @returns {*}
+	 */
+	function registerInvokeList(invokeList) {
+		var newInvoke = false;
+		var onInvoke = function(invokeName) {
+			newInvoke = true;
+			regInvokes.push(invokeName);
+			broadcast('ocLazyLoad.componentLoaded', invokeName);
+		}
+		if(angular.isString(invokeList)) {
+			if(regInvokes.indexOf(invokeList) === -1) {
+				onInvoke(invokeList);
+			}
+		} else if(angular.isObject(invokeList)) {
+			angular.forEach(invokeList, function(invoke) {
+				if(angular.isString(invoke) && regInvokes.indexOf(invoke) === -1) {
+					onInvoke(invoke);
+				}
+			});
+		} else {
+			return true;
+		}
+		return newInvoke;
+	}
+
+	function getModuleName(module) {
+		if(module === null) {
+			return null;
+		}
+		var moduleName = null;
+		if(typeof module === 'string') {
+			moduleName = module;
+		} else if(typeof module === 'object' && module.hasOwnProperty('name') && typeof module.name === 'string') {
+			moduleName = module.name;
+		}
+		return moduleName;
+	}
+
+	/**
+	 * Get the list of existing registered modules
+	 * @param element
+	 */
+	function init(element) {
+		var elements = [element],
+			appElement,
+			moduleName,
+			names = ['ng:app', 'ng-app', 'x-ng-app', 'data-ng-app'],
+			NG_APP_CLASS_REGEXP = /\sng[:\-]app(:\s*([\w\d_]+);?)?\s/;
+
+		function append(elm) {
+			return (elm && elements.push(elm));
+		}
+
+		angular.forEach(names, function(name) {
+			names[name] = true;
+			append(document.getElementById(name));
+			name = name.replace(':', '\\:');
+			if(element.querySelectorAll) {
+				angular.forEach(element.querySelectorAll('.' + name), append);
+				angular.forEach(element.querySelectorAll('.' + name + '\\:'), append);
+				angular.forEach(element.querySelectorAll('[' + name + ']'), append);
+			}
+		});
+
+		//TODO: search the script tags for angular.bootstrap
+		angular.forEach(elements, function(elm) {
+			if(!appElement) {
+				var className = ' ' + element.className + ' ';
+				var match = NG_APP_CLASS_REGEXP.exec(className);
+				if(match) {
+					appElement = elm;
+					moduleName = (match[2] || '').replace(/\s+/g, ',');
+				} else {
+					angular.forEach(elm.attributes, function(attr) {
+						if(!appElement && names[attr.name]) {
+							appElement = elm;
+							moduleName = attr.value;
+						}
+					});
+				}
+			}
+		});
+
+		if(appElement) {
+			(function addReg(moduleName) {
+				if(regModules.indexOf(moduleName) === -1) {
+					// register existing modules
+					regModules.push(moduleName);
+					var mainModule = angular.module(moduleName);
+
+					// register existing components (directives, services, ...)
+					invokeQueue(null, mainModule._invokeQueue, moduleName);
+					invokeQueue(null, mainModule._configBlocks, moduleName); // angular 1.3+
+
+					angular.forEach(mainModule.requires, addReg);
+				}
+			})(moduleName);
+		}
+	}
+
+	// Array.indexOf polyfill for IE8
+	if (!Array.prototype.indexOf) {
+		Array.prototype.indexOf = function (searchElement, fromIndex) {
+
+			var k;
+
+			// 1. Let O be the result of calling ToObject passing
+			//    the this value as the argument.
+			if (this == null) {
+				throw new TypeError('"this" is null or not defined');
+			}
+
+			var O = Object(this);
+
+			// 2. Let lenValue be the result of calling the Get
+			//    internal method of O with the argument "length".
+			// 3. Let len be ToUint32(lenValue).
+			var len = O.length >>> 0;
+
+			// 4. If len is 0, return -1.
+			if (len === 0) {
+				return -1;
+			}
+
+			// 5. If argument fromIndex was passed let n be
+			//    ToInteger(fromIndex); else let n be 0.
+			var n = +fromIndex || 0;
+
+			if (Math.abs(n) === Infinity) {
+				n = 0;
+			}
+
+			// 6. If n >= len, return -1.
+			if (n >= len) {
+				return -1;
+			}
+
+			// 7. If n >= 0, then Let k be n.
+			// 8. Else, n<0, Let k be len - abs(n).
+			//    If k is less than 0, then let k be 0.
+			k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+			// 9. Repeat, while k < len
+			while (k < len) {
+				// a. Let Pk be ToString(k).
+				//   This is implicit for LHS operands of the in operator
+				// b. Let kPresent be the result of calling the
+				//    HasProperty internal method of O with argument Pk.
+				//   This step can be combined with c
+				// c. If kPresent is true, then
+				//    i.  Let elementK be the result of calling the Get
+				//        internal method of O with the argument ToString(k).
+				//   ii.  Let same be the result of applying the
+				//        Strict Equality Comparison Algorithm to
+				//        searchElement and elementK.
+				//  iii.  If same is true, return k.
+				if (k in O && O[k] === searchElement) {
+					return k;
+				}
+				k++;
+			}
+			return -1;
+		};
+	}
+})();
+
+/*!
+ * angular-translate - v2.2.0 - 2014-06-03
+ * http://github.com/PascalPrecht/angular-translate
+ * Copyright (c) 2014 ; Licensed MIT
+ */
+angular.module('pascalprecht.translate', ['ng']).run([
+  '$translate',
+  function ($translate) {
+    var key = $translate.storageKey(), storage = $translate.storage();
+    if (storage) {
+      if (!storage.get(key)) {
+        if (angular.isString($translate.preferredLanguage())) {
+          $translate.use($translate.preferredLanguage());
+        } else {
+          storage.set(key, $translate.use());
+        }
+      } else {
+        $translate.use(storage.get(key));
+      }
+    } else if (angular.isString($translate.preferredLanguage())) {
+      $translate.use($translate.preferredLanguage());
+    }
+  }
+]);
+angular.module('pascalprecht.translate').provider('$translate', [
+  '$STORAGE_KEY',
+  function ($STORAGE_KEY) {
+    var $translationTable = {}, $preferredLanguage, $availableLanguageKeys = [], $languageKeyAliases, $fallbackLanguage, $fallbackWasString, $uses, $nextLang, $storageFactory, $storageKey = $STORAGE_KEY, $storagePrefix, $missingTranslationHandlerFactory, $interpolationFactory, $interpolatorFactories = [], $interpolationSanitizationStrategy = false, $loaderFactory, $cloakClassName = 'translate-cloak', $loaderOptions, $notFoundIndicatorLeft, $notFoundIndicatorRight, $postCompilingEnabled = false, NESTED_OBJECT_DELIMITER = '.';
+    var getLocale = function () {
+      var nav = window.navigator;
+      return (nav.language || nav.browserLanguage || nav.systemLanguage || nav.userLanguage || '').split('-').join('_');
+    };
+    var negotiateLocale = function (preferred) {
+      var avail = [], locale = angular.lowercase(preferred), i = 0, n = $availableLanguageKeys.length;
+      for (; i < n; i++) {
+        avail.push(angular.lowercase($availableLanguageKeys[i]));
+      }
+      if (avail.indexOf(locale) > -1) {
+        return preferred;
+      }
+      if ($languageKeyAliases) {
+        var alias;
+        for (var langKeyAlias in $languageKeyAliases) {
+          var hasWildcardKey = false;
+          var hasExactKey = $languageKeyAliases.hasOwnProperty(langKeyAlias) && angular.lowercase(langKeyAlias) === angular.lowercase(preferred);
+          if (langKeyAlias.slice(-1) === '*') {
+            hasWildcardKey = langKeyAlias.slice(0, -1) === preferred.slice(0, langKeyAlias.length - 1);
+          }
+          if (hasExactKey || hasWildcardKey) {
+            alias = $languageKeyAliases[langKeyAlias];
+            if (avail.indexOf(angular.lowercase(alias)) > -1) {
+              return alias;
+            }
+          }
+        }
+      }
+      var parts = preferred.split('_');
+      if (parts.length > 1 && avail.indexOf(angular.lowercase(parts[0])) > -1) {
+        return parts[0];
+      }
+      return preferred;
+    };
+    var translations = function (langKey, translationTable) {
+      if (!langKey && !translationTable) {
+        return $translationTable;
+      }
+      if (langKey && !translationTable) {
+        if (angular.isString(langKey)) {
+          return $translationTable[langKey];
+        }
+      } else {
+        if (!angular.isObject($translationTable[langKey])) {
+          $translationTable[langKey] = {};
+        }
+        angular.extend($translationTable[langKey], flatObject(translationTable));
+      }
+      return this;
+    };
+    this.translations = translations;
+    this.cloakClassName = function (name) {
+      if (!name) {
+        return $cloakClassName;
+      }
+      $cloakClassName = name;
+      return this;
+    };
+    var flatObject = function (data, path, result, prevKey) {
+      var key, keyWithPath, keyWithShortPath, val;
+      if (!path) {
+        path = [];
+      }
+      if (!result) {
+        result = {};
+      }
+      for (key in data) {
+        if (!data.hasOwnProperty(key)) {
+          continue;
+        }
+        val = data[key];
+        if (angular.isObject(val)) {
+          flatObject(val, path.concat(key), result, key);
+        } else {
+          keyWithPath = path.length ? '' + path.join(NESTED_OBJECT_DELIMITER) + NESTED_OBJECT_DELIMITER + key : key;
+          if (path.length && key === prevKey) {
+            keyWithShortPath = '' + path.join(NESTED_OBJECT_DELIMITER);
+            result[keyWithShortPath] = '@:' + keyWithPath;
+          }
+          result[keyWithPath] = val;
+        }
+      }
+      return result;
+    };
+    this.addInterpolation = function (factory) {
+      $interpolatorFactories.push(factory);
+      return this;
+    };
+    this.useMessageFormatInterpolation = function () {
+      return this.useInterpolation('$translateMessageFormatInterpolation');
+    };
+    this.useInterpolation = function (factory) {
+      $interpolationFactory = factory;
+      return this;
+    };
+    this.useSanitizeValueStrategy = function (value) {
+      $interpolationSanitizationStrategy = value;
+      return this;
+    };
+    this.preferredLanguage = function (langKey) {
+      if (langKey) {
+        $preferredLanguage = langKey;
+        return this;
+      }
+      return $preferredLanguage;
+    };
+    this.translationNotFoundIndicator = function (indicator) {
+      this.translationNotFoundIndicatorLeft(indicator);
+      this.translationNotFoundIndicatorRight(indicator);
+      return this;
+    };
+    this.translationNotFoundIndicatorLeft = function (indicator) {
+      if (!indicator) {
+        return $notFoundIndicatorLeft;
+      }
+      $notFoundIndicatorLeft = indicator;
+      return this;
+    };
+    this.translationNotFoundIndicatorRight = function (indicator) {
+      if (!indicator) {
+        return $notFoundIndicatorRight;
+      }
+      $notFoundIndicatorRight = indicator;
+      return this;
+    };
+    this.fallbackLanguage = function (langKey) {
+      fallbackStack(langKey);
+      return this;
+    };
+    var fallbackStack = function (langKey) {
+      if (langKey) {
+        if (angular.isString(langKey)) {
+          $fallbackWasString = true;
+          $fallbackLanguage = [langKey];
+        } else if (angular.isArray(langKey)) {
+          $fallbackWasString = false;
+          $fallbackLanguage = langKey;
+        }
+        if (angular.isString($preferredLanguage)) {
+          $fallbackLanguage.push($preferredLanguage);
+        }
+        return this;
+      } else {
+        if ($fallbackWasString) {
+          return $fallbackLanguage[0];
+        } else {
+          return $fallbackLanguage;
+        }
+      }
+    };
+    this.use = function (langKey) {
+      if (langKey) {
+        if (!$translationTable[langKey] && !$loaderFactory) {
+          throw new Error('$translateProvider couldn\'t find translationTable for langKey: \'' + langKey + '\'');
+        }
+        $uses = langKey;
+        return this;
+      }
+      return $uses;
+    };
+    var storageKey = function (key) {
+      if (!key) {
+        if ($storagePrefix) {
+          return $storagePrefix + $storageKey;
+        }
+        return $storageKey;
+      }
+      $storageKey = key;
+    };
+    this.storageKey = storageKey;
+    this.useUrlLoader = function (url) {
+      return this.useLoader('$translateUrlLoader', { url: url });
+    };
+    this.useStaticFilesLoader = function (options) {
+      return this.useLoader('$translateStaticFilesLoader', options);
+    };
+    this.useLoader = function (loaderFactory, options) {
+      $loaderFactory = loaderFactory;
+      $loaderOptions = options || {};
+      return this;
+    };
+    this.useLocalStorage = function () {
+      return this.useStorage('$translateLocalStorage');
+    };
+    this.useCookieStorage = function () {
+      return this.useStorage('$translateCookieStorage');
+    };
+    this.useStorage = function (storageFactory) {
+      $storageFactory = storageFactory;
+      return this;
+    };
+    this.storagePrefix = function (prefix) {
+      if (!prefix) {
+        return prefix;
+      }
+      $storagePrefix = prefix;
+      return this;
+    };
+    this.useMissingTranslationHandlerLog = function () {
+      return this.useMissingTranslationHandler('$translateMissingTranslationHandlerLog');
+    };
+    this.useMissingTranslationHandler = function (factory) {
+      $missingTranslationHandlerFactory = factory;
+      return this;
+    };
+    this.usePostCompiling = function (value) {
+      $postCompilingEnabled = !!value;
+      return this;
+    };
+    this.determinePreferredLanguage = function (fn) {
+      var locale = fn && angular.isFunction(fn) ? fn() : getLocale();
+      if (!$availableLanguageKeys.length) {
+        $preferredLanguage = locale;
+      } else {
+        $preferredLanguage = negotiateLocale(locale);
+      }
+      return this;
+    };
+    this.registerAvailableLanguageKeys = function (languageKeys, aliases) {
+      if (languageKeys) {
+        $availableLanguageKeys = languageKeys;
+        if (aliases) {
+          $languageKeyAliases = aliases;
+        }
+        return this;
+      }
+      return $availableLanguageKeys;
+    };
+    this.$get = [
+      '$log',
+      '$injector',
+      '$rootScope',
+      '$q',
+      function ($log, $injector, $rootScope, $q) {
+        var Storage, defaultInterpolator = $injector.get($interpolationFactory || '$translateDefaultInterpolation'), pendingLoader = false, interpolatorHashMap = {}, langPromises = {}, fallbackIndex, startFallbackIteration;
+        var $translate = function (translationId, interpolateParams, interpolationId) {
+          if (angular.isArray(translationId)) {
+            var translateAll = function (translationIds) {
+              var results = {};
+              var promises = [];
+              var translate = function (translationId) {
+                var deferred = $q.defer();
+                var regardless = function (value) {
+                  results[translationId] = value;
+                  deferred.resolve([
+                    translationId,
+                    value
+                  ]);
+                };
+                $translate(translationId, interpolateParams, interpolationId).then(regardless, regardless);
+                return deferred.promise;
+              };
+              for (var i = 0, c = translationIds.length; i < c; i++) {
+                promises.push(translate(translationIds[i]));
+              }
+              return $q.all(promises).then(function () {
+                return results;
+              });
+            };
+            return translateAll(translationId);
+          }
+          var deferred = $q.defer();
+          if (translationId) {
+            translationId = translationId.trim();
+          }
+          var promiseToWaitFor = function () {
+              var promise = $preferredLanguage ? langPromises[$preferredLanguage] : langPromises[$uses];
+              fallbackIndex = 0;
+              if ($storageFactory && !promise) {
+                var langKey = Storage.get($storageKey);
+                promise = langPromises[langKey];
+                if ($fallbackLanguage && $fallbackLanguage.length) {
+                  var index = indexOf($fallbackLanguage, langKey);
+                  fallbackIndex = index > -1 ? index += 1 : 0;
+                  $fallbackLanguage.push($preferredLanguage);
+                }
+              }
+              return promise;
+            }();
+          if (!promiseToWaitFor) {
+            determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+          } else {
+            promiseToWaitFor.then(function () {
+              determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+            }, deferred.reject);
+          }
+          return deferred.promise;
+        };
+        var indexOf = function (array, searchElement) {
+          for (var i = 0, len = array.length; i < len; i++) {
+            if (array[i] === searchElement) {
+              return i;
+            }
+          }
+          return -1;
+        };
+        var applyNotFoundIndicators = function (translationId) {
+          if ($notFoundIndicatorLeft) {
+            translationId = [
+              $notFoundIndicatorLeft,
+              translationId
+            ].join(' ');
+          }
+          if ($notFoundIndicatorRight) {
+            translationId = [
+              translationId,
+              $notFoundIndicatorRight
+            ].join(' ');
+          }
+          return translationId;
+        };
+        var useLanguage = function (key) {
+          $uses = key;
+          $rootScope.$emit('$translateChangeSuccess');
+          if ($storageFactory) {
+            Storage.set($translate.storageKey(), $uses);
+          }
+          defaultInterpolator.setLocale($uses);
+          angular.forEach(interpolatorHashMap, function (interpolator, id) {
+            interpolatorHashMap[id].setLocale($uses);
+          });
+          $rootScope.$emit('$translateChangeEnd');
+        };
+        var loadAsync = function (key) {
+          if (!key) {
+            throw 'No language key specified for loading.';
+          }
+          var deferred = $q.defer();
+          $rootScope.$emit('$translateLoadingStart');
+          pendingLoader = true;
+          $injector.get($loaderFactory)(angular.extend($loaderOptions, { key: key })).then(function (data) {
+            var translationTable = {};
+            $rootScope.$emit('$translateLoadingSuccess');
+            if (angular.isArray(data)) {
+              angular.forEach(data, function (table) {
+                angular.extend(translationTable, flatObject(table));
+              });
+            } else {
+              angular.extend(translationTable, flatObject(data));
+            }
+            pendingLoader = false;
+            deferred.resolve({
+              key: key,
+              table: translationTable
+            });
+            $rootScope.$emit('$translateLoadingEnd');
+          }, function (key) {
+            $rootScope.$emit('$translateLoadingError');
+            deferred.reject(key);
+            $rootScope.$emit('$translateLoadingEnd');
+          });
+          return deferred.promise;
+        };
+        if ($storageFactory) {
+          Storage = $injector.get($storageFactory);
+          if (!Storage.get || !Storage.set) {
+            throw new Error('Couldn\'t use storage \'' + $storageFactory + '\', missing get() or set() method!');
+          }
+        }
+        if (angular.isFunction(defaultInterpolator.useSanitizeValueStrategy)) {
+          defaultInterpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
+        }
+        if ($interpolatorFactories.length) {
+          angular.forEach($interpolatorFactories, function (interpolatorFactory) {
+            var interpolator = $injector.get(interpolatorFactory);
+            interpolator.setLocale($preferredLanguage || $uses);
+            if (angular.isFunction(interpolator.useSanitizeValueStrategy)) {
+              interpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
+            }
+            interpolatorHashMap[interpolator.getInterpolationIdentifier()] = interpolator;
+          });
+        }
+        var getTranslationTable = function (langKey) {
+          var deferred = $q.defer();
+          if ($translationTable.hasOwnProperty(langKey)) {
+            deferred.resolve($translationTable[langKey]);
+            return deferred.promise;
+          } else {
+            langPromises[langKey].then(function (data) {
+              translations(data.key, data.table);
+              deferred.resolve(data.table);
+            }, deferred.reject);
+          }
+          return deferred.promise;
+        };
+        var getFallbackTranslation = function (langKey, translationId, interpolateParams, Interpolator) {
+          var deferred = $q.defer();
+          getTranslationTable(langKey).then(function (translationTable) {
+            if (translationTable.hasOwnProperty(translationId)) {
+              Interpolator.setLocale(langKey);
+              deferred.resolve(Interpolator.interpolate(translationTable[translationId], interpolateParams));
+              Interpolator.setLocale($uses);
+            } else {
+              deferred.reject();
+            }
+          }, deferred.reject);
+          return deferred.promise;
+        };
+        var getFallbackTranslationInstant = function (langKey, translationId, interpolateParams, Interpolator) {
+          var result, translationTable = $translationTable[langKey];
+          if (translationTable.hasOwnProperty(translationId)) {
+            Interpolator.setLocale(langKey);
+            result = Interpolator.interpolate(translationTable[translationId], interpolateParams);
+            Interpolator.setLocale($uses);
+          }
+          return result;
+        };
+        var resolveForFallbackLanguage = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
+          var deferred = $q.defer();
+          if (fallbackLanguageIndex < $fallbackLanguage.length) {
+            var langKey = $fallbackLanguage[fallbackLanguageIndex];
+            getFallbackTranslation(langKey, translationId, interpolateParams, Interpolator).then(function (translation) {
+              deferred.resolve(translation);
+            }, function () {
+              var nextFallbackLanguagePromise = resolveForFallbackLanguage(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
+              deferred.resolve(nextFallbackLanguagePromise);
+            });
+          } else {
+            if ($missingTranslationHandlerFactory) {
+              var resultString = $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+              if (resultString !== undefined) {
+                deferred.resolve(resultString);
+              } else {
+                deferred.resolve(translationId);
+              }
+            } else {
+              deferred.resolve(translationId);
+            }
+          }
+          return deferred.promise;
+        };
+        var resolveForFallbackLanguageInstant = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
+          var result;
+          if (fallbackLanguageIndex < $fallbackLanguage.length) {
+            var langKey = $fallbackLanguage[fallbackLanguageIndex];
+            result = getFallbackTranslationInstant(langKey, translationId, interpolateParams, Interpolator);
+            if (!result) {
+              result = resolveForFallbackLanguageInstant(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
+            }
+          }
+          return result;
+        };
+        var fallbackTranslation = function (translationId, interpolateParams, Interpolator) {
+          return resolveForFallbackLanguage(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
+        };
+        var fallbackTranslationInstant = function (translationId, interpolateParams, Interpolator) {
+          return resolveForFallbackLanguageInstant(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
+        };
+        var determineTranslation = function (translationId, interpolateParams, interpolationId) {
+          var deferred = $q.defer();
+          var table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
+          if (table && table.hasOwnProperty(translationId)) {
+            var translation = table[translationId];
+            if (translation.substr(0, 2) === '@:') {
+              $translate(translation.substr(2), interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+            } else {
+              deferred.resolve(Interpolator.interpolate(translation, interpolateParams));
+            }
+          } else {
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
+              fallbackTranslation(translationId, interpolateParams, Interpolator).then(function (translation) {
+                deferred.resolve(translation);
+              }, function (_translationId) {
+                deferred.reject(applyNotFoundIndicators(_translationId));
+              });
+            } else {
+              deferred.reject(applyNotFoundIndicators(translationId));
+            }
+          }
+          return deferred.promise;
+        };
+        var determineTranslationInstant = function (translationId, interpolateParams, interpolationId) {
+          var result, table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
+          if (table && table.hasOwnProperty(translationId)) {
+            var translation = table[translationId];
+            if (translation.substr(0, 2) === '@:') {
+              result = determineTranslationInstant(translation.substr(2), interpolateParams, interpolationId);
+            } else {
+              result = Interpolator.interpolate(translation, interpolateParams);
+            }
+          } else {
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
+              fallbackIndex = 0;
+              result = fallbackTranslationInstant(translationId, interpolateParams, Interpolator);
+            } else {
+              result = applyNotFoundIndicators(translationId);
+            }
+          }
+          return result;
+        };
+        $translate.preferredLanguage = function () {
+          return $preferredLanguage;
+        };
+        $translate.cloakClassName = function () {
+          return $cloakClassName;
+        };
+        $translate.fallbackLanguage = function (langKey) {
+          if (langKey !== undefined && langKey !== null) {
+            fallbackStack(langKey);
+            if ($loaderFactory) {
+              if ($fallbackLanguage && $fallbackLanguage.length) {
+                for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+                  if (!langPromises[$fallbackLanguage[i]]) {
+                    langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
+                  }
+                }
+              }
+            }
+            $translate.use($translate.use());
+          }
+          if ($fallbackWasString) {
+            return $fallbackLanguage[0];
+          } else {
+            return $fallbackLanguage;
+          }
+        };
+        $translate.useFallbackLanguage = function (langKey) {
+          if (langKey !== undefined && langKey !== null) {
+            if (!langKey) {
+              startFallbackIteration = 0;
+            } else {
+              var langKeyPosition = indexOf($fallbackLanguage, langKey);
+              if (langKeyPosition > -1) {
+                startFallbackIteration = langKeyPosition;
+              }
+            }
+          }
+        };
+        $translate.proposedLanguage = function () {
+          return $nextLang;
+        };
+        $translate.storage = function () {
+          return Storage;
+        };
+        $translate.use = function (key) {
+          if (!key) {
+            return $uses;
+          }
+          var deferred = $q.defer();
+          $rootScope.$emit('$translateChangeStart');
+          var aliasedKey = negotiateLocale(key);
+          if (aliasedKey) {
+            key = aliasedKey;
+          }
+          if (!$translationTable[key] && $loaderFactory) {
+            $nextLang = key;
+            langPromises[key] = loadAsync(key).then(function (translation) {
+              translations(translation.key, translation.table);
+              deferred.resolve(translation.key);
+              if ($nextLang === key) {
+                useLanguage(translation.key);
+                $nextLang = undefined;
+              }
+            }, function (key) {
+              $nextLang = undefined;
+              $rootScope.$emit('$translateChangeError');
+              deferred.reject(key);
+              $rootScope.$emit('$translateChangeEnd');
+            });
+          } else {
+            deferred.resolve(key);
+            useLanguage(key);
+          }
+          return deferred.promise;
+        };
+        $translate.storageKey = function () {
+          return storageKey();
+        };
+        $translate.isPostCompilingEnabled = function () {
+          return $postCompilingEnabled;
+        };
+        $translate.refresh = function (langKey) {
+          if (!$loaderFactory) {
+            throw new Error('Couldn\'t refresh translation table, no loader registered!');
+          }
+          var deferred = $q.defer();
+          function resolve() {
+            deferred.resolve();
+            $rootScope.$emit('$translateRefreshEnd');
+          }
+          function reject() {
+            deferred.reject();
+            $rootScope.$emit('$translateRefreshEnd');
+          }
+          $rootScope.$emit('$translateRefreshStart');
+          if (!langKey) {
+            var tables = [];
+            if ($fallbackLanguage && $fallbackLanguage.length) {
+              for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+                tables.push(loadAsync($fallbackLanguage[i]));
+              }
+            }
+            if ($uses) {
+              tables.push(loadAsync($uses));
+            }
+            $q.all(tables).then(function (tableData) {
+              angular.forEach(tableData, function (data) {
+                if ($translationTable[data.key]) {
+                  delete $translationTable[data.key];
+                }
+                translations(data.key, data.table);
+              });
+              if ($uses) {
+                useLanguage($uses);
+              }
+              resolve();
+            });
+          } else if ($translationTable[langKey]) {
+            loadAsync(langKey).then(function (data) {
+              translations(data.key, data.table);
+              if (langKey === $uses) {
+                useLanguage($uses);
+              }
+              resolve();
+            }, reject);
+          } else {
+            reject();
+          }
+          return deferred.promise;
+        };
+        $translate.instant = function (translationId, interpolateParams, interpolationId) {
+          if (translationId === null || angular.isUndefined(translationId)) {
+            return translationId;
+          }
+          if (angular.isArray(translationId)) {
+            var results = {};
+            for (var i = 0, c = translationId.length; i < c; i++) {
+              results[translationId[i]] = $translate.instant(translationId[i], interpolateParams, interpolationId);
+            }
+            return results;
+          }
+          if (angular.isString(translationId) && translationId.length < 1) {
+            return translationId;
+          }
+          if (translationId) {
+            translationId = translationId.trim();
+          }
+          var result, possibleLangKeys = [];
+          if ($preferredLanguage) {
+            possibleLangKeys.push($preferredLanguage);
+          }
+          if ($uses) {
+            possibleLangKeys.push($uses);
+          }
+          if ($fallbackLanguage && $fallbackLanguage.length) {
+            possibleLangKeys = possibleLangKeys.concat($fallbackLanguage);
+          }
+          for (var j = 0, d = possibleLangKeys.length; j < d; j++) {
+            var possibleLangKey = possibleLangKeys[j];
+            if ($translationTable[possibleLangKey]) {
+              if (typeof $translationTable[possibleLangKey][translationId] !== 'undefined') {
+                result = determineTranslationInstant(translationId, interpolateParams, interpolationId);
+              }
+            }
+            if (typeof result !== 'undefined') {
+              break;
+            }
+          }
+          if (!result && result !== '') {
+            result = translationId;
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+          }
+          return result;
+        };
+        if ($loaderFactory) {
+          if (angular.equals($translationTable, {})) {
+            $translate.use($translate.use());
+          }
+          if ($fallbackLanguage && $fallbackLanguage.length) {
+            for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+              langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
+            }
+          }
+        }
+        return $translate;
+      }
+    ];
+  }
+]);
+angular.module('pascalprecht.translate').factory('$translateDefaultInterpolation', [
+  '$interpolate',
+  function ($interpolate) {
+    var $translateInterpolator = {}, $locale, $identifier = 'default', $sanitizeValueStrategy = null, sanitizeValueStrategies = {
+        escaped: function (params) {
+          var result = {};
+          for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+              result[key] = angular.element('<div></div>').text(params[key]).html();
+            }
+          }
+          return result;
+        }
+      };
+    var sanitizeParams = function (params) {
+      var result;
+      if (angular.isFunction(sanitizeValueStrategies[$sanitizeValueStrategy])) {
+        result = sanitizeValueStrategies[$sanitizeValueStrategy](params);
+      } else {
+        result = params;
+      }
+      return result;
+    };
+    $translateInterpolator.setLocale = function (locale) {
+      $locale = locale;
+    };
+    $translateInterpolator.getInterpolationIdentifier = function () {
+      return $identifier;
+    };
+    $translateInterpolator.useSanitizeValueStrategy = function (value) {
+      $sanitizeValueStrategy = value;
+      return this;
+    };
+    $translateInterpolator.interpolate = function (string, interpolateParams) {
+      if ($sanitizeValueStrategy) {
+        interpolateParams = sanitizeParams(interpolateParams);
+      }
+      return $interpolate(string)(interpolateParams || {});
+    };
+    return $translateInterpolator;
+  }
+]);
+angular.module('pascalprecht.translate').constant('$STORAGE_KEY', 'NG_TRANSLATE_LANG_KEY');
+angular.module('pascalprecht.translate').directive('translate', [
+  '$translate',
+  '$q',
+  '$interpolate',
+  '$compile',
+  '$parse',
+  '$rootScope',
+  function ($translate, $q, $interpolate, $compile, $parse, $rootScope) {
+    return {
+      restrict: 'AE',
+      scope: true,
+      compile: function (tElement, tAttr) {
+        var translateValuesExist = tAttr.translateValues ? tAttr.translateValues : undefined;
+        var translateInterpolation = tAttr.translateInterpolation ? tAttr.translateInterpolation : undefined;
+        var translateValueExist = tElement[0].outerHTML.match(/translate-value-+/i);
+        return function linkFn(scope, iElement, iAttr) {
+          scope.interpolateParams = {};
+          iAttr.$observe('translate', function (translationId) {
+            if (angular.equals(translationId, '') || !angular.isDefined(translationId)) {
+              scope.translationId = $interpolate(iElement.text().replace(/^\s+|\s+$/g, ''))(scope.$parent);
+            } else {
+              scope.translationId = translationId;
+            }
+          });
+          iAttr.$observe('translateDefault', function (value) {
+            scope.defaultText = value;
+          });
+          if (translateValuesExist) {
+            iAttr.$observe('translateValues', function (interpolateParams) {
+              if (interpolateParams) {
+                scope.$parent.$watch(function () {
+                  angular.extend(scope.interpolateParams, $parse(interpolateParams)(scope.$parent));
+                });
+              }
+            });
+          }
+          if (translateValueExist) {
+            var fn = function (attrName) {
+              iAttr.$observe(attrName, function (value) {
+                scope.interpolateParams[angular.lowercase(attrName.substr(14, 1)) + attrName.substr(15)] = value;
+              });
+            };
+            for (var attr in iAttr) {
+              if (iAttr.hasOwnProperty(attr) && attr.substr(0, 14) === 'translateValue' && attr !== 'translateValues') {
+                fn(attr);
+              }
+            }
+          }
+          var applyElementContent = function (value, scope, successful) {
+            if (!successful && typeof scope.defaultText !== 'undefined') {
+              value = scope.defaultText;
+            }
+            iElement.html(value);
+            var globallyEnabled = $translate.isPostCompilingEnabled();
+            var locallyDefined = typeof tAttr.translateCompile !== 'undefined';
+            var locallyEnabled = locallyDefined && tAttr.translateCompile !== 'false';
+            if (globallyEnabled && !locallyDefined || locallyEnabled) {
+              $compile(iElement.contents())(scope);
+            }
+          };
+          var updateTranslationFn = function () {
+              if (!translateValuesExist && !translateValueExist) {
+                return function () {
+                  var unwatch = scope.$watch('translationId', function (value) {
+                      if (scope.translationId && value) {
+                        $translate(value, {}, translateInterpolation).then(function (translation) {
+                          applyElementContent(translation, scope, true);
+                          unwatch();
+                        }, function (translationId) {
+                          applyElementContent(translationId, scope, false);
+                          unwatch();
+                        });
+                      }
+                    }, true);
+                };
+              } else {
+                return function () {
+                  var updateTranslations = function () {
+                    if (scope.translationId && scope.interpolateParams) {
+                      $translate(scope.translationId, scope.interpolateParams, translateInterpolation).then(function (translation) {
+                        applyElementContent(translation, scope, true);
+                      }, function (translationId) {
+                        applyElementContent(translationId, scope, false);
+                      });
+                    }
+                  };
+                  scope.$watch('interpolateParams', updateTranslations, true);
+                  scope.$watch('translationId', updateTranslations);
+                };
+              }
+            }();
+          var unbind = $rootScope.$on('$translateChangeSuccess', updateTranslationFn);
+          updateTranslationFn();
+          scope.$on('$destroy', unbind);
+        };
+      }
+    };
+  }
+]);
+angular.module('pascalprecht.translate').directive('translateCloak', [
+  '$rootScope',
+  '$translate',
+  function ($rootScope, $translate) {
+    return {
+      compile: function (tElement) {
+        $rootScope.$on('$translateLoadingSuccess', function () {
+          tElement.removeClass($translate.cloakClassName());
+        });
+        tElement.addClass($translate.cloakClassName());
+      }
+    };
+  }
+]);
+angular.module('pascalprecht.translate').filter('translate', [
+  '$parse',
+  '$translate',
+  function ($parse, $translate) {
+    return function (translationId, interpolateParams, interpolation) {
+      if (!angular.isObject(interpolateParams)) {
+        interpolateParams = $parse(interpolateParams)(this);
+      }
+      return $translate.instant(translationId, interpolateParams, interpolation);
+    };
+  }
+]);
+angular.module('pascalprecht.translate')
+/**
+ * @ngdoc object
+ * @name pascalprecht.translate.$translateStaticFilesLoader
+ * @requires $q
+ * @requires $http
+ *
+ * @description
+ * Creates a loading function for a typical static file url pattern:
+ * "lang-en_US.json", "lang-de_DE.json", etc. Using this builder,
+ * the response of these urls must be an object of key-value pairs.
+ *
+ * @param {object} options Options object, which gets prefix, suffix and key.
+ */
+.factory('$translateStaticFilesLoader', ['$q', '$http', function ($q, $http) {
+
+  return function (options) {
+
+    if (!options || (!angular.isString(options.prefix) || !angular.isString(options.suffix))) {
+      throw new Error('Couldn\'t load static files, no prefix or suffix specified!');
+    }
+
+    var deferred = $q.defer();
+
+    $http({
+      url: [
+        options.prefix,
+        options.key,
+        options.suffix
+      ].join(''),
+      method: 'GET',
+      params: ''
+    }).success(function (data) {
+      deferred.resolve(data);
+    }).error(function (data) {
+      deferred.reject(options.key);
+    });
+
+    return deferred.promise;
+  };
+}]);
+
+angular.module('pascalprecht.translate')
+
+/**
+ * @ngdoc object
+ * @name pascalprecht.translate.$translateCookieStorage
+ * @requires $cookieStore
+ *
+ * @description
+ * Abstraction layer for cookieStore. This service is used when telling angular-translate
+ * to use cookieStore as storage.
+ *
+ */
+.factory('$translateCookieStorage', ['$cookieStore', function ($cookieStore) {
+
+  var $translateCookieStorage = {
+
+    /**
+     * @ngdoc function
+     * @name pascalprecht.translate.$translateCookieStorage#get
+     * @methodOf pascalprecht.translate.$translateCookieStorage
+     *
+     * @description
+     * Returns an item from cookieStorage by given name.
+     *
+     * @param {string} name Item name
+     * @return {string} Value of item name
+     */
+    get: function (name) {
+      return $cookieStore.get(name);
+    },
+
+    /**
+     * @ngdoc function
+     * @name pascalprecht.translate.$translateCookieStorage#set
+     * @methodOf pascalprecht.translate.$translateCookieStorage
+     *
+     * @description
+     * Sets an item in cookieStorage by given name.
+     *
+     * @param {string} name Item name
+     * @param {string} value Item value
+     */
+    set: function (name, value) {
+      $cookieStore.put(name, value);
+    }
+  };
+
+  return $translateCookieStorage;
+}]);
+
+angular.module('pascalprecht.translate')
+
+/**
+ * @ngdoc object
+ * @name pascalprecht.translate.$translateLocalStorage
+ * @requires $window
+ *
+ * @description
+ * Abstraction layer for localStorage. This service is used when telling angular-translate
+ * to use localStorage as storage.
+ *
+ */
+.factory('$translateLocalStorage', ['$window', '$translateCookieStorage', function ($window, $translateCookieStorage) {
+
+  // Setup adapter
+  var localStorageAdapter = (function(){
+    var langKey;
+    return {
+      /**
+       * @ngdoc function
+       * @name pascalprecht.translate.$translateLocalStorage#get
+       * @methodOf pascalprecht.translate.$translateLocalStorage
+       *
+       * @description
+       * Returns an item from localStorage by given name.
+       *
+       * @param {string} name Item name
+       * @return {string} Value of item name
+       */
+      get: function (name) {
+        if(!langKey) {
+          langKey = $window.localStorage.getItem(name);
+        }
+
+        return langKey;
+      },
+      /**
+       * @ngdoc function
+       * @name pascalprecht.translate.$translateLocalStorage#set
+       * @methodOf pascalprecht.translate.$translateLocalStorage
+       *
+       * @description
+       * Sets an item in localStorage by given name.
+       *
+       * @param {string} name Item name
+       * @param {string} value Item value
+       */
+      set: function (name, value) {
+        langKey=value;
+        $window.localStorage.setItem(name, value);
+      }
+    };
+  }());
+
+  var hasLocalStorageSupport = 'localStorage' in $window && $window.localStorage !== null;
+  if (hasLocalStorageSupport) {
+    var testKey = 'pascalprecht.translate.storageTest';
+    try {
+      $window.localStorage.setItem(testKey, 'foo');
+      $window.localStorage.removeItem(testKey);
+    } catch (e){
+      hasLocalStorageSupport = false;
+    }
+  }
+  var $translateLocalStorage = hasLocalStorageSupport ? localStorageAdapter : $translateCookieStorage;
+  return $translateLocalStorage;
+}]);
 
 /*! FileAPI 2.0.7 - BSD | git://github.com/mailru/FileAPI.git
  * FileAPI — a set of  javascript tools for working with files. Multiupload, drag'n'drop and chunked file upload. Images: crop, resize and auto orientation by EXIF.
@@ -48720,1017 +49731,6 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
 
 /*! 5.0.9 */
 !window.XMLHttpRequest||window.FileAPI&&FileAPI.shouldLoad||(window.XMLHttpRequest.prototype.setRequestHeader=function(a){return function(b,c){if("__setXHR_"===b){var d=c(this);d instanceof Function&&d(this)}else a.apply(this,arguments)}}(window.XMLHttpRequest.prototype.setRequestHeader));var ngFileUpload=angular.module("ngFileUpload",[]);ngFileUpload.version="5.0.9",ngFileUpload.service("Upload",["$http","$q","$timeout",function(a,b,c){function d(d){d.method=d.method||"POST",d.headers=d.headers||{};var e=b.defer(),f=e.promise;return d.headers.__setXHR_=function(){return function(a){a&&(d.__XHR=a,d.xhrFn&&d.xhrFn(a),a.upload.addEventListener("progress",function(a){a.config=d,e.notify?e.notify(a):f.progressFunc&&c(function(){f.progressFunc(a)})},!1),a.upload.addEventListener("load",function(a){a.lengthComputable&&(a.config=d,e.notify?e.notify(a):f.progressFunc&&c(function(){f.progressFunc(a)}))},!1))}},a(d).then(function(a){e.resolve(a)},function(a){e.reject(a)},function(a){e.notify(a)}),f.success=function(a){return f.then(function(b){a(b.data,b.status,b.headers,d)}),f},f.error=function(a){return f.then(null,function(b){a(b.data,b.status,b.headers,d)}),f},f.progress=function(a){return f.progressFunc=a,f.then(null,null,function(b){a(b)}),f},f.abort=function(){return d.__XHR&&c(function(){d.__XHR.abort()}),f},f.xhr=function(a){return d.xhrFn=function(b){return function(){b&&b.apply(f,arguments),a.apply(f,arguments)}}(d.xhrFn),f},f}this.upload=function(a){function b(c,d,e){if(void 0!==d)if(angular.isDate(d)&&(d=d.toISOString()),angular.isString(d))c.append(e,d);else if("form"===a.sendFieldsAs)if(angular.isObject(d))for(var f in d)d.hasOwnProperty(f)&&b(c,d[f],e+"["+f+"]");else c.append(e,d);else d=angular.isString(d)?d:JSON.stringify(d),"json-blob"===a.sendFieldsAs?c.append(e,new Blob([d],{type:"application/json"})):c.append(e,d)}return a.headers=a.headers||{},a.headers["Content-Type"]=void 0,a.transformRequest=a.transformRequest?angular.isArray(a.transformRequest)?a.transformRequest:[a.transformRequest]:[],a.transformRequest.push(function(c){var d,e=new FormData,f={};for(d in a.fields)a.fields.hasOwnProperty(d)&&(f[d]=a.fields[d]);c&&(f.data=c);for(d in f)if(f.hasOwnProperty(d)){var g=f[d];a.formDataAppender?a.formDataAppender(e,d,g):b(e,g,d)}if(null!=a.file){var h=a.fileFormDataName||"file";if(angular.isArray(a.file))for(var i=angular.isString(h),j=0;j<a.file.length;j++)e.append(i?h:h[j],a.file[j],a.fileName&&a.fileName[j]||a.file[j].name);else e.append(h,a.file,a.fileName||a.file.name)}return e}),d(a)},this.http=function(b){return b.transformRequest=b.transformRequest||function(b){return window.ArrayBuffer&&b instanceof window.ArrayBuffer||b instanceof Blob?b:a.defaults.transformRequest[0](arguments)},d(b)}}]),function(){function a(a,e,f,g,h,i,j){function k(){return"input"===e[0].tagName.toLowerCase()&&f.type&&"file"===f.type.toLowerCase()}function l(b){if(!r){r=!0;try{for(var e=b.__files_||b.target&&b.target.files,j=[],k=[],l=0;l<e.length;l++){var m=e.item(l);c(a,h,f,m,b)?j.push(m):k.push(m)}d(h,i,a,g,f,f.ngfChange||f.ngfSelect,j,k,b),0===j.length&&(b.target.value=j)}finally{r=!1}}}function m(b){f.ngfMultiple&&b.attr("multiple",h(f.ngfMultiple)(a)),f.ngfCapture&&b.attr("capture",h(f.ngfCapture)(a)),f.accept&&b.attr("accept",f.accept);for(var c=0;c<e[0].attributes.length;c++){var d=e[0].attributes[c];(k()&&"type"!==d.name||"type"!==d.name&&"class"!==d.name&&"id"!==d.name&&"style"!==d.name)&&b.attr(d.name,d.value)}}function n(b,c){if(!c&&(b||k()))return e.$$ngfRefElem||e;var d=angular.element('<input type="file">');return m(d),k()?(e.replaceWith(d),e=d,d.attr("__ngf_gen__",!0),j(e)(a)):(d.css("visibility","hidden").css("position","absolute").css("overflow","hidden").css("width","0px").css("height","0px").css("z-index","-100000").css("border","none").css("margin","0px").css("padding","0px").attr("tabindex","-1"),e.$$ngfRefElem&&e.$$ngfRefElem.remove(),e.$$ngfRefElem=d,document.body.appendChild(d[0])),d}function o(b){d(h,i,a,g,f,f.ngfChange||f.ngfSelect,[],[],b,!0)}function p(c){function d(a){a&&i[0].click(),(k()||!a)&&e.bind("click touchend",p)}if(e.attr("disabled")||q)return!1;null!=c&&(c.preventDefault(),c.stopPropagation());var g=h(f.ngfResetOnClick)(a)!==!1,i=n(c,g);return i&&((!c||g)&&i.bind("change",l),c&&g&&h(f.ngfResetModelOnClick)(a)!==!1&&o(c),b(navigator.userAgent)?setTimeout(function(){d(c)},0):d(c)),!1}if(!e.attr("__ngf_gen__")){a.$on("$destroy",function(){e.$$ngfRefElem&&e.$$ngfRefElem.remove()});var q=!1;-1===f.ngfSelect.search(/\W+$files\W+/)&&a.$watch(f.ngfSelect,function(a){q=a===!1});var r=!1;window.FileAPI&&window.FileAPI.ngfFixIE?window.FileAPI.ngfFixIE(e,n,m,l):p()}}function b(a){var b=a.match(/Android[^\d]*(\d+)\.(\d+)/);return b&&b.length>2?parseInt(b[1])<4||4===parseInt(b[1])&&parseInt(b[2])<4:/.*Windows.*Safari.*/.test(a)}ngFileUpload.directive("ngfSelect",["$parse","$timeout","$compile",function(b,c,d){return{restrict:"AEC",require:"?ngModel",link:function(e,f,g,h){a(e,f,g,h,b,c,d)}}}]),ngFileUpload.validate=function(a,b,c,d,e){function f(a){if(a.length>2&&"/"===a[0]&&"/"===a[a.length-1])return a.substring(1,a.length-1);var b=a.split(","),c="";if(b.length>1)for(var d=0;d<b.length;d++)c+="("+f(b[d])+")",d<b.length-1&&(c+="|");else 0===a.indexOf(".")&&(a="*"+a),c="^"+a.replace(new RegExp("[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]","g"),"\\$&")+"$",c=c.replace(/\\\*/g,".*").replace(/\\\?/g,".");return c}var g=b(c.ngfAccept)(a,{$file:d,$event:e}),h=b(c.ngfMaxSize)(a,{$file:d,$event:e})||9007199254740991,i=b(c.ngfMinSize)(a,{$file:d,$event:e})||-1;if(null!=g&&angular.isString(g)){var j=new RegExp(f(g),"gi");g=null!=d.type&&j.test(d.type.toLowerCase())||null!=d.name&&j.test(d.name.toLowerCase())}return(null==g||g)&&(null==d.size||d.size<h&&d.size>i)},ngFileUpload.updateModel=function(a,b,c,d,e,f,g,h,i,j){function k(){if(a(e.ngfKeep)(c)===!0){var j=(d.$modelValue||[]).slice(0);if(g&&g.length)if(a(e.ngfKeepDistinct)(c)===!0){for(var k=j.length,l=0;l<g.length;l++){for(var m=0;k>m&&g[l].name!==j[m].name;m++);m===k&&j.push(g[l])}g=j}else g=j.concat(g);else g=j}d&&(a(e.ngModel).assign(c,g),b(function(){d&&d.$setViewValue(null!=g&&0===g.length?null:g)})),e.ngModelRejected&&a(e.ngModelRejected).assign(c,h),f&&a(f)(c,{$files:g,$rejectedFiles:h,$event:i})}j?k():b(function(){k()})};var c=ngFileUpload.validate,d=ngFileUpload.updateModel}(),function(){function a(a,e,f,g,h,i,j){function k(a,b,d){var e=!0,f=d.dataTransfer.items;if(null!=f)for(var g=0;g<f.length&&e;g++)e=e&&("file"===f[g].kind||""===f[g].kind)&&c(a,h,b,f[g],d);var i=h(b.ngfDragOverClass)(a,{$event:d});return i&&(i.delay&&(r=i.delay),i.accept&&(i=e?i.accept:i.reject)),i||b.ngfDragOverClass||"dragover"}function l(b,d,e,g){function k(d){c(a,h,f,d,b)?m.push(d):n.push(d)}function l(a,b,c){if(null!=b)if(b.isDirectory){var d=(c||"")+b.name;k({name:b.name,type:"directory",path:d});var e=b.createReader(),f=[];p++;var g=function(){e.readEntries(function(d){try{if(d.length)f=f.concat(Array.prototype.slice.call(d||[],0)),g();else{for(var e=0;e<f.length;e++)l(a,f[e],(c?c:"")+b.name+"/");p--}}catch(h){p--,console.error(h)}},function(){p--})};g()}else p++,b.file(function(a){try{p--,a.path=(c?c:"")+a.name,k(a)}catch(b){p--,console.error(b)}},function(){p--})}var m=[],n=[],o=b.dataTransfer.items,p=0;if(o&&o.length>0&&"file"!==j.protocol())for(var q=0;q<o.length;q++){if(o[q].webkitGetAsEntry&&o[q].webkitGetAsEntry()&&o[q].webkitGetAsEntry().isDirectory){var r=o[q].webkitGetAsEntry();if(r.isDirectory&&!e)continue;null!=r&&l(m,r)}else{var s=o[q].getAsFile();null!=s&&k(s)}if(!g&&m.length>0)break}else{var t=b.dataTransfer.files;if(null!=t)for(var u=0;u<t.length&&(k(t.item(u)),g||!(m.length>0));u++);}var v=0;!function w(a){i(function(){if(p)10*v++<2e4&&w(10);else{if(!g&&m.length>1){for(q=0;"directory"===m[q].type;)q++;m=[m[q]]}d(m,n)}},a||0)}()}var m=b();if(f.dropAvailable&&i(function(){a[f.dropAvailable]?a[f.dropAvailable].value=m:a[f.dropAvailable]=m}),!m)return void(h(f.ngfHideOnDropNotAvailable)(a)===!0&&e.css("display","none"));var n=!1;-1===f.ngfDrop.search(/\W+$files\W+/)&&a.$watch(f.ngfDrop,function(a){n=a===!1});var o,p=null,q=h(f.ngfStopPropagation),r=1;e[0].addEventListener("dragover",function(b){if(!e.attr("disabled")&&!n){if(b.preventDefault(),q(a)&&b.stopPropagation(),navigator.userAgent.indexOf("Chrome")>-1){var c=b.dataTransfer.effectAllowed;b.dataTransfer.dropEffect="move"===c||"linkMove"===c?"move":"copy"}i.cancel(p),a.actualDragOverClass||(o=k(a,f,b)),e.addClass(o)}},!1),e[0].addEventListener("dragenter",function(b){e.attr("disabled")||n||(b.preventDefault(),q(a)&&b.stopPropagation())},!1),e[0].addEventListener("dragleave",function(){e.attr("disabled")||n||(p=i(function(){e.removeClass(o),o=null},r||1))},!1),e[0].addEventListener("drop",function(b){e.attr("disabled")||n||(b.preventDefault(),q(a)&&b.stopPropagation(),e.removeClass(o),o=null,l(b,function(c,e){d(h,i,a,g,f,f.ngfChange||f.ngfDrop,c,e,b)},h(f.ngfAllowDir)(a)!==!1,f.multiple||h(f.ngfMultiple)(a)))},!1)}function b(){var a=document.createElement("div");return"draggable"in a&&"ondrop"in a}var c=ngFileUpload.validate,d=ngFileUpload.updateModel;ngFileUpload.directive("ngfDrop",["$parse","$timeout","$location",function(b,c,d){return{restrict:"AEC",require:"?ngModel",link:function(e,f,g,h){a(e,f,g,h,b,c,d)}}}]),ngFileUpload.directive("ngfNoFileDrop",function(){return function(a,c){b()&&c.css("display","none")}}),ngFileUpload.directive("ngfDropAvailable",["$parse","$timeout",function(a,c){return function(d,e,f){if(b()){var g=a(f.ngfDropAvailable);c(function(){g(d),g.assign&&g.assign(d,!0)})}}}]),ngFileUpload.directive("ngfSrc",["$parse","$timeout",function(a,b){return{restrict:"AE",link:function(d,e,f){window.FileReader&&d.$watch(f.ngfSrc,function(g){g&&c(d,a,f,g,null)&&(!window.FileAPI||-1===navigator.userAgent.indexOf("MSIE 8")||g.size<2e4)&&(!window.FileAPI||-1===navigator.userAgent.indexOf("MSIE 9")||g.size<4e6)?b(function(){var a=window.URL||window.webkitURL;if(a&&a.createObjectURL)e.attr("src",a.createObjectURL(g));else{var c=new FileReader;c.readAsDataURL(g),c.onload=function(a){b(function(){e.attr("src",a.target.result)})}}}):e.attr("src",f.ngfDefaultSrc||"")})}}}])}();
-'use strict';
-
-(function() {
-
-    /**
-     * @ngdoc overview
-     * @name ngStorage
-     */
-
-    angular.module('ngStorage', []).
-
-    /**
-     * @ngdoc object
-     * @name ngStorage.$localStorage
-     * @requires $rootScope
-     * @requires $window
-     */
-
-    factory('$localStorage', _storageFactory('localStorage')).
-
-    /**
-     * @ngdoc object
-     * @name ngStorage.$sessionStorage
-     * @requires $rootScope
-     * @requires $window
-     */
-
-    factory('$sessionStorage', _storageFactory('sessionStorage'));
-
-    function _storageFactory(storageType) {
-        return [
-            '$rootScope',
-            '$window',
-
-            function(
-                $rootScope,
-                $window
-            ){
-                // #9: Assign a placeholder object if Web Storage is unavailable to prevent breaking the entire AngularJS app
-                var webStorage = $window[storageType] || (console.warn('This browser does not support Web Storage!'), {}),
-                    $storage = {
-                        $default: function(items) {
-                            for (var k in items) {
-                                angular.isDefined($storage[k]) || ($storage[k] = items[k]);
-                            }
-
-                            return $storage;
-                        },
-                        $reset: function(items) {
-                            for (var k in $storage) {
-                                '$' === k[0] || delete $storage[k];
-                            }
-
-                            return $storage.$default(items);
-                        }
-                    },
-                    _last$storage,
-                    _debounce;
-
-                for (var i = 0, k; i < webStorage.length; i++) {
-                    // #8, #10: `webStorage.key(i)` may be an empty string (or throw an exception in IE9 if `webStorage` is empty)
-                    (k = webStorage.key(i)) && 'ngStorage-' === k.slice(0, 10) && ($storage[k.slice(10)] = angular.fromJson(webStorage.getItem(k)));
-                }
-
-                _last$storage = angular.copy($storage);
-
-                $rootScope.$watch(function() {
-                    _debounce || (_debounce = setTimeout(function() {
-                        _debounce = null;
-
-                        if (!angular.equals($storage, _last$storage)) {
-                            angular.forEach($storage, function(v, k) {
-                                angular.isDefined(v) && '$' !== k[0] && webStorage.setItem('ngStorage-' + k, angular.toJson(v));
-
-                                delete _last$storage[k];
-                            });
-
-                            for (var k in _last$storage) {
-                                webStorage.removeItem('ngStorage-' + k);
-                            }
-
-                            _last$storage = angular.copy($storage);
-                        }
-                    }, 100));
-                });
-
-                // #6: Use `$window.addEventListener` instead of `angular.element` to avoid the jQuery-specific `event.originalEvent`
-                'localStorage' === storageType && $window.addEventListener && $window.addEventListener('storage', function(event) {
-                    if ('ngStorage-' === event.key.slice(0, 10)) {
-                        event.newValue ? $storage[event.key.slice(10)] = angular.fromJson(event.newValue) : delete $storage[event.key.slice(10)];
-
-                        _last$storage = angular.copy($storage);
-
-                        $rootScope.$apply();
-                    }
-                });
-
-                return $storage;
-            }
-        ];
-    }
-
-})();
-
-/**
- * oclazyload - Load modules on demand (lazy load) with angularJS
- * @version v0.3.7
- * @link https://github.com/ocombe/ocLazyLoad
- * @license MIT
- * @author Olivier Combe <olivier.combe@gmail.com>
- */
-(function() {
-	'use strict';
-	var regModules = ['ng'],
-		regInvokes = [],
-		regConfigs = [],
-		justLoaded = [],
-		ocLazyLoad = angular.module('oc.lazyLoad', ['ng']),
-		broadcast = angular.noop;
-
-	ocLazyLoad.provider('$ocLazyLoad', ['$controllerProvider', '$provide', '$compileProvider', '$filterProvider', '$injector', '$animateProvider',
-		function($controllerProvider, $provide, $compileProvider, $filterProvider, $injector, $animateProvider) {
-			var modules = {},
-				providers = {
-					$controllerProvider: $controllerProvider,
-					$compileProvider: $compileProvider,
-					$filterProvider: $filterProvider,
-					$provide: $provide, // other things
-					$injector: $injector,
-					$animateProvider: $animateProvider
-				},
-				anchor = document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0],
-				jsLoader, cssLoader, templatesLoader,
-				debug = false,
-				events = false;
-
-			// Let's get the list of loaded modules & components
-			init(angular.element(window.document));
-
-			this.$get = ['$timeout', '$log', '$q', '$templateCache', '$http', '$rootElement', '$rootScope', '$cacheFactory', function($timeout, $log, $q, $templateCache, $http, $rootElement, $rootScope, $cacheFactory) {
-				var instanceInjector,
-					filesCache = $cacheFactory('ocLazyLoad');
-
-				if(!debug) {
-					$log = {};
-					$log['error'] = angular.noop;
-					$log['warn'] = angular.noop;
-					$log['info'] = angular.noop;
-				}
-
-				// Make this lazy because at the moment that $get() is called the instance injector hasn't been assigned to the rootElement yet
-				providers.getInstanceInjector = function() {
-					return (instanceInjector) ? instanceInjector : (instanceInjector = $rootElement.data('$injector'));
-				};
-
-				broadcast = function broadcast(eventName, params) {
-					if(events) {
-						$rootScope.$broadcast(eventName, params);
-					}
-					if(debug) {
-						$log.info(eventName, params);
-					}
-				}
-
-				/**
-				 * Load a js/css file
-				 * @param type
-				 * @param path
-				 * @returns promise
-				 */
-				var buildElement = function buildElement(type, path, params) {
-					var deferred = $q.defer(),
-						el, loaded,
-						cacheBuster = function cacheBuster(url) {
-							var dc = new Date().getTime();
-							if(url.indexOf('?') >= 0) {
-								if(url.substring(0, url.length - 1) === '&') {
-									return url + '_dc=' + dc;
-								}
-								return url + '&_dc=' + dc;
-							} else {
-								return url + '?_dc=' + dc;
-							}
-						};
-
-                    // Store the promise early so the file load can be detected by other parallel lazy loads
-                    // (ie: multiple routes on one page) a 'true' value isn't sufficient
-                    // as it causes false positive load results.
-                    if(angular.isUndefined(filesCache.get(path))) {
-                        filesCache.put(path, deferred.promise);
-                    }
-
-					// Switch in case more content types are added later
-					switch(type) {
-						case 'css':
-							el = document.createElement('link');
-							el.type = 'text/css';
-							el.rel = 'stylesheet';
-							el.href = params.cache === false ? cacheBuster(path) : path;
-							break;
-						case 'js':
-							el = document.createElement('script');
-							el.src = params.cache === false ? cacheBuster(path) : path;
-							break;
-						default:
-							deferred.reject(new Error('Requested type "' + type + '" is not known. Could not inject "' + path + '"'));
-							break;
-					}
-					el.onload = el['onreadystatechange'] = function(e) {
-						if((el['readyState'] && !(/^c|loade/.test(el['readyState']))) || loaded) return;
-						el.onload = el['onreadystatechange'] = null
-						loaded = 1;
-						broadcast('ocLazyLoad.fileLoaded', path);
-						deferred.resolve();
-					}
-					el.onerror = function(e) {
-						deferred.reject(new Error('Unable to load '+path));
-					}
-					el.async = 1;
-					anchor.insertBefore(el, anchor.lastChild);
-
-					return deferred.promise;
-				}
-
-				if(angular.isUndefined(jsLoader)) {
-					/**
-					 * jsLoader function
-					 * @type Function
-					 * @param paths array list of js files to load
-					 * @param callback to call when everything is loaded. We use a callback and not a promise
-					 * @param params object config parameters
-					 * because the user can overwrite jsLoader and it will probably not use promises :(
-					 */
-					jsLoader = function(paths, callback, params) {
-						var promises = [];
-						angular.forEach(paths, function loading(path) {
-							promises.push(buildElement('js', path, params));
-						});
-						$q.all(promises).then(function success() {
-							callback();
-						}, function error(err) {
-							callback(err);
-						});
-					}
-					jsLoader.ocLazyLoadLoader = true;
-				}
-
-				if(angular.isUndefined(cssLoader)) {
-					/**
-					 * cssLoader function
-					 * @type Function
-					 * @param paths array list of css files to load
-					 * @param callback to call when everything is loaded. We use a callback and not a promise
-					 * @param params object config parameters
-					 * because the user can overwrite cssLoader and it will probably not use promises :(
-					 */
-					cssLoader = function(paths, callback, params) {
-						var promises = [];
-						angular.forEach(paths, function loading(path) {
-							promises.push(buildElement('css', path, params));
-						});
-						$q.all(promises).then(function success() {
-							callback();
-						}, function error(err) {
-							callback(err);
-						});
-					}
-					cssLoader.ocLazyLoadLoader = true;
-				}
-
-				if(angular.isUndefined(templatesLoader)) {
-					/**
-					 * templatesLoader function
-					 * @type Function
-					 * @param paths array list of css files to load
-					 * @param callback to call when everything is loaded. We use a callback and not a promise
-					 * @param params object config parameters for $http
-					 * because the user can overwrite templatesLoader and it will probably not use promises :(
-					 */
-					templatesLoader = function(paths, callback, params) {
-						if(angular.isString(paths)) {
-							paths = [paths];
-						}
-						var promises = [];
-						angular.forEach(paths, function(url) {
-							var deferred = $q.defer();
-							promises.push(deferred.promise);
-							$http.get(url, params).success(function(data) {
-								angular.forEach(angular.element(data), function(node) {
-									if(node.nodeName === 'SCRIPT' && node.type === 'text/ng-template') {
-										$templateCache.put(node.id, node.innerHTML);
-									}
-								});
-								if(angular.isUndefined(filesCache.get(url))) {
-									filesCache.put(url, true);
-								}
-								deferred.resolve();
-							}).error(function(data) {
-								var err = 'Error load template "' + url + '": ' + data;
-								$log.error(err);
-								deferred.reject(new Error(err));
-							});
-						});
-						return $q.all(promises).then(function success() {
-							callback();
-						}, function error(err) {
-							callback(err);
-						});
-					}
-					templatesLoader.ocLazyLoadLoader = true;
-				}
-
-				var filesLoader = function(config, params) {
-					var cssFiles = [],
-						templatesFiles = [],
-						jsFiles = [],
-						promises = [],
-                        cachePromise = null;
-
-					angular.extend(params || {}, config);
-
-					angular.forEach(params.files, function(path) {
-                        cachePromise = filesCache.get(path);
-						if(angular.isUndefined(cachePromise) || params.cache === false) {
-							if(/\.css[^\.]*$/.test(path) && cssFiles.indexOf(path) === -1) {
-								cssFiles.push(path);
-							} else if(/\.(htm|html)[^\.]*$/.test(path) && templatesFiles.indexOf(path) === -1) {
-								templatesFiles.push(path);
-							} else if (jsFiles.indexOf(path) === -1) {
-								jsFiles.push(path);
-							}
-						} else if (cachePromise) {
-                            promises.push(cachePromise);
-                        }
-					});
-
-					if(cssFiles.length > 0) {
-						var cssDeferred = $q.defer();
-						cssLoader(cssFiles, function(err) {
-							if(angular.isDefined(err) && cssLoader.hasOwnProperty('ocLazyLoadLoader')) {
-								$log.error(err);
-								cssDeferred.reject(err);
-							} else {
-								cssDeferred.resolve();
-							}
-						}, params);
-						promises.push(cssDeferred.promise);
-					}
-
-					if(templatesFiles.length > 0) {
-						var templatesDeferred = $q.defer();
-						templatesLoader(templatesFiles, function(err) {
-							if(angular.isDefined(err) && templatesLoader.hasOwnProperty('ocLazyLoadLoader')) {
-								$log.error(err);
-								templatesDeferred.reject(err);
-							} else {
-								templatesDeferred.resolve();
-							}
-						}, params);
-						promises.push(templatesDeferred.promise);
-					}
-
-					if(jsFiles.length > 0) {
-						var jsDeferred = $q.defer();
-						jsLoader(jsFiles, function(err) {
-							if(angular.isDefined(err) && jsLoader.hasOwnProperty('ocLazyLoadLoader')) {
-								$log.error(err);
-								jsDeferred.reject(err);
-							} else {
-								jsDeferred.resolve();
-							}
-						}, params);
-						promises.push(jsDeferred.promise);
-					}
-
-					return $q.all(promises);
-				}
-
-				return {
-					getModuleConfig: function(name) {
-						if(!modules[name]) {
-							return null;
-						}
-						return modules[name];
-					},
-
-					setModuleConfig: function(module) {
-						modules[module.name] = module;
-						return module;
-					},
-
-					getModules: function() {
-						return regModules;
-					},
-
-					// deprecated
-					loadTemplateFile: function(paths, params) {
-						return filesLoader({files: paths}, params);
-					},
-
-					load: function(module, params) {
-						var self = this,
-							config = null,
-							moduleCache = [],
-							deferredList = [],
-							deferred = $q.defer(),
-							moduleName,
-							errText;
-
-						if(angular.isUndefined(params)) {
-							params = {};
-						}
-
-						// If module is an array, break it down
-						if(angular.isArray(module)) {
-							// Resubmit each entry as a single module
-							angular.forEach(module, function(m) {
-                                if (m) {
-                                    deferredList.push(self.load(m, params));
-                                }
-							});
-
-							// Resolve the promise once everything has loaded
-							$q.all(deferredList).then(function() {
-								deferred.resolve(module);
-							});
-
-							return deferred.promise;
-						}
-
-						moduleName = getModuleName(module);
-
-						// Get or Set a configuration depending on what was passed in
-						if(typeof module === 'string') {
-							config = self.getModuleConfig(module);
-							if(!config) {
-								config = {
-									files: [module]
-								};
-								moduleName = null;
-							}
-						} else if(typeof module === 'object') {
-							config = self.setModuleConfig(module);
-						}
-
-						if(config === null) {
-							errText = 'Module "' + moduleName + '" is not configured, cannot load.';
-							$log.error(errText);
-							deferred.reject(new Error(errText));
-						} else {
-							// deprecated
-							if(angular.isDefined(config.template)) {
-								if(angular.isUndefined(config.files)) {
-									config.files = [];
-								}
-								if(angular.isString(config.template)) {
-									config.files.push(config.template);
-								} else if(angular.isArray(config.template)) {
-									config.files.concat(config.template);
-								}
-							}
-						}
-
-						moduleCache.push = function(value) {
-							if(this.indexOf(value) === -1) {
-								Array.prototype.push.apply(this, arguments);
-							}
-						};
-
-						// If this module has been loaded before, re-use it.
-						if(angular.isDefined(moduleName) && moduleExists(moduleName) && regModules.indexOf(moduleName) !== -1) {
-							moduleCache.push(moduleName);
-
-							// if we don't want to load new files, resolve here
-							if(angular.isUndefined(config.files)) {
-								deferred.resolve();
-								return deferred.promise;
-							}
-						}
-
-						var loadDependencies = function loadDependencies(module) {
-							var moduleName,
-								loadedModule,
-								requires,
-                                diff,
-								promisesList = [];
-
-							moduleName = getModuleName(module);
-							if(moduleName === null) {
-								return $q.when();
-							} else {
-								try {
-									loadedModule = getModule(moduleName);
-								} catch(e) {
-									var deferred = $q.defer();
-									$log.error(e.message);
-									deferred.reject(e);
-									return deferred.promise;
-								}
-								requires = getRequires(loadedModule);
-							}
-
-							angular.forEach(requires, function(requireEntry) {
-								// If no configuration is provided, try and find one from a previous load.
-								// If there isn't one, bail and let the normal flow run
-								if(typeof requireEntry === 'string') {
-									var config = self.getModuleConfig(requireEntry);
-									if(config === null) {
-										moduleCache.push(requireEntry); // We don't know about this module, but something else might, so push it anyway.
-										return;
-									}
-									requireEntry = config;
-								}
-
-								// Check if this dependency has been loaded previously
-								if(moduleExists(requireEntry.name)) {
-									if(typeof module !== 'string') {
-                                        // compare against the already loaded module to see if the new definition adds any new files
-                                        diff = requireEntry.files.filter(function (n) {
-                                            return self.getModuleConfig(requireEntry.name).files.indexOf(n) < 0;
-                                        });
-
-                                        // If the module was redefined, advise via the console
-                                        if (diff.length !== 0) {
-                                            $log.warn('Module "', moduleName, '" attempted to redefine configuration for dependency. "', requireEntry.name, '"\n Additional Files Loaded:', diff);
-                                        }
-
-                                        // Push everything to the file loader, it will weed out the duplicates.
-                                        promisesList.push(filesLoader(requireEntry.files, params).then(function () {
-                                            return loadDependencies(requireEntry);
-                                        }));
-                                    }
-									return;
-								} else if(typeof requireEntry === 'object') {
-									if(requireEntry.hasOwnProperty('name') && requireEntry['name']) {
-										// The dependency doesn't exist in the module cache and is a new configuration, so store and push it.
-										self.setModuleConfig(requireEntry);
-										moduleCache.push(requireEntry['name']);
-									}
-
-									// CSS Loading Handler
-									if(requireEntry.hasOwnProperty('css') && requireEntry['css'].length !== 0) {
-										// Locate the document insertion point
-										angular.forEach(requireEntry['css'], function(path) {
-											buildElement('css', path, params);
-										});
-									}
-									// CSS End.
-								}
-
-								// Check if the dependency has any files that need to be loaded. If there are, push a new promise to the promise list.
-								if(requireEntry.hasOwnProperty('files') && requireEntry.files.length !== 0) {
-									if(requireEntry.files) {
-										promisesList.push(filesLoader(requireEntry, params).then(function() {
-											return loadDependencies(requireEntry);
-										}));
-									}
-								}
-							});
-
-							// Create a wrapper promise to watch the promise list and resolve it once everything is done.
-							return $q.all(promisesList);
-						}
-
-						filesLoader(config, params).then(function success() {
-							if(moduleName === null) {
-								deferred.resolve(module);
-							} else {
-								moduleCache.push(moduleName);
-								loadDependencies(moduleName).then(function success() {
-									try {
-										justLoaded = [];
-										register(providers, moduleCache, params);
-									} catch(e) {
-										$log.error(e.message);
-										deferred.reject(e);
-										return;
-									}
-									$timeout(function() {
-										deferred.resolve(module);
-									});
-								}, function error(err) {
-									$timeout(function() {
-										deferred.reject(err);
-									});
-								});
-							}
-						}, function error(err) {
-							deferred.reject(err);
-						});
-
-						return deferred.promise;
-					}
-				};
-			}];
-
-			this.config = function(config) {
-				if(angular.isDefined(config.jsLoader) || angular.isDefined(config.asyncLoader)) {
-					jsLoader = config.jsLoader || config.asyncLoader;
-					if(!angular.isFunction(jsLoader)) {
-						throw('The js loader needs to be a function');
-					}
-				}
-
-				if(angular.isDefined(config.cssLoader)) {
-					cssLoader = config.cssLoader;
-					if(!angular.isFunction(cssLoader)) {
-						throw('The css loader needs to be a function');
-					}
-				}
-
-				if(angular.isDefined(config.templatesLoader)) {
-					templatesLoader = config.templatesLoader;
-					if(!angular.isFunction(templatesLoader)) {
-						throw('The template loader needs to be a function');
-					}
-				}
-
-				// for bootstrap apps, we need to define the main module name
-				if(angular.isDefined(config.loadedModules)) {
-					var addRegModule = function(loadedModule) {
-						if(regModules.indexOf(loadedModule) < 0) {
-							regModules.push(loadedModule);
-							angular.forEach(angular.module(loadedModule).requires, addRegModule);
-						}
-					};
-					angular.forEach(config.loadedModules, addRegModule);
-				}
-
-				// If we want to define modules configs
-				if(angular.isDefined(config.modules)) {
-					if(angular.isArray(config.modules)) {
-						angular.forEach(config.modules, function(moduleConfig) {
-							modules[moduleConfig.name] = moduleConfig;
-						});
-					} else {
-						modules[config.modules.name] = config.modules;
-					}
-				}
-
-				if(angular.isDefined(config.debug)) {
-					debug = config.debug;
-				}
-
-				if(angular.isDefined(config.events)) {
-					events = config.events;
-				}
-			};
-		}]);
-
-	ocLazyLoad.directive('ocLazyLoad', ['$http', '$log', '$ocLazyLoad', '$compile', '$timeout', '$templateCache', '$animate',
-		function($http, $log, $ocLazyLoad, $compile, $timeout, $templateCache, $animate) {
-			return {
-				restrict: 'A',
-				terminal: true,
-				priority: 401, // 1 more than ngInclude
-				transclude: 'element',
-				controller: angular.noop,
-				compile: function(element, attrs) {
-					return function($scope, $element, $attr, ctrl, $transclude) {
-						var childScope,
-							evaluated = $scope.$eval($attr.ocLazyLoad),
-							onloadExp = evaluated && evaluated.onload ? evaluated.onload : '';
-
-						/**
-						 * Destroy the current scope of this element and empty the html
-						 */
-						function clearContent() {
-							if(childScope) {
-								childScope.$destroy();
-								childScope = null;
-							}
-							$element.html('');
-						}
-
-						/**
-						 * Load a template from cache or url
-						 * @param url
-						 * @param callback
-						 */
-						function loadTemplate(url, callback) {
-							var view;
-
-							if(typeof(view = $templateCache.get(url)) !== 'undefined') {
-								callback(view);
-							} else {
-								$http.get(url)
-									.success(function(data) {
-										$templateCache.put('view:' + url, data);
-										callback(data);
-									})
-									.error(function(data) {
-										$log.error('Error load template "' + url + '": ' + data);
-									});
-							}
-						}
-
-						$scope.$watch($attr.ocLazyLoad, function(moduleName) {
-							if(angular.isDefined(moduleName)) {
-								$ocLazyLoad.load(moduleName).then(function(moduleConfig) {
-									$transclude($scope, function cloneConnectFn(clone) {
-										$animate.enter(clone, null, $element);
-									});
-								});
-							} else {
-								clearContent();
-							}
-						}, true);
-					};
-				}
-				/*link: function($scope, $element, $attr) {
-
-				 }*/
-			};
-		}]);
-
-	/**
-	 * Get the list of required modules/services/... for this module
-	 * @param module
-	 * @returns {Array}
-	 */
-	function getRequires(module) {
-		var requires = [];
-		angular.forEach(module.requires, function(requireModule) {
-			if(regModules.indexOf(requireModule) === -1) {
-				requires.push(requireModule);
-			}
-		});
-		return requires;
-	}
-
-	/**
-	 * Check if a module exists and returns it if it does
-	 * @param moduleName
-	 * @returns {boolean}
-	 */
-	function moduleExists(moduleName) {
-		try {
-			return angular.module(moduleName);
-		} catch(e) {
-			if(/No module/.test(e) || (e.message.indexOf('$injector:nomod') > -1)) {
-				return false;
-			}
-		}
-	}
-
-	function getModule(moduleName) {
-		try {
-			return angular.module(moduleName);
-		} catch(e) {
-			// this error message really suxx
-			if(/No module/.test(e) || (e .message.indexOf('$injector:nomod') > -1)) {
-				e.message = 'The module "'+moduleName+'" that you are trying to load does not exist. ' + e.message
-			}
-			throw e;
-		}
-	}
-
-	function invokeQueue(providers, queue, moduleName, reconfig) {
-		if(!queue) {
-			return;
-		}
-
-		var i, len, args, provider;
-		for(i = 0, len = queue.length; i < len; i++) {
-			args = queue[i];
-			if(angular.isArray(args)) {
-				if(providers !== null) {
-					if(providers.hasOwnProperty(args[0])) {
-						provider = providers[args[0]];
-					} else {
-						throw new Error('unsupported provider ' + args[0]);
-					}
-				}
-				var isNew = registerInvokeList(args[2][0]);
-				if(args[1] !== 'invoke') {
-					if(isNew && angular.isDefined(provider)) {
-						provider[args[1]].apply(provider, args[2]);
-					}
-				} else { // config block
-					var callInvoke = function(fct) {
-						var invoked = regConfigs.indexOf(moduleName+'-'+fct);
-						if(invoked === -1 || reconfig) {
-							if(invoked === -1) {
-								regConfigs.push(moduleName+'-'+fct);
-							}
-							if(angular.isDefined(provider)) {
-								provider[args[1]].apply(provider, args[2]);
-							}
-						}
-					}
-					if(angular.isFunction(args[2][0])) {
-						callInvoke(args[2][0]);
-					} else if(angular.isArray(args[2][0])) {
-						for(var j = 0, jlen = args[2][0].length; j < jlen; j++) {
-							if(angular.isFunction(args[2][0][j])) {
-								callInvoke(args[2][0][j]);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Register a new module and load it
-	 * @param providers
-	 * @param registerModules
-	 * @returns {*}
-	 */
-	function register(providers, registerModules, params) {
-		if(registerModules) {
-			var k, moduleName, moduleFn, runBlocks = [];
-			for(k = registerModules.length - 1; k >= 0; k--) {
-				moduleName = registerModules[k];
-				if(typeof moduleName !== 'string') {
-					moduleName = getModuleName(moduleName);
-				}
-				if(!moduleName || justLoaded.indexOf(moduleName) !== -1) {
-					continue;
-				}
-				var newModule = regModules.indexOf(moduleName) === -1;
-				moduleFn = angular.module(moduleName);
-				if(newModule) { // new module
-					regModules.push(moduleName);
-					register(providers, moduleFn.requires, params);
-					runBlocks = runBlocks.concat(moduleFn._runBlocks);
-				}
-				invokeQueue(providers, moduleFn._invokeQueue, moduleName, params.reconfig);
-				invokeQueue(providers, moduleFn._configBlocks, moduleName, params.reconfig); // angular 1.3+
-				broadcast(newModule ? 'ocLazyLoad.moduleLoaded' : 'ocLazyLoad.moduleReloaded', moduleName);
-				registerModules.pop();
-				justLoaded.push(moduleName);
-			}
-			var instanceInjector = providers.getInstanceInjector();
-			angular.forEach(runBlocks, function(fn) {
-				instanceInjector.invoke(fn);
-			});
-		}
-	}
-
-	/**
-	 * Register an invoke
-	 * @param invokeList
-	 * @returns {*}
-	 */
-	function registerInvokeList(invokeList) {
-		var newInvoke = false;
-		var onInvoke = function(invokeName) {
-			newInvoke = true;
-			regInvokes.push(invokeName);
-			broadcast('ocLazyLoad.componentLoaded', invokeName);
-		}
-		if(angular.isString(invokeList)) {
-			if(regInvokes.indexOf(invokeList) === -1) {
-				onInvoke(invokeList);
-			}
-		} else if(angular.isObject(invokeList)) {
-			angular.forEach(invokeList, function(invoke) {
-				if(angular.isString(invoke) && regInvokes.indexOf(invoke) === -1) {
-					onInvoke(invoke);
-				}
-			});
-		} else {
-			return true;
-		}
-		return newInvoke;
-	}
-
-	function getModuleName(module) {
-		if(module === null) {
-			return null;
-		}
-		var moduleName = null;
-		if(typeof module === 'string') {
-			moduleName = module;
-		} else if(typeof module === 'object' && module.hasOwnProperty('name') && typeof module.name === 'string') {
-			moduleName = module.name;
-		}
-		return moduleName;
-	}
-
-	/**
-	 * Get the list of existing registered modules
-	 * @param element
-	 */
-	function init(element) {
-		var elements = [element],
-			appElement,
-			moduleName,
-			names = ['ng:app', 'ng-app', 'x-ng-app', 'data-ng-app'],
-			NG_APP_CLASS_REGEXP = /\sng[:\-]app(:\s*([\w\d_]+);?)?\s/;
-
-		function append(elm) {
-			return (elm && elements.push(elm));
-		}
-
-		angular.forEach(names, function(name) {
-			names[name] = true;
-			append(document.getElementById(name));
-			name = name.replace(':', '\\:');
-			if(element.querySelectorAll) {
-				angular.forEach(element.querySelectorAll('.' + name), append);
-				angular.forEach(element.querySelectorAll('.' + name + '\\:'), append);
-				angular.forEach(element.querySelectorAll('[' + name + ']'), append);
-			}
-		});
-
-		//TODO: search the script tags for angular.bootstrap
-		angular.forEach(elements, function(elm) {
-			if(!appElement) {
-				var className = ' ' + element.className + ' ';
-				var match = NG_APP_CLASS_REGEXP.exec(className);
-				if(match) {
-					appElement = elm;
-					moduleName = (match[2] || '').replace(/\s+/g, ',');
-				} else {
-					angular.forEach(elm.attributes, function(attr) {
-						if(!appElement && names[attr.name]) {
-							appElement = elm;
-							moduleName = attr.value;
-						}
-					});
-				}
-			}
-		});
-
-		if(appElement) {
-			(function addReg(moduleName) {
-				if(regModules.indexOf(moduleName) === -1) {
-					// register existing modules
-					regModules.push(moduleName);
-					var mainModule = angular.module(moduleName);
-
-					// register existing components (directives, services, ...)
-					invokeQueue(null, mainModule._invokeQueue, moduleName);
-					invokeQueue(null, mainModule._configBlocks, moduleName); // angular 1.3+
-
-					angular.forEach(mainModule.requires, addReg);
-				}
-			})(moduleName);
-		}
-	}
-
-	// Array.indexOf polyfill for IE8
-	if (!Array.prototype.indexOf) {
-		Array.prototype.indexOf = function (searchElement, fromIndex) {
-
-			var k;
-
-			// 1. Let O be the result of calling ToObject passing
-			//    the this value as the argument.
-			if (this == null) {
-				throw new TypeError('"this" is null or not defined');
-			}
-
-			var O = Object(this);
-
-			// 2. Let lenValue be the result of calling the Get
-			//    internal method of O with the argument "length".
-			// 3. Let len be ToUint32(lenValue).
-			var len = O.length >>> 0;
-
-			// 4. If len is 0, return -1.
-			if (len === 0) {
-				return -1;
-			}
-
-			// 5. If argument fromIndex was passed let n be
-			//    ToInteger(fromIndex); else let n be 0.
-			var n = +fromIndex || 0;
-
-			if (Math.abs(n) === Infinity) {
-				n = 0;
-			}
-
-			// 6. If n >= len, return -1.
-			if (n >= len) {
-				return -1;
-			}
-
-			// 7. If n >= 0, then Let k be n.
-			// 8. Else, n<0, Let k be len - abs(n).
-			//    If k is less than 0, then let k be 0.
-			k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-
-			// 9. Repeat, while k < len
-			while (k < len) {
-				// a. Let Pk be ToString(k).
-				//   This is implicit for LHS operands of the in operator
-				// b. Let kPresent be the result of calling the
-				//    HasProperty internal method of O with argument Pk.
-				//   This step can be combined with c
-				// c. If kPresent is true, then
-				//    i.  Let elementK be the result of calling the Get
-				//        internal method of O with the argument ToString(k).
-				//   ii.  Let same be the result of applying the
-				//        Strict Equality Comparison Algorithm to
-				//        searchElement and elementK.
-				//  iii.  If same is true, return k.
-				if (k in O && O[k] === searchElement) {
-					return k;
-				}
-				k++;
-			}
-			return -1;
-		};
-	}
-})();
-
 //! moment.js
 //! version : 2.8.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -57243,6 +57243,32 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 		var inFlightAuthRequest = null;
 		var $http;
 		var notificationChannel;
+
+		var refreshToken = function() {
+			var deferred = $q.defer();
+	        if(!inFlightAuthRequest) {
+	            inflightAuthRequest = $injector.get("$http").post('/auth/refresh');
+	       	}
+	        inflightAuthRequest.then(function(r) {
+		           	inflightAuthRequest = null;
+		            if (r.data.token ) {
+		               	$localStorage.token = r.data.token;
+		                $injector.get("$http")(response.config).then(function(resp) {
+		                   deferred.resolve(resp);
+		                },function(resp) {
+		                    deferred.reject();
+		                });
+		            } else {
+		                deferred.reject();
+		            }
+	            }, function(response) {
+	                inflightAuthRequest = null;
+	                deferred.reject();
+	                return;
+	        });
+
+	        return deferred.promise;
+		}
 		
 		var interceptor = {
 			'request': function (config) {
@@ -57268,6 +57294,7 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 			},
 
 			'responseError': function (response) {
+				var $rootScope = $injector.get('$rootScope');
 				// get $http via $injector because of circular dependency problem
                 $http = $http || $injector.get('$http');
                 // don't send notification until all requests are complete
@@ -57280,33 +57307,23 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 
 				switch (response.status) {
 	                case 401:
-	                    var deferred = $q.defer();
-	                    if(!inFlightAuthRequest) {
-	                    	inflightAuthRequest = $injector.get("$http").post('/auth/refresh');
+	                    if($localStorage.token) { 
+	                    	refreshToken();
 	                    }
-	                    inflightAuthRequest.then(function(r) {
-	                        inflightAuthRequest = null;
-	                        if (r.data.token ) {
-	                           $localStorage.token = r.data.token;
-	                            $injector.get("$http")(response.config).then(function(resp) {
-	                                deferred.resolve(resp);
-	                            },function(resp) {
-	                                deferred.reject();
-	                            });
-	                        } else {
-	                            deferred.reject();
-	                        }
-	                    }, function(response) {
-	                        inflightAuthRequest = null;
-	                        deferred.reject();
-	                        return;
-	                    });
-	                    return deferred.promise;
-	                    break;
 
-	                default:
-	                    break;
+	                    if(response.config.url == "/auth/login") {
+	                		$rootScope.$broadcast('auth:error', { message: "Email address or password incorrect!"});
+	                	}
+	                break;
+
+	                case 404:
+	                	if(response.config.url == "/auth/login") {
+	                		console.log(response)
+	                		$rootScope.$broadcast('auth:error', { message: "Email address or password incorrect!"});
+	                	}
+	                break
 	            }
+
 	            return response || $q.when(response);
 			}
 		};
@@ -57515,6 +57532,16 @@ angular.module('app')
         }
     })
 
+    .state('site.about' , {
+        url: '/about',
+        templateUrl: '/assets/views/about.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/about.js'])
+            }]
+        }
+    })
+
     .state('site.section', {
         url: '/section/{category}',
         templateUrl: '/assets/views/section.html',
@@ -57534,123 +57561,39 @@ angular.module('app')
             }]
         }
     })
-   
+    .state('site.signin', {
+        url: '/signin',
+        templateUrl: '/assets/views/signin.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/frontend/controllers/signin.js'])
+            }]
+        }
+    })
+    .state('site.signup', {
+        url: '/signup',
+        templateUrl: '/assets/views/signup.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/frontend/controllers/signup.js'])
+            }]
+        }
+    })
 }])
+.run(function ($rootScope, $state) {
+  $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+    $state.previous = fromState;
+    $state.previous.params = fromParams;
+  });
+})
 
 'use strict';
 
 /* Main Controllers */
 
 angular.module('app')
-.controller('AuthModalCtrl', ['$rootScope','$scope','$auth', '$timeout', '$modalInstance', 
-  function ($rootScope, $scope, $auth, $timeout, $modalInstance) {
-
-    $scope.signinForm = true;
-    $scope.signupForm = false;
-    $scope.valid = true;
-    $scope.progress = false;
-    $scope.stat;
-
-    $scope.switchToSignup = function() {
-      $scope.signinForm = false;
-      $scope.signupForm = true;
-    }
-
-    $scope.signup = function(valid) {
-      $scope.valid = valid
-      var form = { name: $scope.name, email: $scope.email, password: $scope.password};
-      if(valid)
-      {
-        $scope.progress = true;
-        $scope.status = "Please wait...";
-        //signup user
-        $auth.signup(form).
-        success(function (response) {
-          if(response.token) {
-            $scope.status = "Registration successfull! You have been logged in";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-              $modalInstance.close();
-              window.location.reload(true);
-            }, 3000);
-          }
-        })
-        .error(function (response, status, headers, config) {
-          console.log(arguments);
-        })
-      }
-    }
-
-    $scope.login = function(valid) {
-      $scope.valid = valid;
-      var form = { email: $scope.email, password: $scope.password };
-      if(valid)
-      {
-        $scope.progress = true;
-        $scope.status = "Authenticating..."
-         //login user
-        $auth.login(form).
-        success(function (response) {
-          if(response.token) {
-            $scope.status = "Authenticated!";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-              $modalInstance.close();
-            }, 3000);
-          }
-        })
-        .error(function (response) {
-
-        })
-      }
-    }
-
-    $scope.googleLogin = function() {
-      OAuth.popup('google')
-      .done($scope.googleLoginSuccess)
-      .fail(function (err) {
-        console.log(err)
-      })
-    }
-
-    $scope.googleLoginSuccess = function(result) {
-      console.log(result);
-      //save access token
-      $auth.saveOauthToken(result.access_token);
-      //call google api
-      result.me()
-      .done($scope.googleMeSuccess)
-      .fail(function (err) {
-        console.log(err)
-      })
-    }
-
-    $scope.googleMeSuccess = function (response) {
-      var token = $auth.OauthToken();
-      var form = { provider_id: response.id, name: response.name, email: response.email, access_token: token };
-      $auth.oauthlogin(form)
-      .success(function (response) {
-          if(response.token) {
-            $scope.status = "Authenticated!";
-            $auth.saveToken(response.token)
-
-            $rootScope.$broadcast('user:authed');
-
-            $timeout(function() {
-               $modalInstance.close();
-            }, 2500);
-          }
-      });
-    }
-}])
-.controller('MainCtrl', ['$rootScope','$scope', '$localStorage', '$window', '$modal', '$auth',
-  function($rootScope, $scope, $localStorage, $window, $modal, $auth) {
+.controller('MainCtrl', ['$rootScope','$scope', '$localStorage', '$window', '$modal', '$auth', '$state',
+  function($rootScope, $scope, $localStorage, $window, $modal, $auth, $state) {
     // add 'ie' classes to html
     var isIE = !!navigator.userAgent.match(/MSIE/i);
     isIE && angular.element($window.document.body).addClass('ie');
@@ -57690,6 +57633,7 @@ angular.module('app')
     $scope.logout = function() {
       $auth.logout();
       $rootScope.$broadcast('user:loggedout');
+      $state.go('site.siginin');
     }
 
     $scope.toggleMobileMenu = function() {
@@ -57974,8 +57918,9 @@ app.factory('$auth', ['$http', '$window', '$localStorage', function ($http, $win
         return $http.post("/auth/signup", form);
     }
 
-    self.oauthlogin = function(form) {
-        return $http.post("/auth/fb", form);
+
+    self.oauth = function(form) {
+        return $http.post("/auth/oauth/signin", form);
     }
 
     self.logout = function() {
@@ -58176,7 +58121,6 @@ angular.module('app')
 
 	$scope.submitComment = function() {
 		var $form = { body: $scope.body, post_id: $scope.post_id }
-		console.log($form)
 		$scope.disableSubmitBtn = true;
 		$scope.submitBtnText = '<i class="fa fa-spin fa-spinner"></i> Posting...'
 
@@ -58240,7 +58184,10 @@ angular.module('app')
 	}
 
 	$scope.showReplyForm = function($comment) {
-		$comment.showreplyform = true;
+		if($scope.sessionExist)
+			$comment.showreplyform = true;
+		else
+			$comment.showreplyform = false;
 	}
 
 	$scope.loadReplies = function($comment) {

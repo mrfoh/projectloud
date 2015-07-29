@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-gb" ng-app="app">
+<html lang="en-gb" xmlns:ng="http://angularjs.org" ng-app="app">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -34,8 +34,9 @@
 				<div class="container clearfix">
 					<nav class="pull-right">
 						<ul class="actions">
-							<li ng-if="app.user == null"><a ng-click="openAuthModal(false)">Sign Up / Sign In</a></li>
-							<li ng-if="app.user" class="dropdown" dropdown>
+							<li ng-show="app.user == null"><a ui-sref="site.signin">Sign In</a></li>
+							<li ng-show="app.user == null"><a ui-sref="site.signup">Sign Up</a></li>
+							<li ng-show="app.user" class="dropdown" dropdown>
 								<a href="" dropdown-toggle>My Account <span class="caret"></span></a>
 								<ul class="dropdown-menu account-dropdown">
 									<li ng-if="app.user.isadmin"><a href="/admin" target="_blank">Admin Panel</a></li>
@@ -132,6 +133,7 @@
 		<?= Html::script("assets/js/frontend/directives/featured-posts.js"); ?>
 		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
 		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
+		<?= Html::script("assets/js/frontend/directives/share-email.js") ?>
  		@else
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif

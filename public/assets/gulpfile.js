@@ -68,7 +68,6 @@ gulp.task('less:frontend', function() {
 	return gulp.src('./less/frontend/frontend.less')
 				.pipe(less())
 				.pipe(minifyCSS())
-				.pipe(uglify())
 				.pipe(gulp.dest('./css/frontend'))
 })
 
@@ -79,7 +78,6 @@ gulp.task('css:frontend', function() {
 		])
 		.pipe(concat('dist.css'))
 		.pipe(minifyCSS())
-		.pipe(uglify())
 		.pipe(gulp.dest('./css/frontend'))
 });
 
