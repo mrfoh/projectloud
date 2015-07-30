@@ -38,6 +38,7 @@
 			<p class="timestamp"><% comment.timestamp %></p>
 			<div class="body">
 				<p><% comment.body %></p>
+				<button class="btn btn-sm btn-default" title="report this comment" ng-show="sessionExist"><i class="fa fa-flag"></i> Report</button>
 				<button class="btn btn-sm btn-default" ng-click="showReplyForm(comment)"><i class="fa fa-reply"></i> Reply</button>
 				<button class="btn btn-sm btn-default" ng-click="loadReplies(comment)"><% comment.reply_count %> Replies</button>
 				<div class="replies">

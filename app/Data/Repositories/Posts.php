@@ -124,13 +124,31 @@
 	    }
 
 	    /**
-	    * Retrieves post models in a categort
+	    * Retrieves post models in a category
 	    * @param object $category
 	    * @param integer $count
 	    * no per page
 	    **/
 	    public function category($category, $count) {
-	    	$posts = $this->model->published->where('category_id','=', $category->id)->orderBy('created_at','desc')->paginate($count);
+	    	$posts = $this->model->published()->where('category_id','=', $category->id)->orderBy('created_at','desc')->paginate($count);
+
+	    	$this->resetModel();
+	    	return $this->parserResult($posts);
+	    }
+
+	     /**
+	    * Retrieves post models tagged by a tag
+	    * @param object $tag
+	    * @param integer $count
+	    * No of models to retrieve per page
+	    **/
+	    public function tagged($tag, $count) {
+	    	
+	    	$posts = $this->model->published()->whereHas('tags', function($q) use ($tag) {
+	    		$q->where('slug', '=', $tag);
+	    	})
+	    	->orderBy('created_at', 'desc')
+	    	->paginate($count);
 
 	    	$this->resetModel();
 	    	return $this->parserResult($posts);

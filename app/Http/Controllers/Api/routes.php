@@ -19,6 +19,7 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('{id}/comments', 'PostController@comments');
 		Route::get('{id}/feature', 'PostController@feature');
 		Route::get('{id}/unfeature', 'PostController@unfeature');
+		Route::get('tagged/{slug}', 'PostController@tagged');
 		Route::get('featured', 'PostController@featuredPosts');
 		Route::get('recent', 'PostController@recentPosts');
 		Route::put('{id}', 'PostController@store');

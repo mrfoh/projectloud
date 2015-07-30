@@ -39,6 +39,16 @@ angular.module('app')
         }
     })
 
+    .state('site.commentpolicy', {
+        url: '/comment-policy',
+        templateUrl: '/assets/views/commentpolicy.html',
+         resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/commentpolicy.js'])
+            }]
+        }
+    })
+
     .state('site.section', {
         url: '/section/{category}',
         templateUrl: '/assets/views/section.html',
@@ -48,6 +58,17 @@ angular.module('app')
             }]
         }
     })
+
+    .state('site.tag', {
+        url: '/tag/{tag}',
+        templateUrl: '/assets/views/tag.html',
+         resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                 return $ocLazyLoad.load(['/assets/js/frontend/controllers/tag.js', '/assets/js/frontend/services/posts.js'])
+            }]
+        }
+    })
+
     .state('site.post', {
         url: '/article/{slug}',
         templateUrl: '/assets/views/post.html',

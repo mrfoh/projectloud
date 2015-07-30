@@ -24,6 +24,10 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.get(url+"/featured");
 	}
 
+	self.tagged = function(slug) {
+		return $http.get(url+"/tagged/"+slug);
+	}
+
 	self.featuredInCategory = function(category) {
 		return $http.get(url+"/featured?category_id="+category);
 	}

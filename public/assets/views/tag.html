@@ -1,0 +1,40 @@
+<div class="page" id="" ng-controller="TaggedCtrl">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-8 latest">
+				<header class="section-heading">
+					<span>Posts tagged <% tag %></span>
+				</header>
+				<section class="feed">
+					<div class="loading" ng-show="loading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+					<div class="row">
+						<div class="col-lg-12 with-thumbnail" ng-show="showposts">
+							<article ng-repeat="post in posts" class="article clearfix">
+								<div class="image">
+									<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>"></a>
+								</div>
+								<div class="content">
+									<p class="category"><% post.category.name %></p>
+									<h3 class="title"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+									<p class="excerpt"><% post.excerpt %></p>
+									</div>
+							</article>
+						</div>
+
+						<div class="col-lg-12" ng-show="noposts">
+							<div class="empty">
+								<h3>No posts at the moment.</h3>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<div class="col-lg-4 col-md-4 sidebar">
+				<section class="newsletter-container">
+					<newsletter-form></newsletter-form>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>

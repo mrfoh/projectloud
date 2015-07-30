@@ -4,6 +4,7 @@
 	use Prettus\Validator\Exceptions\ValidatorException;
 	use Bps\Data\Repositories\Posts;
 	use Bps\Data\Repositories\Comments;
+	use Bps\Data\Repositories\Tags;
 	use JWTAuth;
 	use Request;
 	use Response;
@@ -102,6 +103,13 @@
 			$category = Request::input('category_id', null);
 
 			return $this->posts->recent($count, $category);
+		}
+
+		public function tagged(Tags $tags, $slug) {
+
+			$count = Request::input('count', 10);
+			
+			return $this->posts->tagged($slug, $count);
 		}
 
 		public function feature($id) {

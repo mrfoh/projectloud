@@ -52,6 +52,15 @@
 				</div>
 				<div ng-bind-html="post.body" class="post-body"></div>
 
+				<div class="tags">
+					<div class="clearfix">
+						<h3 class="pull-left">Tags:</h3>
+						<a ui-sref="site.tag({tag: tag.slug})" class="tag" ng-repeat="tag in post.tags.data"><% tag.name %></a>
+					</div>
+				</div>
+
+				<hr>
+
 				<div class="share-controls">
 					<ul>
 						<li>Share</li>
