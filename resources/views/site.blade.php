@@ -34,9 +34,9 @@
 				<div class="container clearfix">
 					<nav class="pull-right">
 						<ul class="actions">
-							<li ng-show="app.user == null"><a ui-sref="site.signin">Sign In</a></li>
-							<li ng-show="app.user == null"><a ui-sref="site.signup">Sign Up</a></li>
-							<li ng-show="app.user" class="dropdown" dropdown>
+							<li ng-cloak ng-show="app.user == null"><a ui-sref="site.signin">Sign In</a></li>
+							<li ng-cloak ng-show="app.user == null"><a ui-sref="site.signup">Sign Up</a></li>
+							<li ng-cloak ng-show="app.user" class="dropdown" dropdown>
 								<a href="" dropdown-toggle>My Account <span class="caret"></span></a>
 								<ul class="dropdown-menu account-dropdown">
 									<li ng-if="app.user.isadmin"><a href="/admin" target="_blank">Admin Panel</a></li>
@@ -55,7 +55,7 @@
 					</div>
 					<div class="pull-left menu">
 						<ul class="links clearfix">
-							<li ng-repeat="category in categories" ui-sref-active="active">
+							<li ng-repeat="category in categories" ui-sref-active="active" ng-show="categories">
 								<a ui-sref="site.section({category: category.slug})" ng-cloak><% category.name %></a>
 							</li>
 						</ul>
@@ -106,34 +106,7 @@
 
 		<!-- Scripts -->
 		@if(App::environment() == "local")
-		<?= Html::script('assets/js/vendor/jquery/jquery.min.js') ?>
-		<?= Html::script('assets/js/vendor/libs/underscore.js') ?>
-		<?= Html::script('assets/js/vendor/libs/oauth.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-animate/angular-animate.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-cookies/angular-cookies.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-resource/angular-resource.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-sanitize/angular-sanitize.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-touch/angular-touch.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-ui-router/angular-ui-router.js') ?>
-		<?= Html::script('assets/js/vendor/angular/ngstorage/ngStorage.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
-		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
-		<?= Html::script('assets/js/frontend/interceptor.js') ?>
-
-		<!-- App -->
-		<?= Html::script("assets/js/frontend/app.js") ?>
-		<?= Html::script("assets/js/frontend/config.js") ?>
-		<?= Html::script("assets/js/frontend/config.lazyload.js") ?>
-		<?= Html::script("assets/js/frontend/config.router.js") ?>
-		<?= Html::script("assets/js/frontend/main.js") ?>
-		<?= Html::script("assets/js/admin/services/ui-load.js") ?>
-		<?= Html::script("assets/js/frontend/services/auth.js") ?>
-		<?= Html::script("assets/js/admin/directives/ui-jq.js") ?>
-		<?= Html::script("assets/js/frontend/directives/featured-posts.js"); ?>
-		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
-		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
-		<?= Html::script("assets/js/frontend/directives/share-email.js") ?>
+		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
  		@else
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif
