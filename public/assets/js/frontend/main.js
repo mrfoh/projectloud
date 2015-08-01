@@ -84,5 +84,7 @@ angular.module('app')
 
     $rootScope.$on('user:loggedout', function(event) {
         $scope.app.user = null;
+        //removes cache for all providers
+        OAuth.clearCache();
   })
 }]);
