@@ -30,8 +30,11 @@ Route::group(['prefix' => 'api'], function() {
 
 	Route::group(['prefix' => 'comments'], function() {
 
+		Route::post('{id}/report', 'CommentController@report');
 		Route::get('{id}/replies', 'CommentController@replies');
 		Route::post('{id}/reply', 'CommentController@reply');
+		Route::post('{id}/approve', 'CommentController@approve');
+		Route::post('{id}/disapprove', 'CommentController@disapproved');
 		Route::get('{id}', 'CommentController@index');
 		Route::post('/', 'CommentController@store');
 		Route::get('/', 'CommentController@index');
@@ -58,6 +61,14 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('{id}', 'MediaController@index');
 		Route::delete('{id}', 'MediaController@delete');
 		Route::get('/', 'MediaController@index');
+	});
+
+	Route::group(['prefix' => 'reports'], function() {
+
+		Route::get('{id}/resolve', 'ReportController@resolve');
+		Route::delete('{id}', 'ReportController@delete');
+		Route::get('{id}', 'ReportController@index');
+		Route::get('/', 'ReportController@index');
 	});
 
 	Route::group(['prefix' => 'newsletter'], function() {

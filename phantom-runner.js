@@ -17,7 +17,7 @@ if(url.length > 0) {
           phantom.exit();
         }
       });
-      delay = setInterval(checker, 2500);
+      delay = setInterval(checker, 4500);
     }
   });
 }

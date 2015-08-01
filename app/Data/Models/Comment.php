@@ -17,4 +17,8 @@
 		public function user() {
 			return $this->belongsTo('\Bps\Data\Models\User');
 		}
+
+		public function reports() {
+			return $this->morphMany('\Bps\Data\Models\Report', 'reportable');
+		}
 	}

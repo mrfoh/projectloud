@@ -160,7 +160,7 @@ angular.module('app')
 			controller: "CommentCtrl",
 			scope: {},
 			link: function(scope, el, attr) {
-				console.log(scope)
+				
 			}
 		}
 	}

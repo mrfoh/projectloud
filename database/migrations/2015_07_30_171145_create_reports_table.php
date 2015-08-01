@@ -16,6 +16,7 @@ class CreateReportsTable extends Migration {
 
 			$table->increments('id');
 			$table->integer('user_id');
+			$table->enum('type', ['intolerance','violence','name-calling','trolling']);
 			$table->morphs('reportable');
 			$table->text('comment')->nullable();
 			$table->enum('status', ['pending', 'resolved']);

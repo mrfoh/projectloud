@@ -15,6 +15,11 @@
 		<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
+		<style type="text/css">
+			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			  display: none !important;
+			}
+		</style>
 		<!-- Styleshheets -->
 		@if(App::environment() == "local")
 		<?= Html::style('assets/css/bootstrap.css') ?>
@@ -106,7 +111,34 @@
 
 		<!-- Scripts -->
 		@if(App::environment() == "local")
-		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
+		<?= Html::script('assets/js/vendor/jquery/jquery.min.js') ?>
+		<?= Html::script('assets/js/vendor/libs/underscore.js') ?>
+		<?= Html::script('assets/js/vendor/libs/oauth.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-animate/angular-animate.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-cookies/angular-cookies.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-resource/angular-resource.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-sanitize/angular-sanitize.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-touch/angular-touch.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-ui-router/angular-ui-router.js') ?>
+		<?= Html::script('assets/js/vendor/angular/ngstorage/ngStorage.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
+		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
+		<?= Html::script('assets/js/frontend/interceptor.js') ?>
+
+		<!-- App -->
+		<?= Html::script("assets/js/frontend/app.js") ?>
+		<?= Html::script("assets/js/frontend/config.js") ?>
+		<?= Html::script("assets/js/frontend/config.lazyload.js") ?>
+		<?= Html::script("assets/js/frontend/config.router.js") ?>
+		<?= Html::script("assets/js/frontend/main.js") ?>
+		<?= Html::script("assets/js/admin/services/ui-load.js") ?>
+		<?= Html::script("assets/js/frontend/services/auth.js") ?>
+		<?= Html::script("assets/js/admin/directives/ui-jq.js") ?>
+		<?= Html::script("assets/js/frontend/directives/featured-posts.js"); ?>
+		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
+		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
+		<?=Html::script("assets/js/frontend/directives/report.js") ?>
  		@else
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif

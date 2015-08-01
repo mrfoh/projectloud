@@ -1,0 +1,24 @@
+<div class="modal-header">
+	<h3 class="modal-title">Report Comment</h3>
+</div>
+
+<div class="modal-body">
+	<div class="container-fluid">
+		<form name="form" novalidate ng-submit="report(form.$valid)">
+			<alert type="<% progress.type %>" ng-show="progress.show"><% progress.message %></alert>
+			<div class="form-group">
+				<label>Reason for report</label>
+				<select name="type" class="form-control" ng-model="type" ng-options="type.name for type in types" ng-required="true"></select>
+			</div>
+
+			<div class="form-group">
+				<label>Comments</label>
+				<textarea name="comments" ng-model="comment" class="form-control" rows="5"></textarea>
+			</div>
+
+			<div class="form-group">
+				<button class="btn btn-block btn-lg" ng-disabled="disableBtn">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>

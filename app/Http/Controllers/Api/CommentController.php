@@ -4,6 +4,7 @@
 	use Prettus\Validator\Exceptions\ValidatorException;
 	use Illuminate\Database\Eloquent\ModelNotFoundException;
 	use Bps\Data\Repositories\Comments;
+	use Bps\Data\Repositories\Reports;
 	use Validator;
 	use Request;
 	use Response;
@@ -11,7 +12,7 @@
 	class CommentController extends ApiController {
 
 		public function __construct() {
-			$this->middleware('jwt.auth', ['only' => ['store']]);
+			$this->middleware('jwt.auth', ['only' => ['store','reply','report']]);
 		}
 
 		protected $rulesCreateDefault = [
@@ -73,12 +74,39 @@
 			}
 		}
 
+		public function report(Comments $comments, Reports $reports, $id) {
+
+			$comment = $comments->skipPresenter()->find($id);
+			if(!$comment) return response()->json(['status'=>"error",'message'=>"comment not found"], 404);
+
+			$user = $this->user();
+
+			if($comment->user_id != $user->id) {
+
+				$attrs = [
+					'user_id' => $user->id,
+					'type' => Request::input('type'),
+					'comment' => Request::input('comment', null),
+					'status' => 'pending'
+				];
+
+				$report = $reports->submit($comment, $attrs);
+
+				if($report) {
+					return response()->json(['status' => "success"], 200);
+				}
+			}
+			else {
+				return response()->json(['status' => "error", 'message' => "Cannot report your comment"], 405);
+			}
+		}
+
 		public function reply(Comments $comments, $id) {
 
 			$parent = $comments->find($id);
-			if(!$parent) return response()->json(['status'=>"error",'message'=>"Post not found"], 404);
+			if(!$parent) return response()->json(['status'=>"error",'message'=>"comment not found"], 404);
 
-			$user = $this->getUser();
+			$user = $this->user();
 			$input = Request::all();
 				
 			if($user) {

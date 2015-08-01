@@ -40,4 +40,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->hasMany('\Bps\Data\Models\Post');
 	}
 
+	public function comments() {
+		return $this->hasMany('\Bps\Data\Models\Comment');
+	}
+
+	public function reports() {
+		return $this->hasMany('\Bps\Data\Models\Report');
+	}
+
 }

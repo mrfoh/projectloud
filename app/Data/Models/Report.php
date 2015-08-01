@@ -5,5 +5,13 @@
 
 	class Report extends Model {
 
-		protected $fillable = ['id','user_id','comment','status', 'reportable_id','reportable_type'];
+		protected $fillable = ['user_id','type','comment','status'];
+
+		public function reportable() {
+			return $this->morphTo();
+		}
+
+		public function user() {
+			return $this->belongsTo('\Bps\Data\Models\User');
+		}
 	}

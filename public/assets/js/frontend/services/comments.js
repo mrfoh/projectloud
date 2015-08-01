@@ -16,6 +16,10 @@ app.factory('comments', ['$http', '$window', function ($http, $window) {
 		return $http.get(url+"/"+id+"/replies");
 	}
 
+	self.report = function(id, form) {
+		return $http.post(url+"/"+id+"/report", form);
+	}
+
 	self.serialize = function(obj) {
 		var str = [];
 		for(var p in obj) {
