@@ -59,8 +59,13 @@ class CreateSitemaps extends Command {
 		$categories = $this->categories->skipPresenter()->all();
     	// get all posts
 	    $posts = $this->posts->skipPresenter()->allPublished();
+
 	    $url = \Config::get('app.url');
+
 	    $sitemap->add($url."/", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/#!/about", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/#!/comment-policy", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/#!/help", date("Y-m-d h:i", time()), "1.0", 'daily');
 
 	    foreach ($categories as $category)
 	    {
@@ -72,6 +77,9 @@ class CreateSitemaps extends Command {
 	        $sitemap->add($url."/#!/article/".$post->slug, $post->created_at, "1.0", 'daily');
 	    }
 
+	    if($this->fs->has('sitemap.xml')) {
+	    	$this->fs->delete('sitemap.xml');
+	    }
 	    // generate your sitemap (format, filename)
     	$sitemap->store('xml', 'sitemap');
 	}
@@ -84,8 +92,24 @@ class CreateSitemaps extends Command {
 				'loc' => "/",
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
+			],
+			'root' => [
+				'loc' => "/about",
+				'changefreq' => 'daily',
+                'priority'   => '1.0'
+			],
+			'root' => [
+				'loc' => "/comment-policy",
+				'changefreq' => 'daily',
+                'priority'   => '1.0'
+			],
+			'root' => [
+				'loc' => "/help",
+				'changefreq' => 'daily',
+                'priority'   => '1.0'
 			]
 		];
+		
 		//get all categories
 		$categories = $this->categories->skipPresenter()->all();
     	// get all posts
