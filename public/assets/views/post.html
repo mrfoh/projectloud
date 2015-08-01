@@ -5,13 +5,13 @@
 		</div>
 	</div>
 
-	<div class="container-fluid" style="padding: 0;" ng-show="postLoaded">
+	<div class="container-fluid" style="padding: 0;" ng-show="postLoaded" itemscope itemtype="http://schema.org/NewsArticle">
 		<div class="header with-image" ng-style="{'background-image': 'url(/content/<% post.featured_image.src %>)','background-size': 'cover', 'background-attachment':'fixed'}" ng-if="post.featured_image">
 			<div class="heading">
 				<span class="category"><% post.category.name %></span>
-				<h2><% post.title %></h2>
-				<h3 class="excerpt"><% post.excerpt %></h3>
-				<p><% post.published_at %></p>
+				<h2 itemprop="headline"><% post.title %></h2>
+				<h3 class="excerpt" itemprop="description"><% post.excerpt %></h3>
+				<p itemprop="datePublished"><% post.published_at %></p>
 			</div>
 			<div class="overlay"></div>
 		</div>
@@ -50,7 +50,7 @@
 						</li>
 					</ul>
 				</div>
-				<div ng-bind-html="post.body" class="post-body"></div>
+				<div ng-bind-html="post.body" class="post-body" itemprop="articleBody"></div>
 
 				<div class="tags">
 					<div class="clearfix">
