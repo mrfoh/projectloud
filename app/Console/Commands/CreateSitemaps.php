@@ -93,23 +93,23 @@ class CreateSitemaps extends Command {
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
 			],
-			'root' => [
+			'about' => [
 				'loc' => "/about",
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
 			],
-			'root' => [
+			'comment-policy' => [
 				'loc' => "/comment-policy",
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
 			],
-			'root' => [
+			'help' => [
 				'loc' => "/help",
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
 			]
 		];
-		
+
 		//get all categories
 		$categories = $this->categories->skipPresenter()->all();
     	// get all posts
