@@ -29,7 +29,7 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 *
 	 * @return void
 	 */
-	public function handle(Users $users)
+	public function handle()
 	{
 		//generate and save activation token
 		$activationToken = $users->activationCode($this->user);

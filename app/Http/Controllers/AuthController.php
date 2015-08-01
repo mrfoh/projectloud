@@ -107,6 +107,7 @@
 			//get role
 			$role = Role::whereName('Regular')->first();
 			$attrs = $request->only('name','email','access_token','provider_id', 'username');
+			$attrs['password'] = bcrypt($input['password']);
 			//create
 			$user = $users->create($attrs);
 			//assign role
