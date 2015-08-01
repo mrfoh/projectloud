@@ -57600,6 +57600,15 @@ angular.module('app')
             }]
         }
     })
+    .state('site.auth', {
+        url: '/auth/{token)',
+        templateUrl: '/assets/views/auth.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/frontend/controllers/auth.js'])
+            }]
+        }
+    })
 }])
 .run(function ($rootScope, $state) {
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
