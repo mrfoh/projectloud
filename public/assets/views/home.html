@@ -16,36 +16,36 @@
 					<div class="row" ng-if="template == '2-cols'">
 						<div class="col-lg-8 with-images">
 							<div class="col-lg-12">
-								<article class="article">
+								<article class="article" itemscope itemtype="http://schema.org/NewsArticle">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[0].slug})">
-											<img ng-src="/content/<% pro[0].featured_image.src %>">
+											<img itemprop="image" ng-src="/content/<% pro[0].featured_image.src %>">
 										</a>
 									</div>
-									<h3 class="title"><a ui-sref="site.post({slug: pro[0].slug})"><% pro[0].title %></a></h3>
-									<p class="excerpt"><% pro[0].excerpt %></p>
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: pro[0].slug})"><% pro[0].title %></a></h3>
+									<p class="excerpt" itemprop="description"><% pro[0].excerpt %></p>
 								</article>
 							</div>
 							<div class="col-lg-6">
-								<article class="article">
+								<article class="article" itemscope itemtype="http://schema.org/NewsArticle">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[1].slug})">
-											<img ng-src="/content/<% pro[1].featured_image.src %>">
+											<img itemprop="image" ng-src="/content/<% pro[1].featured_image.src %>">
 										</a>
 									</div>
-									<h3 class="title"><a ui-sref="site.post({slug: pro[1].slug})"><% pro[1].title %></a></h3>
-									<p class="excerpt"><% pro[1].excerpt %></p>
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: pro[1].slug})"><% pro[1].title %></a></h3>
+									<p class="excerpt" itemprop="description"><% pro[1].excerpt %></p>
 								</article>
 							</div>
 							<div class="col-lg-6">
-								<article class="article">
+								<article class="article" itemscope itemtype="http://schema.org/NewsArticle">
 									<div class="image">
 										<a ui-sref="site.post({slug: pro[0].slug})">
-											<img ng-src="/content/<% pro[2].featured_image.src %>">
+											<img itemprop="image" ng-src="/content/<% pro[2].featured_image.src %>">
 										</a>
 									</div>
-									<h3 class="title"><a ui-sref="site.post({slug: pro[2].slug})"><% pro[2].title %></a></h3>
-									<p class="excerpt"><% pro[2].excerpt %></p>
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: pro[2].slug})"><% pro[2].title %></a></h3>
+									<p class="excerpt" itemprop="description"><% pro[2].excerpt %></p>
 								</article>
 							</div>
 						</div>
@@ -57,14 +57,14 @@
 					<!-- 1-col layout -->
 					<div class="row" ng-if="template == '1-col'">
 						<div class="col-lg-12 with-thumbnail">
-							<article ng-repeat="post in recent" class="article clearfix">
+							<article ng-repeat="post in recent" class="article clearfix" itemscope itemtype="http://schema.org/NewsArticle">
 								<div class="image">
-									<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>"></a>
+									<a ui-sref="site.post({slug: post.slug})"><img itemprop="image" ng-src="/content/<% post.featured_image.src %>"></a>
 								</div>
 								<div class="content">
 									<p class="category"><% post.category.name %></p>
-									<h3 class="title"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
-									<p class="excerpt"><% post.excerpt %></p>
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+									<p class="excerpt" itemprop="description"><% post.excerpt %></p>
 								</div>
 							</article>
 						</div>
@@ -74,7 +74,7 @@
 			</div>
 			<div class="col-lg-4 col-md-4 col-sm-4 sidebar">
 				<section class="newsletter-container">
-					<newsletter-form color="red"></newsletter-form>
+					<newsletter-form></newsletter-form>
 				</section>
 			</div>
 		</div>

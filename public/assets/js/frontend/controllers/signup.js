@@ -26,7 +26,7 @@ app.controller('SignupCtrl', ['$rootScope','$scope', '$log', '$document', '$page
 		$scope.signupSuccess = function (response, status, headers, config) {
 			if(response && response.token) {
 
-				$scope.status = "Sign up successfull! Welcome to Bayelsa Public Square";
+				$scope.status = "Sign up successfull! Welcome to Bayelsa Public Square. Please click the link in the email sent to you to activate your account.";
 				$auth.saveToken(response.token);
 
 				$rootScope.$broadcast('user:authed');

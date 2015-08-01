@@ -44,14 +44,14 @@
 					<div class="loading" ng-if="feedloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
 					<div class="row">
 						<div class="col-lg-12 with-thumbnail" ng-if="!noPosts">
-							<article ng-repeat="post in recent" class="article clearfix">
+							<article ng-repeat="post in recent" class="article clearfix" itemscope itemtype="http://schema.org/NewsArticle">
 								<div class="image">
-									<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>"></a>
+									<a ui-sref="site.post({slug: post.slug})"><img itemprop="image" ng-src="/content/<% post.featured_image.src %>"></a>
 								</div>
 								<div class="content">
 									<p class="category"><% post.category.name %></p>
-									<h3 class="title"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
-									<p class="excerpt"><% post.excerpt %></p>
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+									<p class="excerpt" itemprop="description"><% post.excerpt %></p>
 									</div>
 							</article>
 						</div>

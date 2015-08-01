@@ -7,24 +7,10 @@
 	use Bps\Data\Repositories\Users;
 	use Bps\Data\Models\Role;
 	use Tymon\JWTAuth\Exceptions\JWTException;
+	use Bps\Commands\UserRegistered;
 	use Illuminate\Http\Request;
 
 	class AuthController extends Controller {
-
-
-		private function token($user) {
-			try 
-			{
-				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray()];
-				// attempt to verify the credentials and create a token for the user
-				$token = JWTAuth::fromUser($user, $customClaims);
-				// all good so return the token
-		    	return response()->json(compact('token'));
-			} catch (JWTException $e) {
-				// something went wrong whilst attempting to encode the token
-		        return response()->json(['status' => 'error', 'message' => 'could_not_create_token'], 500);
-		    }
-		}
 
 		public function authOauth(Request $request, Users $users) {
 			$credentials = [
@@ -49,11 +35,13 @@
 				$user = $users->create($attrs);
 				//assign role
 				$user->roles()->attach($role->id);
+
+				$this->dispatch(new UserRegistered($user));
 			}
 
 			try 
 			{
-				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray()];
+				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
 				// attempt to verify the credentials and create a token for the user
 				$token = JWTAuth::fromUser($user, $customClaims);
 				// all good so return the token
@@ -83,7 +71,7 @@
 
 	        if($user) {
 	        	$credentials = ['email' => $input['email'], 'password' => $input['password']];
-	        	$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray()];
+	        	$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
 
 		        try {
 		            // attempt to verify the credentials and create a token for the user
@@ -123,10 +111,12 @@
 			$user = $users->create($attrs);
 			//assign role
 			$user->roles()->attach($role->id);
+	
+			$this->dispatch(new UserRegistered($user));
 
 			try 
 			{
-				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray()];
+				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
 				// attempt to verify the credentials and create a token for the user
 				$token = JWTAuth::fromUser($user, $customClaims);
 				// all good so return the token
@@ -140,7 +130,29 @@
 
 		public function refresh(Request $request, Users $users) {
 			$token = JWTAuth::parseToken()->refresh();
-
 			return response()->json(compact('token'));
+		}
+
+		public function activate(Users $users, $token, $id) {
+
+			$user = $users->checkToken($token, $id);
+
+			if($user) {
+				//activate user
+				$User = $users->activate($user);
+
+				try 
+				{
+					$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $User->active];
+					// attempt to verify the credentials and create a token for the user
+					$token = JWTAuth::fromUser($User, $customClaims);
+					// all good so return the token
+				} catch (JWTException $e) {
+					// something went wrong whilst attempting to encode the token
+				    return response()->json(['status' => 'error', 'message' => 'could_not_create_token'], 500);
+				}
+
+				return redirect()->to('/#!/auth/'.$token);
+			}
 		}
 	}

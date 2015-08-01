@@ -13,7 +13,9 @@
 		"tymon/jwt-auth": "0.5.*",
 		"league/flysystem-dropbox": "~1.0",
 		"nztim/mailchimp": "^0.1.0",
-		"roumen/sitemap": "2.5.*"
+		"roumen/sitemap": "2.5.*",
+		"iron-io/iron_mq": "~1.5",
+		"guzzlehttp/guzzle": "~5.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
