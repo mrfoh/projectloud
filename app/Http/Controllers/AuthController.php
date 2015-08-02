@@ -112,10 +112,8 @@
 			$user = $users->create($attrs);
 			//assign role
 			$user->roles()->attach($role->id);
-		
-			dd($user);
-			
-			//$this->dispatch(new UserRegistered($user));
+
+			$this->dispatch(new UserRegistered($user));
 
 			try 
 			{

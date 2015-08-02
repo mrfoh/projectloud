@@ -21,6 +21,7 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function __construct($user)
 	{
+		\Log::info('test', ['user' => $user]);
 		$this->user = $user;
 	}
 
@@ -31,7 +32,6 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function handle()
 	{
-		\Log::info('test', ['user' => $this->user->email]);
 		/*
 		//generate and save activation token
 		$activationToken = $users->activationCode($this->user);
