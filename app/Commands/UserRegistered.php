@@ -31,6 +31,8 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function handle()
 	{
+		dd($this->user);
+		/*
 		//generate and save activation token
 		$activationToken = $users->activationCode($this->user);
 
@@ -40,9 +42,7 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 		//user
 		$user = $this->user;
 
-		dd($user);
-
-		/*
+		
 		//send email
 		\Mail::send('emails.users.activate', $data, function($message) use ($user) {
 
