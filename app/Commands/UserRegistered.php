@@ -21,7 +21,6 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function __construct($user)
 	{
-		\Log::info('test', ['user' => $user]);
 		$this->user = $user;
 	}
 
@@ -32,9 +31,8 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 	 */
 	public function handle()
 	{
-		/*
 		//generate and save activation token
-		$activationToken = $users->activationCode($this->user);
+		$activationToken = $users->activationCode($this->user->id);
 
 		//email data
 		$data = ['activationtoken' => $activationToken, 'user' => $this->user];
@@ -49,7 +47,7 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 			$message->to($user->email)
 					->subject('Activate your account')
 					->from('no-reply@bayelsapublicsquare.com', 'Bayelsa Public Square');
-		});*/
+		});
 	}
 
 }
