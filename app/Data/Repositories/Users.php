@@ -22,22 +22,19 @@
 		* @param Eloquent object $user
 		* @return string
 	    **/
-	    public function activationCode($userId) {
+	    public function activationCode($user) {
 
-	    	$user = $this->model->find($userId);
+	    	$timestamp = time();
+	    	$email = $user->email;
 
-	    	if($user) {
-	    		 $email = $user->email;
-	    		 $timestamp = time();
+	    	//combine hashes
+	    	$token = md5($email).".".md5($timestamp);
 
-	    		 $token = md5($email).".".md5($timestamp);
+	    	//set token
+	    	$user->activation_token = $token;
+	    	$user->save();
 
-	    		 $user->activation_token = $token;
-	    		 $user->save();
-
-	    		 if($user) 
-	    		 	return $token;
-	    	}
+	    	return $token;
 	    }
 
 	    public function checkToken($token, $id) {

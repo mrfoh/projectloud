@@ -36,7 +36,9 @@
 				//assign role
 				$user->roles()->attach($role->id);
 
-				$this->dispatch(new UserRegistered($user));
+				$activationtoken = $users->activationCode($user);
+
+				$this->dispatch(new UserRegistered($user, $activationtoken));
 			}
 
 			try 
@@ -113,7 +115,9 @@
 			//assign role
 			$user->roles()->attach($role->id);
 
-			$this->dispatch(new UserRegistered($user));
+			$activationtoken = $users->activationCode($user);
+
+			$this->dispatch(new UserRegistered($user, $activationtoken));
 
 			try 
 			{
