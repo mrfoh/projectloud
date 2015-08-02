@@ -10,7 +10,7 @@ class UserRegistered extends Command implements ShouldBeQueued {
 
 	use InteractsWithQueue, SerializesModels;
 
-	protected $user, $activationtoken;
+	public $user, $activationtoken;
 
 	/**
 	 * Create a new command instance.
