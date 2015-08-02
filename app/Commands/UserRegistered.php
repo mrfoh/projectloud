@@ -21,8 +21,6 @@ class UserRegistered extends Command implements ShouldBeQueued {
 	{
 		$this->user = $user;
 		$this->activationtoken = $activationtoken;
-
-		\Log::info('activationtoken', ['code' => $activationtoken]);
 	}
 
 }

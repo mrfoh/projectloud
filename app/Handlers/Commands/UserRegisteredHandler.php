@@ -3,7 +3,6 @@
 use Bps\Commands\UserRegistered;
 
 use Illuminate\Queue\InteractsWithQueue;
-use BPs\Data\Repositories\Users;
 use Mail;
 use Log;
 
@@ -15,9 +14,8 @@ class UserRegisteredHandler {
 	 *
 	 * @return void
 	 */
-	public function __construct(Users $users)
+	public function __construct()
 	{
-		$this->users = $users;
 	}
 
 	/**
