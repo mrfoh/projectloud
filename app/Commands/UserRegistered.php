@@ -40,13 +40,16 @@ class UserRegistered extends Command implements SelfHandling, ShouldBeQueued {
 		//user
 		$user = $this->user;
 
+		dd($user);
+
+		/*
 		//send email
 		\Mail::send('emails.users.activate', $data, function($message) use ($user) {
 
 			$message->to($user->email)
 					->subject('Activate your account')
 					->from('no-reply@bayelsapublicsquare.com', 'Bayelsa Public Square');
-		});
+		});*/
 	}
 
 }
