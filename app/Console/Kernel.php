@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel {
 				 ->hourly();
 
 		$schedule->command('sitemap')->dailyAt('23:55');
-		$schedule->command('snapshot')->dailyAt('00:00')
+		$schedule->command('snapshot')->dailyAt('00:00');
 	}
 
 }
