@@ -44,7 +44,7 @@ angular.module('app')
     $scope.logout = function() {
       $auth.logout();
       $rootScope.$broadcast('user:loggedout');
-      $state.go('site.siginin');
+      $state.go('site.signin');
     }
 
     $scope.toggleMobileMenu = function() {

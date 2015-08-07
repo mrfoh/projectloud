@@ -32,8 +32,8 @@
 	<div class="comments">
 		<div class="comment" ng-repeat="comment in comments | orderBy: '-created_at.date'">
 			<div class="name">
-				<h4 ng-if="comment.name"><% comment.name %> <span>says: </span></h4>
-				<h4 ng-if="comment.user.name"><% comment.user.name %></h4>
+				<h4 ng-if="comment.user.settings.identity == 'name'"><% comment.user.name %> <span>says: </span></h4>
+				<h4 ng-if="comment.user.settings.identity == 'username'"><% comment.user.username %> <span>says: </span></h4>
 			</div>
 			<p class="timestamp"><% comment.timestamp %></p>
 			<div class="body">
@@ -62,8 +62,8 @@
 					<div class="comment-replies comments" ng-show="comment.showreplies">
 						<div class="comment" ng-repeat="comment in comment.replies | orderBy: '-created_at.date'">
 							<div class="name">
-								<h4 ng-if="comment.name"><% comment.name %> <span>says: </span></h4>
-								<h4 ng-if="comment.user.name"><% comment.user.name %></h4>
+								<h4 ng-if="comment.user.settings.identity == 'name'"><% comment.user.name %> <span>says: </span></h4>
+								<h4 ng-if="comment.user.settings.identity == 'username'"><% comment.user.username %> <span>says: </span></h4>
 							</div>
 							<p class="timestamp"><% comment.timestamp %></p>
 							<div class="body">

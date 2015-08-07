@@ -12,6 +12,18 @@
 
 	class AuthController extends Controller {
 
+		private function claims($user) {
+			$customClaims = [
+				'name' => $user->name,
+				'email' => $user->email,
+				'settings' => $user->settings,
+				'username' => $user->username,
+				'roles' => $user->roles->toArray(),
+				'active' => $user->active
+			];
+
+			return $customClaims;
+		}
 		public function authOauth(Request $request, Users $users) {
 			$credentials = [
 				'provider_id' => $request->input('provider_id'),
@@ -43,7 +55,7 @@
 
 			try 
 			{
-				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
+				$customClaims = $this->claims($user);
 				// attempt to verify the credentials and create a token for the user
 				$token = JWTAuth::fromUser($user, $customClaims);
 				// all good so return the token
@@ -73,7 +85,7 @@
 
 	        if($user) {
 	        	$credentials = ['email' => $input['email'], 'password' => $input['password']];
-	        	$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
+	        	$customClaims = $this->claims($user);
 
 		        try {
 		            // attempt to verify the credentials and create a token for the user
@@ -97,7 +109,7 @@
 			//user input
 			$input = $request->all();
 			//rules
-			$rules = ['email' => "required|email|unique:users,email", 'password' => "required"];
+			$rules = ['email' => "required|email|unique:users,email", 'password' => "required", 'username' => 'required|unique:users,username'];
 			//validator
 			$validator = Validator::make($input, $rules);
 
@@ -121,7 +133,7 @@
 
 			try 
 			{
-				$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $user->active];
+				$customClaims = $this->claims($user);
 				// attempt to verify the credentials and create a token for the user
 				$token = JWTAuth::fromUser($user, $customClaims);
 				// all good so return the token
@@ -148,7 +160,7 @@
 
 				try 
 				{
-					$customClaims = ['name' => $user->name, 'roles' => $user->roles->toArray(), 'active' => $User->active];
+					$customClaims = $customClaims($User);
 					// attempt to verify the credentials and create a token for the user
 					$token = JWTAuth::fromUser($User, $customClaims);
 					// all good so return the token

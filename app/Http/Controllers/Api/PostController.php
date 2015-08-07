@@ -45,6 +45,18 @@
 		}
 
 		/**
+		* Retrieve post by user 
+		* @param integer $userid
+		**/
+		public function by($userid) {
+			//options
+			$status = Request::input('status','all');
+			$perPage = Request::input('limit', 10);
+
+			return $this->posts->by($userid, $status, $perPage);
+		}
+
+		/**
 		* Stores a post
 		* @param integer $id
 		* Post id
@@ -67,7 +79,8 @@
 
 					$messages = $e->toArray();
 					return Response::json($messages);
-				}
+				} 
+				
 			}
 			else
 			{

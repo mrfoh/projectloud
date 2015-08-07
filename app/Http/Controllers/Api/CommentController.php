@@ -5,6 +5,7 @@
 	use Illuminate\Database\Eloquent\ModelNotFoundException;
 	use Bps\Data\Repositories\Comments;
 	use Bps\Data\Repositories\Reports;
+	use Bps\Commands\OnCommentReply;
 	use Validator;
 	use Request;
 	use Response;
@@ -135,8 +136,9 @@
 
 			$reply = $comments->reply($attrs);
 
-			if($reply)
-				return $reply;
+			$this->dispatch(new OnCommentReply($parent['data']['id'], $user, $attrs['post_id'], $attrs['body']));
+
+			return $reply;
 		}
 
 		public function replies(Comments $comments, $id) {

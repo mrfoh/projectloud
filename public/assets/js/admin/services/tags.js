@@ -2,7 +2,7 @@
 app.factory('tags', ['$http', '$window', function ($http, $window) {
 
 	var self = this,
-	url = $window.Bps.Config.apiUrl+"tags"; //API Endpoint
+	url = "/api/tags"; //API Endpoint
 
 	self.all = function() {
 		return $http.get(url);

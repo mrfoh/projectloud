@@ -9,6 +9,8 @@ angular.module('app', [
     'ngStorage',
     'ui.router',
     'ui.bootstrap',
+    'ngFileUpload',
+    'ngOnboarding',
     'requestHandler',
     'ui.load',
     'ui.jq',

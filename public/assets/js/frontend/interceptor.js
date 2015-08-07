@@ -79,10 +79,17 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
 
 	                case 404:
 	                	if(response.config.url == "/auth/login") {
-	                		console.log(response)
 	                		$rootScope.$broadcast('auth:error', { message: "Email address or password incorrect!"});
 	                	}
-	                break
+	                break;
+
+	                case 403:
+	                	$rootScope.$broadcast('http.error', { response: response});
+	                break;
+
+	                case 500:
+	                	$rootScope.$broadcast('http.error', { response: response});
+	                break;
 	            }
 
 	            return response || $q.when(response);

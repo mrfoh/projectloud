@@ -2,6 +2,8 @@ app.controller('TaggedCtrl', ['$scope', '$log', '$document', '$page', '$statePar
 	function($scope, $log, $document, $page, $stateParams, posts) {
 		$page.setPageTitle('Tagged '+$stateParams.tag+ " - The Bayelsa Public Square");
 		$page.addMetaTag('description', 'Posts tagged '+$stateParams.tag);
+		$page.addMetaTag('keywords', "bayelsa, niger-delta, south-south, nigeria, policies, projects, news, programmes, politics, ijaw");
+
 		$page.addMetaTag('og:description', 'Posts tagged '+$stateParams.tag);
 		$page.addMetaTag('og:title', 'Tagged '+$stateParams.tag+' - The Bayelsa Public Square');
 		//Posts

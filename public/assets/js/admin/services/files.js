@@ -2,7 +2,7 @@
 app.factory('files', ['$http', '$window', function ($http, $window) {
 
 	var self = this,
-	url = $window.Bps.Config.apiUrl+"media"; //API Endpoint
+	url = "/api/media"; //API Endpoint
 
 	self.all = function(params) {
 
@@ -22,6 +22,17 @@ app.factory('files', ['$http', '$window', function ($http, $window) {
 
 	self.delete = function(id) {
 		return $http.delete(url+"/"+id);
+	};
+
+	self.byUser = function(params) {
+		if(params !== undefined) {
+			console.log(params)
+			var $params = this.serialize(params);
+			return $http.get(url+"/user?"+$params);
+		}
+		else {
+			return $http.get(url+'/user');
+		}
 	};
 
 	self.bulkAction = function(action, items) {

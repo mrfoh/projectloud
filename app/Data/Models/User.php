@@ -30,7 +30,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token'];
+	protected $hidden = ['remember_token'];
+
+	public function getSettingsAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    public function setSettingsAttribute($value)
+    {
+        $this->attributes['settings'] = json_encode($value);
+    }
 
 	public function roles() {
 		return $this->belongsToMany('\Bps\Data\Models\Role', 'user_roles');

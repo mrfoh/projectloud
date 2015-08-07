@@ -2,7 +2,7 @@
 app.factory('posts', ['$http', '$window', function ($http, $window) {
 
 	var self = this,
-	url = $window.Bps.Config.apiUrl+"posts"; //API Endpoint
+	url = "/api/posts"; //API Endpoint
 
 	self.all = function(params) {
 

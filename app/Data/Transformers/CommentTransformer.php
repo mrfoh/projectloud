@@ -10,9 +10,10 @@
 	        return [
 	     		'id' => $comment->id,
 	     		'user' => ($comment->user) ? [
-	     			'name' => $comment->user->name
+	     			'name' => $comment->user->name,
+	     			'username' => $comment->user->username,
+	     			'settings' => $comment->user->settings
 	     		] : null,
-	     		'name' => ($comment->name) ? $comment->name : null,
 	     		'body' => $comment->body,
 	     		'reply_count' => count($comment->replies),
 	     		'created_at' => $comment->created_at,

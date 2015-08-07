@@ -83,6 +83,29 @@
 	    	return $this->parserResult($posts);
 	    }
 
+	    public function by($id, $status, $perPage) {
+	    	switch ($status) {
+	    		case 'published':
+	    			$posts = $this->model->with('author')->published()->where('user_id','=',$id)->orderBy('created_at','desc')->paginate($perPage);
+	    			break;
+
+	    		case 'unpublished':
+	    			$posts = $this->model->with('author')->unpublished()->where('user_id','=',$id)->orderBy('created_at','desc')->paginate($perPage);
+	    			break;
+
+	    		case 'draft':
+	    			$posts = $this->model->with('author')->drafts()->where('user_id','=',$id)->orderBy('created_at','desc')->paginate($perPage);
+	    			break;
+	    		
+	    		default:
+	    			$posts = $this->model->with('author')->where('user_id','=',$id)->orderBy('created_at','desc')->paginate($perPage);
+	    			break;
+	    	}
+
+	    	$this->resetModel();
+	    	return $this->parserResult($posts);
+	    }
+
 	    /**
 	    * Retrieves featured post models
 	    * @param integer $count
@@ -182,17 +205,18 @@
 
 	        //set model attributes
 	        $this->model->title = $attributes['title'];
+	        $this->model->user_id = $user->id;
 	        $this->model->slug = str_slug($attributes['title']);
 	        $this->model->category_id = (!is_null($attributes['category'])) ? $attributes['category']['id'] : null;
-	        $this->model->excerpt = $attributes['excerpt'];
+	        $this->model->excerpt = (isset($attributes['excerpt'])) ? $attributes['excerpt'] : null;
 	        $this->model->body = $attributes['body'];
-	        $this->model->status = $attributes['status'];
+	        $this->model->status = (isset($attributes['status'])) ? $attributes['status'] : 'draft';
 
 	        $model = $this->model;
 
 	        $model->save();
 
-	        if(!is_null($attributes['tags'])) {
+	        if(isset($attributes['tags']) && count($attributes['tags']) > 0) {
 	        	$tags = [];
 	        	foreach($attributes['tags'] as $tag) {
 	        		$tags[] = $tag['id'];
@@ -200,11 +224,9 @@
 	        	$this->model->tags()->sync($tags);
 	        }
 
-	        if(!is_null($attributes['featured_image'])) {
-	        	$this->model->featured_image()->sync($attributes['featured_image']['id']);
+	        if(isset($attributes['featured_image'])) {
+	        	$this->model->featured_image()->sync([$attributes['featured_image']['id']]);
 	        }
-
-	        $user->posts()->save($model);
 
 	        $this->resetModel();
 	        return $this->parserResult($model);

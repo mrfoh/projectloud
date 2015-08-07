@@ -1,0 +1,45 @@
+<div class="page" id="profile-page" ng-controller="ProfileCtrl">
+	<section class="container">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 sidebar">
+				<div data-ng-include="'/assets/views/blocks/profile-sidebar.html'"></div>
+			</div>
+			<div class="col-lg-9 col-md-9 body latest">
+				<div class="loading" ng-if="loading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+				<div class="feed" style="padding:0px 15px;">
+					<header class="section-heading" ng-show="!nodata">
+						<span>Posts by me</span>
+					</header>
+					<div class="with-thumbnail" ng-show="!nodata">
+						<article ng-repeat="post in posts" class="article clearfix">
+							<div class="image" ng-if="post.status == 'published'">
+								<a ui-sref="site.post({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>" ng-if="post.featured_image.disk == 'local'"></a>
+							</div>
+							<div class="image" ng-if="post.status != 'published'">
+								<a ui-sref="posts.edit({slug: post.slug})"><img ng-src="/content/<% post.featured_image.src %>" ng-if="post.featured_image.disk == 'local'"></a>
+							</div>
+							<div class="content">
+								<p class="category"><% post.category.name %></p>
+								<h3 class="title" ng-if="post.status == 'published'"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+								<h3 class="title" ng-if="post.status != 'published'"><a ui-sref="posts.edit({slug: post.slug})"><% post.title %></a></h3>
+								<p class="excerpt"><% post.excerpt %></p>
+								<span class="date"><% post.published_at %></span>
+								<span class="badge badge-info" style="margin-bottom: 10px;"><% post.status %></span>
+								<div class="btn-group hidden-xs hidden-sm">
+									<a class="btn btn-sm btn-default" ui-sref="posts.edit({id: post.id})">Edit</a>
+									<a class="btn btn-sm btn-default" ng-click="delete(post.id)">Delete</a>
+								</div>
+							</div>
+						</article>
+					</div>
+
+					<div ng-if="nodata">
+						<div class="empty">
+							<h3>No posts at the moment.</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

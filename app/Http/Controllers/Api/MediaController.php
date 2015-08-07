@@ -24,7 +24,7 @@
 
 		public function __construct() {
 
-			$this->middleware('jwt.auth', ['only' => ['upload']]);
+			$this->middleware('jwt.auth', ['only' => ['upload','user']]);
 
 			$filesystem = new Filesystem(new Adapter($this->contentFolder()));
 			$this->fs = $filesystem;
@@ -140,6 +140,15 @@
 
 				return $file;
 			}
+		}
+
+		public function byUser(Request $request, Files $files) {
+
+			$user = $this->user();
+
+			$type = $request->input('type', 'image');
+
+			return $files->user($user, $type, 12);
 		}
 
 		public function delete(Request $request, Files $files, $id) {

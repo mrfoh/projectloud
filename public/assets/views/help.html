@@ -1,0 +1,55 @@
+<div class="page" id="about-page" ng-controller="HelpCtrl">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-8 content-section">
+				<h3>Help &amp; FAQs</h3>
+
+				<ul style="padding: 0 margin: 0;" class="questions">
+					<li><a ng-click="goToAnswer('newsletter-subscription')">How do I subscribe to Bayelsa Public Square newsletter?</a></li>
+					<li><a ng-click="goToAnswer('account-signin')">How do I sign in into my account?</a></li>
+					<li><a ng-click="goToAnswer('account-signup')">How do I sign up for an account?</a></li>
+					<li><a ng-click="goToAnswer('comments')">How do I comment on articles?</a></li>
+					<li><a ng-click="goToAnswer('comments-report')">How do I report a comment on Bayelsa Public Square?</a></li>
+					<li><a ng-click="goToAnswer('contribute')">How do write or submit content to Bayelsa Public Square?</a></li>
+					<li><a ng-click="goToAnswer('contacting')">How do I contact Bayelsa Public Square?</a></li>
+				</ul>
+
+				<div id="newsletter-subscription">
+					<h4>How do I subscribe to Bayelsa Public Square newsletter</h4>
+					<p>To subscribe the Bayelsa Public Square newsletters, enter your email address into the newsletter subscribe box on the right of most pages on the Bayelsa Public Square and click the subscribe button.</p>
+				</div>
+
+				<div id="account-signin">
+					<h4>How do I sign in into my account</h4>
+					<p>To sign in, click on the sign in link at the top of each page or in the mobile menu.</p>
+				</div>
+				<div id="account-signup">
+					<h4>How do I sign up for an account</h4>
+					<p>To sign in, click on the sign up link at the top of each page or in the mobile menu.</p>
+				</div>
+				<div id="comments">
+					<h4>How do I comment on articles</h4>
+					<p>To comment on articles on Bayelsa Public Square, you must signed into you account.<br>
+						Comments are found at the bottom of every article and can be view by click the comments button at the bottom of an article.</p>
+				</div>
+				<div id="comments-report">
+					<h4>How do I report a comment on Bayelsa Public Square</h4>
+					<p>When you see a comment that violates our policy, please use the “report” option located in the bottom-left corner of every comment. A moderator will then decide whether the comment stays on the site. Keep in mind that moderating can be subjective and final decisions rest with the site's administrators.</p>
+				</div>
+				<div id="contribute">
+					<h4>How do write or submit content to Bayelsa Public Square</h4>
+					<p>You can write for the Bayelsa Public Square using our online post creator/editor, however you must have a Bayelsa Public Square account to do so. Posts/articles written and submitted using our post creator/editor will be reviewed and approved by the site's administrators and as such will not be immediately available to the public. Authors will be notified when their post/article is approved. Our online editor can be found <a ui-sref="posts.create">here</a></p>
+				</div>
+				<div id="contacting">
+					<h4>How do I contact Bayelsa Public Square</h4>
+					<p>You can contact the Bayelsa Public Square, by sending an email to bayelsapublicsquare@gmail.com</p>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4">
+				<section class="newsletter-container">
+					<newsletter-form></newsletter-form>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>

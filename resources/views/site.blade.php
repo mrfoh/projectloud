@@ -20,6 +20,17 @@
 			  display: none !important;
 			}
 		</style>
+
+		<!--[if lt IE 9]>
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+	    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.2.0/es5-shim.js"></script>
+	    <script>
+	      document.createElement('ui-select');
+	      document.createElement('ui-select-match');
+	      document.createElement('ui-select-choices');
+	    </script>
+	  	<![endif]-->
+
 		<!-- Styleshheets -->
 		@if(App::environment() == "local")
 		<?= Html::style('assets/css/bootstrap.css') ?>
@@ -45,7 +56,7 @@
 								<a href="" dropdown-toggle>My Account <span class="caret"></span></a>
 								<ul class="dropdown-menu account-dropdown">
 									<li ng-if="app.user.isadmin"><a href="/admin" target="_blank">Admin Panel</a></li>
-									<li><a href="">Profile</a></li>
+									<li><a ui-sref="site.profile">Profile</a></li>
 							        <li><a ng-click="logout()">Logout</a></li>
 							    </ul>
 							</li>
@@ -62,6 +73,14 @@
 						<ul class="links clearfix">
 							<li ng-repeat="category in categories" ui-sref-active="active" ng-show="categories">
 								<a ui-sref="site.section({category: category.slug})" ng-cloak><% category.name %></a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="pull-right menu">
+						<ul class="links clearfix">
+							<li ui-sref-active="active" ng-show="app.user !== null">
+								<a ui-sref="posts.create">Write</a>
 							</li>
 						</ul>
 					</div>
@@ -91,7 +110,11 @@
 			</nav>
 			<nav class="menu">
 				<ul class="links">
-					<li><a ng-click="openAuthModal(true)">Sign Up/Sign In</a></li>
+					<li ng-cloak ng-show="app.user == null"><a ui-sref="site.signin">Sign In</a></li>
+					<li ng-cloak ng-show="app.user == null"><a ui-sref="site.signup">Sign Up</a></li>
+					<li ng-if="app.user.isadmin"><a href="/admin" target="_blank">Admin Panel</a></li>
+					<li ng-cloak ng-show="app.user"><a ui-sref="site.profile">Profile</a></li>
+					<li><a ng-click="logout()">Logout</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -122,7 +145,10 @@
 		<?= Html::script('assets/js/vendor/angular/angular-touch/angular-touch.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-ui-router/angular-ui-router.js') ?>
 		<?= Html::script('assets/js/vendor/angular/ngstorage/ngStorage.js') ?>
+		<?= Html::script('assets/js/vendor/angular/file-upload/ng-file-upload-all.min.js') ?>
+		<?= Html::script('assets/js/vendor/angular/file-upload/ng-file-upload-shim.min.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
+		<?= Html::script('assets/js/vendor/angular/onboarding/ng-onboarding.min.js') ?>
 		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
 		<?= Html::script('assets/js/frontend/interceptor.js') ?>
 
@@ -138,7 +164,9 @@
 		<?= Html::script("assets/js/frontend/directives/featured-posts.js"); ?>
 		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
 		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
-		<?=Html::script("assets/js/frontend/directives/report.js") ?>
+		<?= Html::script("assets/js/frontend/directives/report.js") ?>
+		<?= Html::script("assets/js/frontend/directives/same-as.js") ?>
+		<?= Html::script("assets/js/frontend/directives/featured-image-select.js") ?>
  		@else
 		<?= Html::script('assets/js/frontend/dist/dist.js') ?>
 		@endif

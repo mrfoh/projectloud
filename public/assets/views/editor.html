@@ -1,0 +1,72 @@
+<div class="page" id="editor-page" ng-controller="EditorCtrl">
+	<div class="container">
+		<!-- toaster directive -->
+		<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+		<!-- / toaster directive -->
+		<onboarding-popover enabled='showOnboarding' steps='onboardingSteps' step-index='stepIndex' on-finish-callback='hideOnboarding'></onboarding-popover>
+		<div class="row">
+			<div class="col-lg-9 col-md-9 editor">
+				<div class="form-wrapper">
+					<h3>Post Editor</h3>
+					<form novalidate name="content">
+						<div class="form-group">
+							<input type="text" name="title" ng-model="post.title" placeholder="Enter your post title" class="form-control" ng-required="true" id="title-tip">
+						</div>
+
+						<div class="form-group">
+							<textarea name="excerpt" ng-model="post.excerpt" placeholder="Enter a short intro for your post" class="form-control" rows="3" ng-required="false" id="excerpt-tip"></textarea>
+						</div>
+
+						<div class="form-group" lazy-load="textAngular">
+							<div text-angular ng-model="post.body" class="btn-groups" id="editor-tip"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 options" id="save-btn-tip" style="position: relative">
+				<div class="form-group">
+					<button class="btn btn-lg btn-block btn-info" ng-click="save()">Save Post</button>
+				</div>
+
+				<div class="option-box">
+					<header class="option-box-header">Category</header>
+					<div class="option-box-body">
+						<div class="form-group" id="category-tip">
+		 					<div class="radio" ng-repeat="category in categories">
+		 						<label class="i-checks i-checks-sm">
+		 							<input type="radio" ng-value="<% category.id %>" ng-model="post.category.id" ng-checked="category.id == post.category.id"><i></i> <% category.name %>
+		 						</label>
+		 					</div>
+		 				</div>
+					</div>
+				</div>
+
+				<div class="option-box tags">
+					<header class="option-box-header">Tags</header>
+					<div class="option-box-body">
+              			<ui-select multiple ng-model="selectedtags" theme="bootstrap" on-select="onTagSelect($item, $model)" on-remove="onTagRemove($item, $model)" ng-disabled="disabled" id="tag-tip">
+	 						<ui-select-match placeholder="Select tags..."><% $item.name %></ui-select-match>
+	 						<ui-select-choices repeat="tag in tags | filter: { name: $select.search }">
+								<div ng-bind-html="tag.name | highlight: $select.search"></div>
+							</ui-select-choices>
+				        </ui-select>
+
+				        <a ng-click="toggleTagForm()" style="font-size: 1em;">+New Tag</a>
+
+		 				<div class="form-group" ng-show="tagform.visible">
+		 					<input class="form-control" ng-model="tag.name" placeholder="Enter tag name" ng-enter="saveTag()" ng-disabled="fieldDisabled">
+		 				</div>
+					</div>
+				</div>
+
+				<div class="option-box" id="featured-tip" style="postition: relative;">
+					<header class="option-box-header">Featured Image</header>
+					<div class="option-box-body">
+						<ui-featured-set selected="<% post.featured_image.id %>"></ui-featured-set>
+						<input type="hidden" ng-model="post.featured_image">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

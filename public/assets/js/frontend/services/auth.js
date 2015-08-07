@@ -63,7 +63,7 @@ app.factory('$auth', ['$http', '$window', '$localStorage', function ($http, $win
 
 
     self.oauth = function(form) {
-        return $http.post("/auth/oauth/signin", form);
+        return $http.post("/auth/oauth", form);
     }
 
     self.logout = function() {

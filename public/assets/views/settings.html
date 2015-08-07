@@ -1,0 +1,79 @@
+<div class="page" id="profile-page" ng-controller="SettingsCtrl">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-3 col-md-3 sidebar">
+				<div data-ng-include="'/assets/views/blocks/profile-sidebar.html'"></div>
+			</div>
+			<div class="col-lg-9 col-md-9 body">
+				<div class="row">
+					<div class="col-lg-6 col-md-6 profile-settings">
+						<h3>My Profile</h3>
+
+						<form name="profile" novalidate autocomplete="off">
+							<div class="form-group">
+								<label>Email: </label>
+								<input class="form-control" name="email" ng-model="user.email" ng-required="true">
+							</div>
+
+							<div class="form-group">
+								<label>Name: </label>
+								<input class="form-control" name="name" ng-model="user.name" ng-required="false">
+							</div>
+
+							<div class="form-group">
+								<label>Username: </label>
+								<input class="form-control" name="email" ng-model="user.username" ng-required="true">
+							</div>
+
+							<div class="form-group">
+								<button class="btn btn-block btn-info btn-lg" ng-disabled="profileSaveBtnDisabled" ng-bind-html="profileBtnText" ng-click="saveProfile()"></button>
+							</div>
+						</form>
+					</div>
+
+					<div class="col-lg-6 col-md-6 profile-settings">
+						<h3>Settings</h3>
+
+						<form name="settings" novalidate autocomplete="off">
+							<div class="form-group">
+								<label>Identity</label><br>
+								<label class="radio-inline">
+								  <input type="radio" name="identity" ng-model="user.settings.identity" value="username"> Username
+								</label>
+								<label class="radio-inline">
+								  <input type="radio" name="identity" ng-model="user.settings.identity" value="name"> Name
+								</label>
+								<span class="help-block">Choose what identity you want display in your comments
+							</div>
+							<div class="form-group">
+								<label>Reply Notification</label><br>
+								<label class="radio-inline">
+								  <input type="radio" name="replies" ng-model="user.settings.replies" value="1"> On
+								</label>
+								<label class="radio-inline">
+								  <input type="radio" name="replies" ng-model="user.settings.replies" value="0"> Off
+								</label>
+								<span class="help-block">Get an email notification when people reply your comments
+							</div>
+
+							<div class="form-group">
+								<label>Approval Notification</label><br>
+								<label class="radio-inline">
+								  <input type="radio" name="approvals" ng-model="user.settings.approvals" value="1"> On
+								</label>
+								<label class="radio-inline">
+								  <input type="radio" name="approvals" ng-model="user.settings.approvals" value="0"> Off
+								</label>
+								<span class="help-block">Get an email notification when your comments are approved
+							</div>
+
+							<div class="form-group">
+								<button class="btn btn-block btn-info btn-lg" ng-click="saveSettings()" ng-disabled="settingsSaveBtnDisabled" ng-bind-html="settingsBtnText"></button>
+							</div>
+						</form>
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>

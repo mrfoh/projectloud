@@ -19,6 +19,7 @@ Route::group(['prefix' => 'api'], function() {
 		Route::get('{id}/comments', 'PostController@comments');
 		Route::get('{id}/feature', 'PostController@feature');
 		Route::get('{id}/unfeature', 'PostController@unfeature');
+		Route::get('by/{id}', 'PostController@by');
 		Route::get('tagged/{slug}', 'PostController@tagged');
 		Route::get('featured', 'PostController@featuredPosts');
 		Route::get('recent', 'PostController@recentPosts');
@@ -58,6 +59,7 @@ Route::group(['prefix' => 'api'], function() {
 	Route::group(['prefix' => 'media'], function() {
 
 		Route::any('upload', 'MediaController@upload');
+		Route::get('user', 'MediaController@byUser');
 		Route::get('{id}', 'MediaController@index');
 		Route::delete('{id}', 'MediaController@delete');
 		Route::get('/', 'MediaController@index');

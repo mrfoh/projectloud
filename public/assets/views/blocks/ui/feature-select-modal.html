@@ -1,0 +1,70 @@
+<div class="modal-header">
+    <h3 class="modal-title">Select Featured Image</h3>
+</div>
+<div class="modal-body">
+	<tabset>
+	    <tab heading="Upload Files" active="uploader.active">
+		    <div ngf-drop ng-model="files" class="drop-box" ngf-drag-over-class="dragover" ngf-multiple="true" ngf-accept="'image/*,application/pdf,application/msword'" ngf-change="onQueueChange($files)">
+		    	<div class="wrapper">
+			    	<h3>Drop files anywhere to upload</h3>
+			    	<h4 style="text-align: center">OR</h4>
+			    	<div class="inner">
+			    	    <button class="btn btn-lg btn-default" ng-model="files" ngf-select="true" ngf-multiple="true" ngf-accept="'image/*,application/pdf,application/msword'" ngf-change="onQueueChange($files)">Select Files</button>
+
+			    	    <p>Allowed file types: jpg, jpeg, png, gif, pdf, doc.</p>
+			    	    <p>Maximum upload file size: 1 MB.</p>
+			    	</div>
+			    </div>
+		    </div>
+	    </tab>
+
+	    <tab heading="Media Library" active="library.active">
+	    	<div class="media-library clearfix">
+		    	<div class="library">
+		    		<div class="loading" ng-show="loading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
+
+		    		<div class="media" ng-show="!nomedia">
+		    			<ul class="media-items clearfix">
+		    				<li ng-repeat="item in media" ng-class="{'selected':item.selected}">
+		    					<a ng-click="select(item)">
+		    						<img ng-src="<% item.src %>">
+		    					</a>
+		    				</li>
+		    			</ul>
+
+		    			<pagination total-items="total" items-per-page="perPage" ng-model="currentPage" ng-change="pageChanged()" ng-if="!nomedia"></pagination>
+
+		    		</div>
+
+		    		<div class="empty" ng-show="nomedia">
+		    			<h3>No media uploaded</h3>
+		    		</div>
+		    	</div>
+		    	<div class="sidebar">
+		    		<div class="file-details" ng-show="selected && !showQueue">
+		    			<ul class="clearfix">
+		    				<li><strong>File Name:</strong> <% selected.name %></li>
+		    				<li><strong>File Type:</strong>  <% selected.mime %></li>
+		    				<li><strong>File Size:</strong>  <% selected.size %> bytes</li>
+		    				<li><a ng-click="deleteFile(selected)">Delete Permenently</a></li>
+		    			</ul>
+		    		</div>
+
+		    		<div class="file-queue" ng-show="showQueue">
+		    			<h3>Upload Queue</h3>
+		    			<ul class="queue">
+		    				<li ng-repeat="file in files">
+		    					<p><% file.name %></p>
+		    					<progressbar animated="true" ng-show="file.progress" value="file.progress" type="info"><b><% file.progress %>%</b></progressbar>
+		    				</li>
+		    			</ul>
+		    		</div>
+		    	</div>
+		    </div>
+	    </tab>
+	</tabset>
+</div>
+<div class="modal-footer">
+	<button class="btn" ng-click="closeModal()">Cancel</button>
+	<button class="btn btn-info" ng-disabled="disablebtn" ng-click="setImage()">Set featured image</button>
+</div>
