@@ -139,7 +139,6 @@
 		<?= Html::script('assets/js/vendor/libs/oauth.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-animate/angular-animate.js') ?>
-		<?= Html::script('assets/js/vendor/angular/angular-cookies/angular-cookies.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-resource/angular-resource.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-sanitize/angular-sanitize.js') ?>
 		<?= Html::script('assets/js/vendor/angular/angular-touch/angular-touch.js') ?>

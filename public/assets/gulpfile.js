@@ -51,9 +51,19 @@ gulp.task('build:admin', function() {
 gulp.task('build:frontend', function() {
 	return gulp.src([
 		'js/vendor/jquery/jquery.min.js',
+		'js/vendor/libs/underscore.js',
 		'js/vendor/angular/angular.js',
-		'js/vendor/angular/**/*.js',
-		'js/vendor/libs/*.js',
+		'js/vendor/angular/angular-animate/angular-animate.js',
+		'js/vendor/angular/angular-resource/angular-resource.js',
+		'js/vendor/angular/angular-sanitize/angular-sanitize.js',
+		'js/vendor/angular/angular-touch/angular-touch.js',
+		'js/vendor/angular/angular-ui-router/angular-ui-router.js',
+		'js/vendor/angular/ngstorage/ngStorage.js',
+		'js/vendor/angular/file-upload/ng-file-upload-all.min.js',
+		'js/vendor/angular/file-upload/ng-file-upload-shim.min.js',
+		'js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js',
+		'js/vendor/angular/onboarding/ng-onboarding.min.js',
+		'js/vendor/angular/oclazyload/ocLazyLoad.js',
 		'js/frontend/interceptor.js',
 		'js/frontend/*.js',
 		'js/admin/services/ui-load.js',
@@ -64,7 +74,7 @@ gulp.task('build:frontend', function() {
 	.pipe(concat('dist.js'))
 	.pipe(gulp.dest('js/frontend/dist'))
 	.pipe(rename('dist.min.js'))
-	.pipe(uglify())
+	.pipe(uglify({mangle: false}))
 	.pipe(gulp.dest('js/frontend/dist'))
 });
 
