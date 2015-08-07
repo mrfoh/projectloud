@@ -4,7 +4,8 @@ var gulp = require('gulp'),
 	watch = require('gulp-watch'),
 	watchLess = require('gulp-watch-less'),
 	uglify = require('gulp-uglify'),
-	concat = require('gulp-concat');
+	concat = require('gulp-concat'),
+	rename = require('gulp-rename');
 
 var gutil = require('gulp-util');
 
@@ -61,6 +62,8 @@ gulp.task('build:frontend', function() {
 		'js/frontend/directives/*.js'
 	])
 	.pipe(concat('dist.js'))
+	.pipe(gulp.dest('js/frontend/dist'))
+	.pipe(rename('dist.min.js'))
 	.pipe(uglify())
 	.pipe(gulp.dest('js/frontend/dist'))
 });
