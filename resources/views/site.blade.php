@@ -167,6 +167,7 @@
 		<?= Html::script("assets/js/frontend/directives/same-as.js") ?>
 		<?= Html::script("assets/js/frontend/directives/featured-image-select.js") ?>
  		@else
+ 		<?= Html::script('assets/js/vendor/libs/oauth.js') ?>
 		<?= Html::script('assets/js/frontend/dist/dist.min.js') ?>
 		@endif
 	</body>
