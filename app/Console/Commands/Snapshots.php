@@ -72,6 +72,10 @@ class Snapshots extends Command {
 			else
 				$tofile = './public/snapshots'.$page.'.html';
 
+			if($this->fs->has($page.'.html')) {
+		    	$this->fs->delete($page.'.html');
+		    }
+
 			$this->info('Processing >>'.$fromUrl.' to '.$tofile);
 
 			$cmd = 'phantomjs phantom-runner.js '.$fromUrl.' > '.$tofile;
