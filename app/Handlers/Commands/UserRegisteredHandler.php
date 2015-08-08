@@ -26,8 +26,6 @@ class UserRegisteredHandler {
 	 */
 	public function handle(UserRegistered $command)
 	{
-		Log::info('Activity:', ['context'=>"user registered",'user'=>$command->user]);
-
 		$data['activationtoken'] = $command->activationtoken;
 		$data['user'] = $command->user;
 

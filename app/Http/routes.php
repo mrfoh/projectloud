@@ -22,14 +22,20 @@ Route::post('queue/receive', function()
     return Queue::marshal();
 });
 
-Route::get('test', function() {
-	echo bcrypt('sizzle');
-});
-
 Route::get('/', function(Categories $categories) {
 	$categories->skipPresenter();
-	$data['categories'] = $categories->all()->toArray();
-
+	
+	if(Cache::has('categories')) {
+		$cats = Cache::get('categories');
+	}
+	else {
+		$cats = Cache::remember('categories', 120, function() use ($categories)
+		{
+		    return $categories->all()->toArray();
+		});
+	}
+	
+	$data['categories'] = $cats;
 	return view('site', $data);
 });
 
