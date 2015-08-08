@@ -39975,7 +39975,12 @@ angular.module('app', [
     'ui.load',
     'ui.jq',
     'oc.lazyLoad',
-]);
+    'angulartics',
+    'angulartics.google.analytics'
+])
+.config(function($analyticsProvider) {
+    if(window.BPS.Config.env != "production") $analyticsProvider.virtualPageviews(false);
+})
 // config
 
 var app =  
@@ -40287,22 +40292,23 @@ angular.module('app')
     })
 }])
 .run(function ($rootScope, $state, $auth) {
-  $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-    $state.previous = fromState;
-    $state.previous.params = fromParams;
+    //Events
+      $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+        $state.previous = fromState;
+        $state.previous.params = fromParams;
 
-  });
+      });
 
-  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-    if(typeof toState.restricted !== "undefined") {
-        if(toState.restricted) {
-            if($auth.check() == false) {
-                event.preventDefault();
-                $state.go('site.signin');
+      $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+        if(typeof toState.restricted !== "undefined") {
+            if(toState.restricted) {
+                if($auth.check() == false) {
+                    event.preventDefault();
+                    $state.go('site.signin');
+                }
             }
         }
-    }
-  })
+      })
 })
 
 'use strict';

@@ -15,4 +15,9 @@ angular.module('app', [
     'ui.load',
     'ui.jq',
     'oc.lazyLoad',
-]);
+    'angulartics',
+    'angulartics.google.analytics'
+])
+.config(function($analyticsProvider) {
+    if(window.BPS.Config.env != "production") $analyticsProvider.virtualPageviews(false);
+})

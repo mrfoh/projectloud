@@ -129,7 +129,21 @@
 		<!-- bootstrap data -->
 		<script type="text/javascript">
 			window.Data = window.Data || {}
+			window.BPS = window.BPS || {}
+			BPS.Config = BPS.Config || {}
+
+			BPS.Config.env = "<?= App::environment() ?>"
 			Data.categories = '<?= json_encode($categories) ?>';
+		</script>
+
+		<!-- Google Analytics -->
+ 		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-66104549-1', { 'cookieDomain': 'none' });
 		</script>
 
 		<!-- Scripts -->
@@ -149,6 +163,8 @@
 		<?= Html::script('assets/js/vendor/angular/angular-bootstrap/ui-bootstrap-tpls.js') ?>
 		<?= Html::script('assets/js/vendor/angular/onboarding/ng-onboarding.min.js') ?>
 		<?= Html::script('assets/js/vendor/angular/oclazyload/ocLazyLoad.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angulartics/dist/angulartics.min.js') ?>
+		<?= Html::script('assets/js/vendor/angular/angulartics/dist/angulartics-ga.min.js') ?>
 		<?= Html::script('assets/js/frontend/interceptor.js') ?>
 
 		<!-- App -->
