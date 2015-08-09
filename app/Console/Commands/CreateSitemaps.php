@@ -66,6 +66,8 @@ class CreateSitemaps extends Command {
 	    $sitemap->add($url."/#!/about", date("Y-m-d h:i", time()), "1.0", 'daily');
 	    $sitemap->add($url."/#!/comment-policy", date("Y-m-d h:i", time()), "1.0", 'daily');
 	    $sitemap->add($url."/#!/help", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/#!/sigin", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/#!/signup", date("Y-m-d h:i", time()), "1.0", 'daily');
 
 	    foreach ($categories as $category)
 	    {
@@ -105,6 +107,16 @@ class CreateSitemaps extends Command {
 			],
 			'help' => [
 				'loc' => "/help",
+				'changefreq' => 'daily',
+                'priority'   => '1.0'
+			],
+			'signin' => [
+				'loc' => "/sigin",
+				'changefreq' => 'daily',
+                'priority'   => '1.0'
+			],
+			'signup' => [
+				'loc' => "/signup",
 				'changefreq' => 'daily',
                 'priority'   => '1.0'
 			]

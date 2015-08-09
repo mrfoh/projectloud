@@ -38,7 +38,7 @@
 	    	
 	        return [
 	            'id'      => (int) $post->id,
-	            'url'     => \URL::to('#!/article/'.$post->slug),
+	            'url'     => \URL::to('/#!/article/'.$post->slug),
 	            'author'  => ($post->author) ? [
 	            	'id' => $post->author->id,
 	            	'name' => $post->author->name
