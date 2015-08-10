@@ -3,7 +3,6 @@
 
 angular.module('app', [
     'ngAnimate',
-    'ngResource',
     'ngSanitize',
     'ngTouch',
     'ngStorage',
