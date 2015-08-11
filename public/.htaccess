@@ -22,6 +22,10 @@ Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?
     RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=302]
 
+    RewriteCond %{HTTP_USER_AGENT} baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator [NC,OR]
+    RewriteCond %{QUERY_STRING} _escaped_fragment_
+    RewriteRule ^(.*)$ /snapshots/$2.html [NC,L,R=302]
+
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
