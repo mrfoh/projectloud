@@ -13,16 +13,7 @@ Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
 
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?
     RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=302]
-
-    # Handle Prerender.io
-    RequestHeader set X-Prerender-Token "Tlkfpy0VmwJEUDDeVIha"
-
-    RewriteCond %{HTTP_USER_AGENT} baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest [NC,OR]
-    RewriteCond %{QUERY_STRING} _escaped_fragment_
-
-    # Proxy the request
-    RewriteRule ^(.*)$ http://service.prerender.io/http://%{HTTP_HOST}$1 [P,L]
-
+    
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
