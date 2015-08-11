@@ -63,20 +63,20 @@ class CreateSitemaps extends Command {
 	    $url = \Config::get('app.url');
 
 	    $sitemap->add($url."/", date("Y-m-d h:i", time()), "1.0", 'daily');
-	    $sitemap->add($url."/#!/about", date("Y-m-d h:i", time()), "1.0", 'daily');
-	    $sitemap->add($url."/#!/comment-policy", date("Y-m-d h:i", time()), "1.0", 'daily');
-	    $sitemap->add($url."/#!/help", date("Y-m-d h:i", time()), "1.0", 'daily');
-	    $sitemap->add($url."/#!/sigin", date("Y-m-d h:i", time()), "1.0", 'daily');
-	    $sitemap->add($url."/#!/signup", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/about", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/comment-policy", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/help", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/sigin", date("Y-m-d h:i", time()), "1.0", 'daily');
+	    $sitemap->add($url."/signup", date("Y-m-d h:i", time()), "1.0", 'daily');
 
 	    foreach ($categories as $category)
 	    {
-	        $sitemap->add($url."/#!/section/".$category->slug, $category->created_at, "1.0", 'daily');
+	        $sitemap->add($url."/section/".$category->slug, $category->created_at, "1.0", 'daily');
 	    }
 
 	    foreach ($posts as $post)
 	    {
-	        $sitemap->add($url."/#!/article/".$post->slug, $post->created_at, "1.0", 'daily');
+	        $sitemap->add($url."/article/".$post->slug, $post->created_at, "1.0", 'daily');
 	    }
 
 	    if($this->fs->has('sitemap.xml')) {
