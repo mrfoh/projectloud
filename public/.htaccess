@@ -8,11 +8,24 @@ Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
 
     RewriteEngine On
 
-    RewriteCond %{QUERY_STRING} _escaped_fragment_=/?([a-z0-9]+)(.*)
-    RewriteRule ^(.*)$ /snapshots/%1%2.html? [NC,L,R=302]
+    ### If a bot requests an escaped URL, proxify the request to SEO4Ajax
+    RewriteCond  %{ENV:PROXIFY}  !true
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{QUERY_STRING} _escaped_fragment_= [NC]
+    RewriteRule .* - [E=PROXIFY:true,E=REQUEST_PATH:%{REQUEST_URI}]
 
-    RewriteCond %{QUERY_STRING} _escaped_fragment_=/?
-    RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=302]
+    ### If a bot, which does not support Google specification, requests a URL, proxify the request to SEO4Ajax
+    ### The 5 following lines can be commented if you are using #! URLs
+    RewriteCond  %{ENV:PROXIFY}  !true
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{HTTP_USER_AGENT}  !(googlebot|bing|msnbot|yandexbot|pinterest.*ios|mail\.ru) [NC]
+    RewriteCond %{HTTP_USER_AGENT}  (bot|spider|pinterest|crawler|archiver|flipboardproxy|mediapartners|facebookexternalhit|quora) [NC]
+    RewriteRule .* - [E=PROXIFY:true,E=REQUEST_PATH:%{REQUEST_URI}]
+
+    ### Proxification to SEO4Ajax
+    RewriteCond  %{ENV:PROXIFY}  true
+    RewriteRule ^(.*)$ http://api.seo4ajax.com/15dfa5d58ac92d864b2c25ca4838db03%{ENV:REQUEST_PATH} [P,QSA,L]
+
 
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]
