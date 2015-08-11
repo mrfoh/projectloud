@@ -8,12 +8,23 @@ Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
 
     RewriteEngine On
 
+    # Handle Prerender.io
+    RequestHeader set X-Prerender-Token "Tlkfpy0VmwJEUDDeVIha"
+
+    <IfModule mod_proxy_http.c>
+        RewriteCond %{HTTP_USER_AGENT} baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator [NC,OR]
+        RewriteCond %{QUERY_STRING} _escaped_fragment_
+        
+        # Only proxy the request to Prerender if it's a request for HTML
+        RewriteRule ^(?!.*?(\.js|\.css|\.xml|\.less|\.png|\.jpg|\.jpeg|\.gif|\.pdf|\.doc|\.txt|\.ico|\.rss|\.zip|\.mp3|\.rar|\.exe|\.wmv|\.doc|\.avi|\.ppt|\.mpg|\.mpeg|\.tif|\.wav|\.mov|\.psd|\.ai|\.xls|\.mp4|\.m4a|\.swf|\.dat|\.dmg|\.iso|\.flv|\.m4v|\.torrent|\.ttf|\.woff))(.*) http://service.prerender.io/http://bayelsapublicsquare.com/$2 [P,L]
+    </IfModule>
+
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?([a-z0-9]+)(.*)
     RewriteRule ^(.*)$ /snapshots/%1%2.html? [NC,L,R=302]
 
     RewriteCond %{QUERY_STRING} _escaped_fragment_=/?
     RewriteRule ^(.*)$ /snapshots/index.html? [NC,L,R=302]
-    
+
     # Redirect Trailing Slashes...
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 

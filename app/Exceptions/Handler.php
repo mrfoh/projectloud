@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler {
 	{
 		//Catch All 
 		if($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-			return redirect()->to('/#!'.$request->path());
+			return redirect()->to('/#!/'.$request->path());
 		}
 
 		
