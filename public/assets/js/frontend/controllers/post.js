@@ -66,7 +66,14 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 		}
 
 		$scope.fbShare = function() {
-
+			FB.ui({
+				method: 'share',
+				link: $scope.post.url,
+				href: $scope.post.url,
+				picture: window.BPS.Config.url+"/content/"+$scope.post.featured_image.src,
+				name: $scope.post.title,
+				caption: $scope.post.excerpt
+			});
 		}
 
 		$scope.loadComments = function() {

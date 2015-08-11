@@ -38,7 +38,7 @@
 	    	
 	        return [
 	            'id'      => (int) $post->id,
-	            'url'     => \Config::get('app.url')."/#!/article/".$post->slug,
+	            'url'     => \Config::get('app.url')."/article/".$post->slug,
 	            'author'  => ($post->author) ? [
 	            	'id' => $post->author->id,
 	            	'name' => $post->author->name
