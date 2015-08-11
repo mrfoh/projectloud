@@ -66,7 +66,7 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 		}
 
 		$scope.fbShare = function() {
-			
+
 		}
 
 		$scope.loadComments = function() {
@@ -94,7 +94,8 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 					$page.addMetaTag('og:description', $scope.post.excerpt);
 
 					if($scope.post.featured_image && $scope.post.featured_image.disk == "local") {
-						$page.addMetaTag('og:image', "/content/"+$scope.post.featured_image.src)
+						//if disk is local
+						$page.addMetaTag('og:image', window.BPS.Config.url+"/content/"+$scope.post.featured_image.src)
 					}
 
 					$rootScope.$broadcast('post:loaded', { post: $scope.post});

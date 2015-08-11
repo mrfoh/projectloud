@@ -166,7 +166,8 @@
 			window.BPS = window.BPS || {}
 			BPS.Config = BPS.Config || {}
 
-			BPS.Config.env = "<?= App::environment() ?>"
+			BPS.Config.env = "<?= App::environment() ?>";
+			BPS.Config.url = "<?= Config::get('app.url') ?>";
 			Data.categories = '<?= json_encode($categories) ?>';
 		</script>
 
