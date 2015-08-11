@@ -9,6 +9,7 @@
 		<meta property="og:site_name" content="Bayelsa Public Square"/>
 		<meta property="og:type" content="blog"/>
 		<meta name="google-site-verification" content="ab4svSl5hOOFAslsOqHikimA3E8PqBepWRwpIkvdJkc" />
+		<base href="/">
 		<title>The Bayelsa Public Square</title>
 
 		<!-- External fonts -->
@@ -56,6 +57,24 @@
 		<script type="text/javascript">
 		!function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.6/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 		</script>
+
+		<script>
+	      window.fbAsyncInit = function() {
+	        FB.init({
+	          appId      : '978479408870735',
+	          xfbml      : false,
+	          version    : 'v2.4'
+	        });
+	      };
+
+	      (function(d, s, id){
+	         var js, fjs = d.getElementsByTagName(s)[0];
+	         if (d.getElementById(id)) {return;}
+	         js = d.createElement(s); js.id = id;
+	         js.src = "//connect.facebook.net/en_US/sdk.js";
+	         fjs.parentNode.insertBefore(js, fjs);
+	       }(document, 'script', 'facebook-jssdk'));
+	    </script>
 	</head>
 
 	<body ng-controller="MainCtrl" ng-init="boot()" ng-cloak data-app-loading="<% appLoading %>">

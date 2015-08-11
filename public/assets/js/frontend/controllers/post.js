@@ -52,8 +52,7 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 
 		$scope.share = function(url, mode) {
 			if(mode == "facebook") {
-				window.open(encodeURI("https://www.facebook.com/sharer/sharer.php?u="+url+"&title="+$scope.post.title+"")
-					, '_blank',"width=420,height=300");
+				$scope.fbShare();
 			}
 
 			if(mode == "twitter") {
@@ -64,6 +63,10 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 			if(mode == "google") {
 				window.open(encodeURI("https://plus.google.com/share?url="+url+""), '_blank',"width=420,height=300");
 			}
+		}
+
+		$scope.fbShare = function() {
+			
 		}
 
 		$scope.loadComments = function() {

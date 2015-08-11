@@ -7,7 +7,7 @@ angular.module('app')
 .config(['$stateProvider', '$urlRouterProvider','$locationProvider',
     function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
-    $locationProvider.hashPrefix('!');
+    $locationProvider.html5Mode(true).hashPrefix('!');
 
     $urlRouterProvider.otherwise('/');
 
