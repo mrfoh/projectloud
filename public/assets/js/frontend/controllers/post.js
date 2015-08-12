@@ -47,7 +47,41 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 				'env': window.BPS.Config.env
 			};
 
-			$scope.Keen.addEvent("post.view", $event);
+			if(window.BPS.Config.env == "production") $scope.Keen.addEvent("post.view", $event);
+		}
+
+		$scope.logShare = function(medium) {
+			var parser = new UAParser(),
+				ua = parser.getResult();
+
+			var $event = {
+				'id': $scope.post.id,
+				'title': $scope.post.title,
+				'url': $scope.post.url,
+				'medium': medium,
+				'created_at': $scope.post.created_at.date,
+				'category': {
+					'id': $scope.post.category.id,
+					'name': $scope.post.category.name
+				},
+				'user_agent': {
+					'browser': {
+						'name': ua.browser.name,
+						'version': ua.browser.version
+					},
+					'os': {
+						'name': ua.os.name,
+						'version': ua.os.version,
+					},
+					'engine': {
+						'name': ua.engine.name,
+						'version': ua.engine.version
+					}
+				},
+				'env': window.BPS.Config.env
+			}
+
+			if(window.BPS.Config.env == "production") $scope.Keen.addEvent("post.share", $event);
 		}
 
 		$scope.share = function(url, mode) {
@@ -58,21 +92,24 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 			if(mode == "twitter") {
 				window.open(encodeURI("http://twitter.com/intent/tweet?status="+$scope.post.title+"  "+url+"")
 					, '_blank',"width=420,height=300");
+				$scope.logShare('twitter')
 			}
 
 			if(mode == "google") {
 				window.open(encodeURI("https://plus.google.com/share?url="+url+""), '_blank',"width=420,height=300");
+				$scope.logShare('google')
 			}
 		}
 
 		$scope.fbShare = function() {
 			FB.ui({
-				method: 'share',
+				method: 'feed',
 				link: $scope.post.url,
-				href: $scope.post.url,
-				picture: window.BPS.Config.url+"/content/"+$scope.post.featured_image.src,
 				name: $scope.post.title,
+				picture: window.BPS.Config.url+"/content/"+$scope.post.featured_image.src,
 				caption: $scope.post.excerpt
+			}, function (response) {
+				$scope.logShare('facebook')
 			});
 		}
 

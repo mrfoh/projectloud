@@ -9,6 +9,10 @@
 
 Route::group(['prefix' => 'api'], function() {
 
+	Route::group(['prefix' => 'analytics'], function() {
+		Route::get('trendingposts', 'AnalyticsController@trendingPosts');
+	});
+
 	Route::group(['prefix' => 'posts'], function() {
 
 		Route::post('bulk/delete', 'PostController@bulkDelete');

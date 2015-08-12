@@ -83,6 +83,13 @@
 	    	return $this->parserResult($posts);
 	    }
 
+	    public function getAllIn(Array $ids) {
+	    	$posts = $this->model->whereIn('id', $ids)->orderBy('created_at','desc')->get();
+
+	    	$this->resetModel();
+	    	return $this->parserResult($posts);	
+	    }
+
 	    public function by($id, $status, $perPage) {
 	    	switch ($status) {
 	    		case 'published':
