@@ -90,8 +90,13 @@
 				<button class="btn btn-block btn-lg comment-count" ng-click="loadComments()"><% post.comment_count %> Comments</button>
 
 				<post-comments></post-comments>
+
 			</div>
 			<div class="col-lg-4 col-md-4">
+				<section class="related-container">
+					<related-posts count="5"></related-posts>
+				</section>
+
 				<section class="newsletter-container">
 					<newsletter-form></newsletter-form>
 				</section>

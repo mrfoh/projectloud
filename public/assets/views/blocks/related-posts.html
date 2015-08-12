@@ -1,0 +1,21 @@
+<div class="related" ng-show="nodata == false">
+	<header class="section-heading">
+		<span>Related Posts</span>
+	</header>
+
+	<div class="loading" ng-show="loading">
+		<h3><i class="fa fa-spinner fa-spin"></i></h3>
+	</div>
+
+	<div class="posts">
+		<article ng-repeat="post in posts" class="post" itemscope itemtype="http://schema.org/NewsArticle">
+			<div class="image">
+				<a ui-sref="site.post({slug: post.slug})"><img itemprop="image" ng-src="/content/<% post.featured_image.src %>"></a>
+			</div>
+			<div class="content" style="margin-top: 0 !important;">
+				<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: post.slug})"><% post.title %></a></h3>
+				<span class="date" itemprop="datePublished"><% post.published_at %></span>
+			</div>
+		</article>
+	</div>
+</div>

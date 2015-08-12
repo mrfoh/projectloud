@@ -44,6 +44,16 @@
 			}
 		}
 
+		public function related($id) {
+			//options
+			$perPage = Request::input('limit', 5);
+			//post
+			$post = $this->posts->skipPresenter()->find($id);
+
+			if(!$post) return Response::json(['message'=>"Post not found"], 404);
+
+			return $this->posts->skipPresenter(false)->related($post, $perPage);
+		}
 		/**
 		* Retrieve post by user 
 		* @param integer $userid

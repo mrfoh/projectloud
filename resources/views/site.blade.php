@@ -206,6 +206,7 @@
 		<?= Html::script("assets/js/frontend/directives/newsletter-form.js") ?>
 		<?= Html::script("assets/js/frontend/directives/post-comments.js") ?>
 		<?= Html::script("assets/js/frontend/directives/report.js") ?>
+		<?= Html::script("assets/js/frontend/directives/related-posts.js") ?>
 		<?= Html::script("assets/js/frontend/directives/same-as.js") ?>
 		<?= Html::script("assets/js/frontend/directives/featured-image-select.js") ?>
  		@else

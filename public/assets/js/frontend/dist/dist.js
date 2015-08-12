@@ -40150,6 +40150,10 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.get(url+"/by/"+id);
 	}
 
+	self.related = function(id) {
+		return $http.get(url+"/"+id+"/related");
+	}
+
 	self.create = function(form) {
 		return $http.post(url, form);
 	};
@@ -40638,6 +40642,44 @@ angular.module('app')
 		}
 	}
 ]);
+angular.module('app')
+.directive('relatedPosts', ['$rootScope', 'posts',
+	function($rootScope, posts) {
+		return {
+			restrict: 'E',
+			scope: {},
+			templateUrl: '/assets/views/blocks/related-posts.html',
+			link: function(scope, el, attrs) {
+
+				scope.loading = true;
+				scope.nodata = false;
+				scope.posts = [];
+				scope.count = attrs.count;
+
+				scope.fetch = function() {
+					posts.related(scope.$parent.post.id)
+					.success(function(response) {
+						if(response && response.data) {
+
+							if(response.data.length > 0) {
+								scope.posts = response.data;
+								scope.nodata = false;
+								scope.loading = false;
+							}
+
+							else {
+								scope.nodata = true;
+								scope.loading = false;
+							}
+						}
+					});
+				}
+
+				$rootScope.$on('post:loaded', scope.fetch)
+			}
+		}
+	}	
+])
 angular.module('app')
 .controller('ReportModalCtrl', ['$rootScope','$scope', '$timeout', 'comments', '$modalInstance', 'commentID',
 	function ($rootScope, $scope, $timeout, comments, $modalInstance, commentID) {

@@ -24,6 +24,10 @@ app.factory('posts', ['$http', '$window', function ($http, $window) {
 		return $http.get(url+"/by/"+id);
 	}
 
+	self.related = function(id) {
+		return $http.get(url+"/"+id+"/related");
+	}
+
 	self.create = function(form) {
 		return $http.post(url, form);
 	};

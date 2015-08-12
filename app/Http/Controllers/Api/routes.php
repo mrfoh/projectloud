@@ -20,6 +20,7 @@ Route::group(['prefix' => 'api'], function() {
 		Route::post('bulk/publish', 'PostController@bulkPublish');
 		Route::post('bulk/unpublish', 'PostController@bulkUnpublush');
 
+		Route::get('{id}/related', 'PostController@related');
 		Route::get('{id}/comments', 'PostController@comments');
 		Route::get('{id}/feature', 'PostController@feature');
 		Route::get('{id}/unfeature', 'PostController@unfeature');

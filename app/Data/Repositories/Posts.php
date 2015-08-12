@@ -39,6 +39,9 @@
 	        return "Bps\\Data\\Repositories\\Presenters\\PostPresenter";
 	    }
 
+	    /**
+	    * Retrieve published post models
+	    **/
 	    public function allPublished() {
 
 	    	$posts = $this->model->published()->orderBy('created_at','desc')->get();
@@ -108,6 +111,21 @@
 	    			$posts = $this->model->with('author')->where('user_id','=',$id)->orderBy('created_at','desc')->paginate($perPage);
 	    			break;
 	    	}
+
+	    	$this->resetModel();
+	    	return $this->parserResult($posts);
+	    }
+
+	    public function related($post, $count) {
+
+	    	$tags = $post->tags()->lists('id');
+	    	$posts = $this->model->published()->whereHas('tags', function($q) use ($tags) {
+	    		$q->whereIn('id', $tags);
+	    	})
+	    	->whereNotIn('id', [$post->id])
+	    	->orderBy('created_at','desc')
+	    	->take($count)
+	    	->get();
 
 	    	$this->resetModel();
 	    	return $this->parserResult($posts);
