@@ -8,6 +8,7 @@
 	use JWTAuth;
 	use Request;
 	use Response;
+	use Cache;
 
 	class PostController extends ApiController {
 
@@ -36,9 +37,17 @@
 			}
 			else 
 			{
-				$post = $this->posts->getByIdSlug($id);
-
-				if(!$post) return response()->json(['status'=>'error', 'post not found'], 404);
+				$posts = $this->posts;
+				//check if entity exist in cache
+				if(Cache::has($id)) {
+					$post = Cache::get($id);
+				}
+				else {
+					$post = Cache::remember($id, 360, function() use ($posts, $id) {
+						return $posts->getByIdSlug($id);
+					});
+				}
+				
 
 				return $post;
 			}
