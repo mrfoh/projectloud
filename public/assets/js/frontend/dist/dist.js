@@ -40675,7 +40675,7 @@ angular.module('app')
 					});
 				}
 
-				$rootScope.$on('post:loaded', scope.fetch)
+				$rootScope.$on('load:related', scope.fetch)
 			}
 		}
 	}	

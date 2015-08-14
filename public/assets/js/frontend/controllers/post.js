@@ -143,6 +143,7 @@ app.controller('ArticleCtrl', ['$rootScope','$scope', '$log', '$document', '$pag
 					}
 
 					$rootScope.$broadcast('post:loaded', { post: $scope.post});
+					$rootScope.$broadcast('load:related');
 					$scope.log();
 				}
 			})
