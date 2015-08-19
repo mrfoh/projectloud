@@ -82,6 +82,12 @@
 		<header class="lg-header visible-md visible-lg">
 			<div class="top-bar">
 				<div class="container clearfix">
+					<nav class="pull-left social">
+						<ul>
+							<li><a href="https://facebook.com/bayelsapublicsquare" target="_blank"><i class="fa fa-lg fa-facebook"></i></a></li>
+							<li><a href="https://twitter.com/ByPublicSquare" target="_blank"><i class="fa fa-lg fa-twitter"></i></a></li>
+						</ul>
+					</nav>
 					<nav class="pull-right">
 						<ul class="actions">
 							<li ng-cloak ng-show="app.user == null"><a ui-sref="site.signin">Sign In</a></li>

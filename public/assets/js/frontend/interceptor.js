@@ -51,6 +51,7 @@ factory('requestInterceptor', ['$q', '$injector', '$log', '$localStorage', '$win
                     // send a notification requests are complete
                     notificationChannel.requestEnded();
                 }
+                
 				return response;
 			},
 
