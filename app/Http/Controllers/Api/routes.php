@@ -39,8 +39,9 @@ Route::group(['prefix' => 'api'], function() {
 		Route::post('{id}/report', 'CommentController@report');
 		Route::get('{id}/replies', 'CommentController@replies');
 		Route::post('{id}/reply', 'CommentController@reply');
-		Route::post('{id}/approve', 'CommentController@approve');
-		Route::post('{id}/disapprove', 'CommentController@disapproved');
+		Route::get('{id}/approve', 'CommentController@approve');
+		Route::get('{id}/unapprove', 'CommentController@unapprove');
+		Route::delete('{id}', 'CommentController@delete');
 		Route::get('{id}', 'CommentController@index');
 		Route::post('/', 'CommentController@store');
 		Route::get('/', 'CommentController@index');

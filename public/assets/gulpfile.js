@@ -44,7 +44,9 @@ gulp.task('build:admin', function() {
 	    'js/admin/services/*.js'
 	])
 	.pipe(concat('dist.js'))
-	.pipe(uglify())
+	.pipe(gulp.dest('js/admin/dist'))
+	.pipe(rename('dist.min.js'))
+	.pipe(uglify({mangle: false}))
 	.pipe(gulp.dest('js/admin/dist'))
 })
 

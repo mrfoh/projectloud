@@ -15,6 +15,11 @@
 	     			'settings' => $comment->user->settings
 	     		] : null,
 	     		'body' => $comment->body,
+	     		'post' => [
+	     			'id' => $comment->post->id,
+	     			'title' => $comment->post->title,
+	     			'slug' => $comment->post->slug
+	     		],
 	     		'reply_count' => count($comment->replies),
 	     		'created_at' => $comment->created_at,
 	     		'timestamp' => date("M d, Y @ h:ia", strtotime($comment->created_at)),

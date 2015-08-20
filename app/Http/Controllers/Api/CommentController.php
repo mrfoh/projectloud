@@ -13,7 +13,7 @@
 	class CommentController extends ApiController {
 
 		public function __construct() {
-			$this->middleware('jwt.auth', ['only' => ['store','reply','report']]);
+			$this->middleware('jwt.auth', ['only' => ['store','reply','report','index']]);
 		}
 
 		protected $rulesCreateDefault = [
@@ -26,8 +26,13 @@
 			'email' => 'required|email'
 		];
 
-		public function index($id = null) {
+		public function index(Comments $comments, $id = null) {
+			if(is_null($id)) {
 
+				$status = Request::input('status', null);
+
+				return $comments->getAll(20, ['status' => $status]);
+			}
 		}
 
 		public function store(Comments $comments, $id = null) {
@@ -146,5 +151,30 @@
 			$replies = $comments->replies($id);
 
 			return $replies;
+		}
+
+		public function approve(Comments $comments, $id) {
+
+			$comment = $comments->approve($id);
+
+			if($comment) {
+				return response()->json(['status'=>"success"], 200);
+			}
+		}
+
+		public function unapprove(Comments $comments, $id) {
+
+			$comment = $comments->unapprove($id);
+
+			if($comment) {
+				return response()->json(['status'=>"success"], 200);
+			}
+		}
+
+		public function delete(Comments $comments, $id) {
+
+			$comments->delete($id);
+
+			return response()->json(['status'=>"success"], 200);
 		}
 	}

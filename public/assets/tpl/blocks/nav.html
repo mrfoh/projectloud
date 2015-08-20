@@ -51,11 +51,35 @@
       </ul>
     </li>
 
-    <li ui-sref-active="active">
-      <a ui-sref="comments.index"><i class="fa fa-comment text-primary-dker"></i>
-          <span class="font-bold">Comments</span>
+    <li>
+      <a href class="auto">
+        <span class="pull-right text-muted">
+          <i class="fa fa-fw fa-angle-right text"></i>
+          <i class="fa fa-fw fa-angle-down text-active"></i>
+        </span>
+        <i class="fa fa-comments text-success-dker"></i>
+        <span class="font-bold">Comments</span>
       </a>
-  </li>
+      <ul class="nav nav-sub dk">
+        <li class="nav-sub-header">
+          <a href>
+            <span>Comments</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="comments.index">
+            <span>All Comments</span>
+          </a>
+        </li>
+
+        <li ui-sref-active="active">
+          <a ui-sref="comments.reports">
+            <span>Reports</span>
+          </a>
+        </li>
+      </ul>
+    </li>
 
   <li>
       <a href class="auto">

@@ -1,0 +1,89 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="CommentsCtrl">
+	<!-- main -->
+	<div class="col">
+		<!-- toaster directive -->
+		<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+		<!-- / toaster directive -->
+	    <!-- main header -->
+	   	<div class="bg-light lter b-b wrapper-md">
+	    	<div class="row">
+	        	<div class="col-sm-6 col-xs-12">
+	        		<h1 class="m-n font-thin h3 text-black">Comments</h1>
+	        	</div>
+	        </div>
+	    </div>
+	 	<!-- / main header -->
+
+	 	<div class="wrapper-md">
+	 		<div ng-hide="nodata">
+	 			<div class="panel panel-default">
+	 				<div class="row wrapper">
+	 					<div class="col-sm-5 m-b-xs">
+					        <select class="input-sm form-control w-sm inline v-middle" ng-model="action" ng-options='option.value as option.name for option in actions' ng-change="onActionSelect()"></select>
+					        <button class="btn btn-sm btn-default" ng-click="applyAction()">Apply</button>                
+				      	</div>
+
+				      	<div class="col-sm-4">
+					        <select class="input-sm form-control w-sm inline v-middle" ng-model="activefilter" ng-options='option.value as option.name for option in filters' ng-change="onFilterSelect()"></select>
+				      	</div>
+
+	 					<div class="col-sm-3">
+					        <input type="text" class="input-sm form-control" placeholder="Search" ng-model="query">
+	 					</div>
+	 				</div>
+
+		 			<div class="table-responsive">
+		 				<table class="table table-striped b-t b-light">
+		 					<thead>
+		 						<tr>
+		 							<th><input type="checkbox" ng-model="selectAll" ng-click="checkAll()"></th>
+		 							<th ng-repeat="col in columns"><a href="">{{col.name}}</a></th>
+		 						</tr>
+		 					</thead>
+
+		 					<tbody>
+		 						<tr ng-repeat="comment in comments" class="comment-row {{ comment.status }}">
+		 							<td><input type="checkbox" ng-model="comment.selected"></td>
+		 							<td><a href="">{{ comment.user.username }}</a></td>
+		 							<td>
+		 								<p>submitted {{ comment.timestamp }}</p>
+		 								<p>{{ comment.body }}</p>
+		 								<div class="actions">
+		 									<a ng-click="approve(comment)" ng-if="comment.status == 'unapproved'">Approve</a>
+		 									<a ng-click="unapprove(comment)" ng-if="comment.status == 'approved'">Unapprove</a>
+		 									<a ng-click="delete(comment)">Delete</a>
+		 								</a>
+		 							</td>
+		 							<td>
+		 								<a ui-sref="posts.edit({post: comment.post.id})" style="display: block;">
+		 									{{ comment.post.title }}
+		 								</a>
+		 								<a href="" style="display: block; text-align: center;">View Post</a>
+		 							</td>
+		 						</tr>
+		 					</tbody>
+		 				</table>
+
+		 				<pagination total-items="total" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+		 			</div>
+
+		 			<div class="row wrapper">
+	 					<div class="col-sm-5 m-b-xs">
+					        <select class="input-sm form-control w-sm inline v-middle">
+					          <option value="0">Bulk action</option>
+					          <option value="1">Delete selected</option>
+					        </select>
+					        <button class="btn btn-sm btn-default">Apply</button>                
+				      	</div>
+	 				</div>
+		 		</div>
+	 		</div>
+
+	 		<div class="wrapper-xl" ng-show="showStatus">
+				<div class="text-center m-b-lg">
+					<p class="h1" ng-bind-html="statusText"></p>
+				</div>
+			</div>
+	 	</div>
+	</div>
+</div>

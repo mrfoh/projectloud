@@ -103,7 +103,12 @@ angular.module('app')
     })
     .state('comments.index', {
         url: '/',
-        templateUrl: '/assets/tpl/comments.index.html'
+        templateUrl: '/assets/tpl/comments.index.html',
+        resolve: {
+            deps: ['$ocLazyLoad', function( $ocLazyLoad ) {
+                return $ocLazyLoad.load(['/assets/js/admin/controllers/comments/index.js','/assets/js/admin/services/comments.js'])
+            }]
+        }
     })
 
     .state('media', {
