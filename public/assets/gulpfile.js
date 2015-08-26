@@ -38,6 +38,7 @@ gulp.task('build:admin', function() {
 		'js/vendor/libs/underscore.js',
 		'js/vendor/angular/angular.js',
 		'js/vendor/angular/angular-animate/angular-animate.js',
+		'js/vendor/angular/angular-cookies/angular-cookies.js',
 		'js/vendor/angular/angular-sanitize/angular-sanitize.js',
 		'js/vendor/angular/angular-touch/angular-touch.js',
 		'js/vendor/angular/angular-resource/angular-resource.js',
