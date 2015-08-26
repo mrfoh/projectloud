@@ -67,7 +67,7 @@
 		<?= Html::script("assets/js/admin/directives/ui-validate.js") ?>
 		<?= Html::script("assets/js/admin/directives/ui-featuredimage.js") ?>
 		@else
-		<?= Html::script('assets/js/admin/dist/dist.js') ?>
+		<?= Html::script('assets/js/admin/dist/dist.min.js') ?>
 		@endif
 	</body>
 </html>
