@@ -36,7 +36,7 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 					var max = $scope.recent.length - 1;
 
 					$scope.template = "2-cols";
-					$scope.pro = $scope.take($scope.recent, 0, 2));
+					$scope.pro = $scope.take($scope.recent, 0, 2);
 					$scope.less = $scope.take($scope.recent, 3, max);
 				}
 				else {
