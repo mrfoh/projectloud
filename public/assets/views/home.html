@@ -52,7 +52,9 @@
 
 						<div class="col-lg-4">
 							<article class="article clearfix" itemscope itemtype="http://schema.org/NewsArticle" ng-repeat="article in less">
-								<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: article.slug})"><% article.title %></a></h3>
+								<div class="content">
+									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: article.slug})"><% article.title %></a></h3>
+								</div>
 							</article>
 						</div>
 					</div>
