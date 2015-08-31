@@ -14,7 +14,7 @@
 					<div class="loading" ng-if="feedloading"><h3><i class="fa fa-spin fa-spinner"></i></h3></div>
 					<!-- 2-cols layout -->
 					<div class="row" ng-if="template == '2-cols'">
-						<div class="col-lg-8 with-images">
+						<div class="col-lg-8 col-md-8 with-images">
 							<div class="col-lg-12">
 								<article class="article" itemscope itemtype="http://schema.org/NewsArticle">
 									<div class="image">
@@ -50,7 +50,7 @@
 							</div>
 						</div>
 
-						<div class="col-lg-4">
+						<div class="col-lg-4 col-md-4 without-images">
 							<article class="article clearfix" itemscope itemtype="http://schema.org/NewsArticle" ng-repeat="article in less">
 								<div class="content">
 									<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: article.slug})"><% article.title %></a></h3>
