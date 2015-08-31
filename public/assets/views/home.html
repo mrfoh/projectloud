@@ -50,7 +50,11 @@
 							</div>
 						</div>
 
-						<div class="col-lg-4"></div>
+						<div class="col-lg-4">
+							<article class="article clearfix" itemscope itemtype="http://schema.org/NewsArticle" ng-repeat="article in less">
+								<h3 class="title" itemprop="headline"><a ui-sref="site.post({slug: pro[2].slug})"><% article.title %></a></h3>
+							</article>
+						</div>
 					</div>
 					<!-- end 2-cols layout -->
 
