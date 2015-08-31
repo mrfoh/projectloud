@@ -33,16 +33,27 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$log', '$document', '$page'
 				$scope.feedloading = false;
 
 				if($scope.recent.length >= 10) {
+					var max = $scope.recent.length - 1;
+
 					$scope.template = "2-cols";
-					$scope.pro = $scope.recent.splice(0,3);
-					$scope.less = $scope.recent.splice(4, 11);
+					$scope.pro = $scope.take($scope.recent, 0, 2));
+					$scope.less = $scope.take($scope.recent, 3, max);
 				}
 				else {
 					$scope.template = "1-col";
 				}
-
-				
 			})
+		}
+
+		$scope.take = function(items, start, end) {
+
+			var store  = [];
+
+			for(start; start <= end; start++) {
+				store.push(items[start]);
+			}
+
+			return store;
 		}
 
 		$scope.$on('featured:fetch', $scope.fetchFeatured);
